@@ -1,0 +1,12 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+	precomposeunicode = true
+[branch "master"]
+[branch "feature/introduce-midi"]
+[remote "origin"]
+	url = git@bitbucket.org:mjkochell/midi-jam-helper.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
