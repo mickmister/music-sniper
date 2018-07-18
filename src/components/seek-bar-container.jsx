@@ -3,7 +3,7 @@ import SeekBar from './seek-bar'
 
 class SeekBarContainer extends React.Component {
   state = {
-    totalTime: 480,
+    totalTime: 827,
     currentTime: 0,
     bufferedTime: 0,
     isSeekable: true,
