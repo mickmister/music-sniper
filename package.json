@@ -19,8 +19,10 @@
     "midi-synth": "^0.0.4",
     "note-to-frequency": "^1.4.1",
     "parcel": "^1.8.1",
-    "react": "^16.4.0",
-    "react-dom": "^16.4.0",
+    "react": "^15.0.0 || ^16.0.0",
+    "react-dom": "0.14.x || ^15.0.0 || ^16.0.0",
+    "react-media-player": "^0.7.1",
+    "react-player-controls": "^0.5.20",
     "reactdom": "^2.0.0",
     "rx": "^4.1.0",
     "rxjs": "^6.2.0",
@@ -35,6 +37,7 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "chai": "^4.1.2",
     "mocha": "^5.2.0",
+    "node-sass": "^4.9.2",
     "nodemon": "^1.17.5",
     "ts-node": "^6.1.0"
   }
