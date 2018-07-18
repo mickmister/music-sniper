@@ -6,6 +6,16 @@ const styles = {
 }
 
 class SeekBar extends React.Component {
+  displayTime(time) {
+    const minutes = Math.floor(time / 60)
+    const seconds = Math.floor(time % 60)
+
+    const minutesStr = minutes > 9 ? minutes : `0${minutes}`
+    const secondsStr = seconds > 9 ? seconds : `0${seconds}`
+
+    return `${minutesStr}:${secondsStr}`
+  }
+
   render() {
     const fields = [
       'currentTime', 'lastSeekStart', 'lastSeekEnd', 'lastIntent'
@@ -16,12 +26,9 @@ class SeekBar extends React.Component {
         <ProgressBar
           {...this.props}
         />
-        {fields.map(f => (
-          <h2>
-            {f}
-            {this.props[f].toFixed(3)}
-          </h2>
-        ))}
+      <h2>
+        {this.displayTime(this.props.currentTime)}
+      </h2>
     </div>
     )
   }
