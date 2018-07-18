@@ -1,35 +1,29 @@
-import React, { Component } from 'react'
-import { Media, Player, controls, utils } from 'react-media-player'
-const { PlayPause, CurrentTime, Progress, SeekBar, Duration, MuteUnmute, Volume, Fullscreen } = controls
-const { keyboardControls } = utils
+import React from 'react'
+import ReactHowler from 'react-howler'
+import SeekBarContainer from './seek-bar-container'
 
-class MediaPlayer extends Component {
+class MediaPlayer extends React.Component {
+  state = {
+    lastSeekEnd: 0,
+  }
+  onSeek = (time) => {
+    this.setState({lastSeekEnd: time})
+  }
+
   render() {
-    const { Player, keyboardControls } = this.props
+
     return (
-      <Media>
-        { mediaProps =>
-          <div
-            className="media"
-            onKeyDown={keyboardControls.bind(null, mediaProps)}
-          >
-            <Player
-              src="against-them-all.mp3"
-              className="media-player"
-            />
-            <div className="media-controls">
-              <PlayPause/>
-              <CurrentTime/>
-              <Progress/>
-              <SeekBar/>
-              <Duration/>
-              <MuteUnmute/>
-              <Volume/>
-              <Fullscreen/>
-            </div>
-          </div>
-        }
-      </Media>
+      <React.Fragment>
+        <SeekBarContainer
+          onSeek={this.onSeek}
+          seekValue={this.state.lastSeekEnd}
+        />
+        <ReactHowler
+          src='/sound.mp3'
+          playing={false}
+          seek={this.state.lastSeekEnd}
+        />
+      </React.Fragment>
     )
   }
 }
