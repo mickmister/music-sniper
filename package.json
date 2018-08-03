@@ -49,13 +49,13 @@
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.1.0",
-    "gulp": "^3.9.1",
-    "gulp-cloudfront-invalidate": "^0.1.5",
+    "gulp": "^4.0",
     "gulp-parcel": "^0.3.5",
     "gulp-s3": "^0.11.0",
     "mocha": "^5.2.0",
     "node-sass": "^4.9.2",
     "nodemon": "^1.17.5",
+    "rebuild-node-sass": "^1.1.0",
     "ts-node": "^6.1.0"
   }
 }
