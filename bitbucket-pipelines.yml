@@ -11,5 +11,6 @@ pipelines:
         caches:
           - node
         script: # Modify the commands below to build your repository.
+          - yarn install
           - gulp build
           - gulp deploy
