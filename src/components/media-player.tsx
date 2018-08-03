@@ -1,30 +1,37 @@
 import React from 'react'
 import ReactHowler from 'react-howler'
-import {PlayButton, PauseButton} from 'react-player-controls'
+import { PlayButton, PauseButton } from 'react-player-controls'
 import SeekBarContainer from './seek-bar-container'
 
-class MediaPlayer extends React.Component {
+type MediaPlayerState = {
+  lastSeekEnd: number,
+  playing: boolean,
+}
+
+class MediaPlayer extends React.PureComponent<{}, MediaPlayerState> {
   state = {
     lastSeekEnd: 0,
     playing: false,
   }
-  onSeek = (time) => {
-    this.setState({lastSeekEnd: time})
+
+  onSeek = (time: number) => {
+    this.setState({ lastSeekEnd: time })
   }
 
   play = () => {
-    this.setState({playing: true})
+    this.setState({ playing: true })
   }
 
   pause = () => {
-    this.setState({playing: false})
+    this.setState({ playing: false })
   }
 
   render() {
-
-    const button = this.state.playing
-      ? <PauseButton onClick={this.pause} />
-    : <PlayButton isEnabled onClick={this.play} />
+    const button = this.state.playing ? (
+      <PauseButton onClick={this.pause} />
+    ) : (
+      <PlayButton isEnabled onClick={this.play} />
+    )
 
     return (
       <React.Fragment>

@@ -1,13 +1,9 @@
 import React from 'react'
 import MediaPlayer from './media-player'
 
-class MediaPlayerContainer extends React.Component {
+class MediaPlayerContainer extends React.PureComponent<{}> {
   render() {
-    return (
-      <MediaPlayer
-        
-      />
-    )
+    return <MediaPlayer />
   }
 }
 

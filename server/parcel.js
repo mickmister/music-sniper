@@ -6,13 +6,6 @@ const express = require('express')
 let bundler = new Bundler('src/index.html')
 let app = express()
 
-// app.use(
-//   '/sounds',
-//   proxy({
-//     target: 'http://www.soulwinning.info:80'
-//   })
-// )
-
 app.get('/sound.mp3', (req, res) => res.sendFile('sound.mp3', {root: path.join(__dirname, '.')}))
 
 app.use(bundler.middleware())

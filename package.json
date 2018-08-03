@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
-    "parcel": "./node_modules/.bin/parcel src/index.html"
+    "start": "node server/static.js",
+    "parcel": "node server/parcel.js"
   },
   "repository": "git@github.com:mickmister/midi-jam-helper.git",
   "author": "mickmister <mjkochell@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@types/react": "^16.3.17",
+    "@types/react": "^16.4.7",
     "@types/rx": "^4.1.1",
     "babel": "^6.23.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
@@ -40,8 +40,19 @@
   "devDependencies": {
     "@types/chai": "^4.1.3",
     "@types/mocha": "^5.2.1",
+    "babel-eslint": "^8.2.6",
     "babel-plugin-transform-runtime": "^6.23.0",
     "chai": "^4.1.2",
+    "eslint": "^4.3.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-babel": "^4.1.2",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.1.0",
+    "gulp": "^3.9.1",
+    "gulp-cloudfront-invalidate": "^0.1.5",
+    "gulp-parcel": "^0.3.5",
+    "gulp-s3": "^0.11.0",
     "mocha": "^5.2.0",
     "node-sass": "^4.9.2",
     "nodemon": "^1.17.5",

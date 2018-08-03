@@ -1,17 +1,29 @@
 {
   "compilerOptions": {
+    "outDir": "build/lib",
     "module": "commonjs",
-    "noImplicitAny": false,
-    "removeComments": true,
-    "preserveConstEnums": true,
+    "target": "es5",
+    "lib": ["es5", "es6", "es7", "es2017", "dom"],
     "sourceMap": true,
-    "target": "es6",
+    "allowJs": false,
     "jsx": "react",
+    "moduleResolution": "node",
+    "rootDir": "src",
+    "baseUrl": "src",
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "noUnusedLocals": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true
+    "typeRoots": ["src/types"]
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx"
-  ]
+  "compileOnSave": false,
+  "buildOnSave": false,
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "build", "scripts"]
 }
