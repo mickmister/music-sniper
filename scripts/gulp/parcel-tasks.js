@@ -5,7 +5,7 @@ const assetHost = process.env.ASSET_HOST
 
 gulp.task('rebuild-node-sass', () => require('rebuild-node-sass')) /* eslint-disable-line global-require */
 
-gulp.task('parcel', (done) => {
+gulp.task('parcel', ['rebuild-node-sass'], (done) => {
   gulp.src('src/index.html', {read: false})
     .pipe(parcel({outDir: 'build', publicURL: assetHost}))
     .on('error', (error) => {
@@ -14,4 +14,4 @@ gulp.task('parcel', (done) => {
     .pipe(gulp.dest('build'))
 })
 
-gulp.task('build', gulp.series('rebuild-node-sass', 'parcel'))
+gulp.task('build', ['parcel'])
