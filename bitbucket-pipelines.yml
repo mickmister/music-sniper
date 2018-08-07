@@ -7,14 +7,22 @@ image: node:latest
 
 pipelines:
   default:
+    - step:
+        caches:
+          - node
+        script:
+          - yarn install
+          - yarn build
+          
+  custom: # Pipelines that are triggered manually
+    build:
       - step:
           caches:
             - node
           script:
             - yarn install
             - yarn build
-  custom: # Pipelines that are triggered manually
-    build:
+    deploy:
       - step:
           caches:
             - node
