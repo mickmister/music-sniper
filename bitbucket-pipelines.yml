@@ -6,14 +6,6 @@
 image: node:latest
 
 pipelines:
-  default:
-    - step:
-        caches:
-          - node
-        script:
-          - yarn install
-          - yarn build
-  
   branches:
     qa-build/*:
       - step:
