@@ -11,7 +11,7 @@ pipelines:
         caches:
           - node
         script:
-          - yarn install
+          - npm install
           - yarn build
   
   branches:
@@ -20,7 +20,7 @@ pipelines:
           caches:
             - node
           script:
-            - yarn install
+            - npm install
             - yarn build
             - yarn qa-deploy
           
@@ -30,13 +30,13 @@ pipelines:
           caches:
             - node
           script:
-            - yarn install
+            - npm install
             - yarn build
     deploy:
       - step:
           caches:
             - node
           script:
-            - yarn install
+            - npm install
             - yarn build
             - yarn deploy
