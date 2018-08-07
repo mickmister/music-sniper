@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node server/static.js",
     "parcel": "node server/parcel.js",
-    "build": "./node_modules/.bin/gulp build"
+    "build": "./node_modules/.bin/gulp build",
+    "build": "./node_modules/.bin/gulp deploy"
   },
   "repository": "git@github.com:mickmister/midi-jam-helper.git",
   "author": "mickmister <mjkochell@gmail.com>",
@@ -56,6 +57,7 @@
     "mocha": "^5.2.0",
     "node-sass": "^4.9.2",
     "nodemon": "^1.17.5",
+    "react-js-to-ts": "^1.4.0",
     "rebuild-node-sass": "^1.1.0",
     "ts-node": "^6.1.0"
   }

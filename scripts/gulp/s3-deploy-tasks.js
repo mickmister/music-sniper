@@ -9,7 +9,7 @@ const buildDir = process.env.BUILD_DIR
 
 gulp.task('check-s3-env-vars', () => {
   if (!buildDir) {
-    console.error('Missing WEBPACK_BUILD_DESTINATION env variable')
+    console.error('Missing BUILD_DIR env variable')
     process.exit(1)
   }
   if (!fs.existsSync(buildDir)) {
