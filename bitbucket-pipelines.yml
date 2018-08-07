@@ -13,6 +13,16 @@ pipelines:
         script:
           - yarn install
           - yarn build
+  
+  branches:
+    qa-build/*:
+      - step:
+          caches:
+            - node
+          script:
+            - yarn install
+            - yarn build
+            - yarn qa-deploy
           
   custom: # Pipelines that are triggered manually
     build:
