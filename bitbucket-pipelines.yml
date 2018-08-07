@@ -7,9 +7,18 @@ image: node:latest
 
 pipelines:
   default:
-    - step:
-        caches:
-          - node
-        script: # Modify the commands below to build your repository.
-          - yarn install
-          - yarn build
+      - step:
+          caches:
+            - node
+          script:
+            - yarn install
+            - yarn build
+  custom: # Pipelines that are triggered manually
+    build:
+      - step:
+          caches:
+            - node
+          script:
+            - yarn install
+            - yarn build
+            - yarn deploy
