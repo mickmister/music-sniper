@@ -5,6 +5,15 @@
 # You can specify a custom docker image from Docker Hub as your build environment.
 image: node:latest
 
+#options:
+#  docker: true
+
+dock: &dock
+  services:
+    - docker
+  caches:
+    - docker
+    
 pipelines:
   branches:
     qa-build/*:
@@ -24,11 +33,17 @@ pipelines:
           script:
             - yarn install
             - yarn build
+            
     deploy:
       - step:
-          caches:
-            - node
           script:
             - yarn install
             - yarn build
             - yarn deploy
+
+    docker-deploy:
+      - step:
+          <<: *dock
+          script:
+            ./dock build
+            
