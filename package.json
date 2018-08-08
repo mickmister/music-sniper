@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node server/static.js",
     "parcel": "node server/parcel.js",
+    "aws-install": "chmod +x ./scripts/aws-install && ./scripts/aws-install",
     "build": "./node_modules/.bin/gulp build",
     "deploy": "./node_modules/.bin/gulp deploy",
     "qa-deploy": "./node_modules/.bin/gulp deploy"

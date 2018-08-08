@@ -3,7 +3,7 @@ const gulp = require('gulp')
 
 require('./scripts/gulp/s3-deploy-tasks')
 require('./scripts/gulp/parcel-tasks')
-// require('./scripts/gulp/jest-tasks')
+require('./scripts/gulp/mocha-tasks')
 
 gulp.task('display-env', () => {
   console.log(process.env.PRODENV)
