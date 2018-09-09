@@ -9,7 +9,6 @@ declare module 'react-player-controls' {
     lastSeekStart: number,
     lastIntent: number,
     lastSeekEnd: number,
-    onSeek: (time: number) => void,
     onSeekStart: (time: number) => void,
     onSeekEnd: (time: number) => void,
     onIntent: (time: number) => void,

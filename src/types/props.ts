@@ -1,19 +1,18 @@
-export type ProgressBarProps = {
-  totalTime: number,
-  currentTime: number,
-  bufferedTime: number,
-  isSeekable: boolean,
-  lastSeekStart: number,
-  lastIntent: number,
-  lastSeekEnd: number,
-  onSeek: (time: number) => void,
-  onSeekStart: (time: number) => void,
-  onSeekEnd: (time: number) => void,
-  onIntent: (time: number) => void,
+export interface SongData {
+  songs: Song[]
 }
 
-export type ReactHowlerProps = {
-  src: string,
-  playing: boolean,
-  seek: number,
+export interface Song {
+  filePath: string
+  length: number
+  sections: Section[]
 }
+
+export type Segment = {
+  start: number
+  end: number
+}
+
+export type Section = {
+  name:  string
+} & Segment

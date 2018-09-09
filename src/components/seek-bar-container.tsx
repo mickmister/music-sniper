@@ -2,8 +2,6 @@ import React from 'react'
 import SeekBar from './seek-bar'
 
 type SeekBarContainerState = {
-  totalTime: number,
-  currentTime: number,
   bufferedTime: number,
   isSeekable: boolean,
   lastSeekStart: number,
@@ -13,12 +11,13 @@ type SeekBarContainerState = {
 type SeekBarContainerProps = {
   onSeek: (time: number) => void,
   seekValue: number,
+  currentTime: number,
+  songDuration: number,
 }
 
 class SeekBarContainer extends React.PureComponent<SeekBarContainerProps, SeekBarContainerState> {
   state = {
-    totalTime: 827,
-    currentTime: 0,
+    // currentTime: 0,
     bufferedTime: 0,
     isSeekable: true,
     lastSeekStart: 0,
@@ -37,12 +36,23 @@ class SeekBarContainer extends React.PureComponent<SeekBarContainerProps, SeekBa
           progressBarProps={{
             ...this.state,
             lastSeekEnd: this.props.seekValue,
-            onSeek: (time: number) => this.setState(() => ({ currentTime: time })),
             onSeekStart: (time: number) => this.setState(() => ({ lastSeekStart: time })),
             onSeekEnd: this.onSeekEnd,
             onIntent: (time: number) => this.setState(() => ({ lastIntent: time })),
+            currentTime: this.props.currentTime,
+            totalTime: this.props.songDuration,
           }}
-          currentTime={this.state.currentTime}
+        />
+        <SeekBar
+          progressBarProps={{
+            ...this.state,
+            lastSeekEnd: this.props.seekValue,
+            onSeekStart: (time: number) => this.setState(() => ({ lastSeekStart: time })),
+            onSeekEnd: this.onSeekEnd,
+            onIntent: (time: number) => this.setState(() => ({ lastIntent: time })),
+            currentTime: this.props.currentTime,
+            totalTime: this.props.songDuration,
+          }}
         />
       </React.Fragment>
     )
