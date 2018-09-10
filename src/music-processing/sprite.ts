@@ -1,12 +1,17 @@
 import { SpriteInformation, Seconds, Milliseconds, Section, TimeIntervalMilliseconds } from 'types/music-types'
+import { IHowl } from '../interfaces/IHowl'
 
 export class Sprite {
-  howl: Howl
+  howl: IHowl
+  started = false
 
   constructor(
     public filePath: string,
     public section: Section,
-  ) {}
+  ) {
+  }
+
+  play = () => {}
 
   getSpriteInfo = () => {
     return {
@@ -31,7 +36,7 @@ export class Sprite {
     return [start * 1000, (end - start) * 1000] as TimeIntervalMilliseconds
   }
 
-  seek = (seekSeconds: Seconds) => {
+  seek(seekSeconds: Seconds) {
     this.howl.seek(seekSeconds)
   }
 
@@ -53,27 +58,17 @@ export class Sprite {
     return this.spritePosition() / this.getLength()
   }
 
-  windowProgress = (win: Section) => {
+  windowProgress(win: Section) {
     return (this.spriteProgress() - win.start) / (win.end - win.start)
   }
 
-  seekPercentage = (percent: number) => {
+  seekPercentage(percent: number) {
     const targetPosition = this.getLength() * (percent / 100)
     const relativeToSong = this.section.start + targetPosition
     this.seek(relativeToSong)
   }
-}
 
-export class StaticSprite extends Sprite {
-  howl = new Howl({
-    src: [this.filePath],
-    html5: true,
-    sprite: {
-      segment: this.getSegment(),
-    },
-  })
-
-  play = () => this.howl.play('segment')
+  pause = () => { this.howl.pause() }
 }
 
 export class DynamicSprite extends Sprite {

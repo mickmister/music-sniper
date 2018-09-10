@@ -7,6 +7,8 @@ let bundler = new Bundler('src/index.html')
 let app = express()
 
 app.get('/sound.mp3', (req, res) => res.sendFile('sound.mp3', {root: path.join(__dirname, '.')}))
+// app.use('/public', express.static('../public'))
+app.get('/public/data/song-data.json', (req, res) => res.sendFile('song-data.json', {root: path.join(__dirname, '../public/data')}))
 
 app.use(bundler.middleware())
 

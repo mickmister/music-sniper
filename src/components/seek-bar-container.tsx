@@ -1,5 +1,6 @@
 import React from 'react'
 import SeekBar from './seek-bar'
+import { Percentage } from 'types/music-types';
 
 type SeekBarContainerState = {
   bufferedTime: number,
@@ -8,11 +9,10 @@ type SeekBarContainerState = {
   lastIntent: number
 }
 
-type SeekBarContainerProps = {
+export type SeekBarContainerProps = {
   onSeek: (time: number) => void,
   seekValue: number,
-  currentTime: number,
-  songDuration: number,
+  currentPercent: Percentage,
 }
 
 class SeekBarContainer extends React.PureComponent<SeekBarContainerProps, SeekBarContainerState> {
@@ -39,19 +39,8 @@ class SeekBarContainer extends React.PureComponent<SeekBarContainerProps, SeekBa
             onSeekStart: (time: number) => this.setState(() => ({ lastSeekStart: time })),
             onSeekEnd: this.onSeekEnd,
             onIntent: (time: number) => this.setState(() => ({ lastIntent: time })),
-            currentTime: this.props.currentTime,
-            totalTime: this.props.songDuration,
-          }}
-        />
-        <SeekBar
-          progressBarProps={{
-            ...this.state,
-            lastSeekEnd: this.props.seekValue,
-            onSeekStart: (time: number) => this.setState(() => ({ lastSeekStart: time })),
-            onSeekEnd: this.onSeekEnd,
-            onIntent: (time: number) => this.setState(() => ({ lastIntent: time })),
-            currentTime: this.props.currentTime,
-            totalTime: this.props.songDuration,
+            currentTime: this.props.currentPercent,
+            totalTime: 100,
           }}
         />
       </React.Fragment>

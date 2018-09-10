@@ -3,8 +3,8 @@ import { takeUntil, filter } from 'rxjs/operators'
 import { Sprite } from './sprite'
 import { SpriteInformation } from '../types/music-types'
 
-const INTERVAL_PERIOD = 100
-const NUM_CYCLES = 10
+const INTERVAL_PERIOD = 1000
+const NUM_CYCLES = 1000
 let currentCycle = 0
 
 export class SpriteContainer {
@@ -20,7 +20,7 @@ export class SpriteContainer {
     this.subject = new BehaviorSubject<SpriteInformation>(this.sprite.getSpriteInfo())
     this.observable = this.subject
       .pipe(takeUntil(this.cancelSubject.pipe(filter(x => x))))
-    this.interval = setInterval(this.sendUpdates, INTERVAL_PERIOD)
+    // this.interval = setInterval(this.sendUpdates, INTERVAL_PERIOD)
   }
 
   getObsvervableForInterval = () => this.observable
@@ -40,8 +40,3 @@ export class SpriteContainer {
     }
   }
 }
-
-const s = new Sprite('', {name: 'fun', start: 100, end: 200})
-const scont = new SpriteContainer(s)
-scont.getObsvervableForInterval().subscribe(console.log)
-s.section.start = 20

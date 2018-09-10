@@ -18,7 +18,7 @@ class SeekBar extends React.PureComponent<SeekBarProps> {
     return (
       <div style={styles}>
         <ProgressBar {...progressBarProps} />
-        <h2>{displayTime(progressBarProps.currentTime)}</h2>
+        {/* <h2>{displayTime(progressBarProps.currentTime)}</h2> */}
       </div>
     )
   }
