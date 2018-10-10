@@ -4,6 +4,7 @@ import { IHowl } from '../interfaces/IHowl'
 export class Sprite {
   howl: IHowl
   started = false
+  stopped = true
 
   constructor(
     public filePath: string,
@@ -92,7 +93,15 @@ export class Sprite {
     this.seek(relativeToSong)
   }
 
-  pause = () => { this.howl.pause() }
+  pause = () => {
+    this.howl.pause()
+    return this
+  }
+  stop = () => {
+    this.howl.stop()
+    this.stopped = true
+    return this
+  }
 }
 
 export class DynamicSprite extends Sprite {
@@ -105,10 +114,19 @@ export class DynamicSprite extends Sprite {
   })()
 
   play = () => {
-    this.howl.play()
-    if (!this.started) {
+    if (this.howl.playing()) {
       this.howl.seek(this.section.start)
-      this.started = true
+      return
     }
+    if (this.stopped) {
+      this.howl.seek(this.section.start)
+    }
+    this.howl.play()
+    if (this.stopped) {
+      this.howl.seek(this.section.start)
+    }
+    this.stopped = false
+    this.started = true
+    return this
   }
 }

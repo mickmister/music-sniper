@@ -37,11 +37,16 @@ export class SpriteContainer {
     if (this.sprite.howl.playing() && this.sprite.spriteProgress() >= 1) {
       this.sprite.howl.stop()
       this.sprite.started = false
+      this.sprite.stopped = true
     }
     const payload = this.sprite.getSpriteInfo()
     this.subject.next(payload)
     if (currentCycle++ >= NUM_CYCLES) {
       this.cleanUp()
     }
+  }
+
+  duration = () => {
+    return this.sprite.howl.duration()
   }
 }

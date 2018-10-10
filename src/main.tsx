@@ -1,116 +1,86 @@
 import React from 'react'
-import axios from 'axios'
-import {Button} from 'react-bootstrap'
-
-import './styles/styles'
-import './music-processing/audio-slicer'
-import SongLoader from './services/song-loader'
-import SeekBarContainter from './components/seek-bar-container'
-import { Percentage, Section } from 'types/music-types'
-import { StaticSprite } from './music-processing/static-sprite'
-import { SpriteContainer } from './music-processing/sprite-container'
-import { DynamicSprite } from './music-processing/sprite'
-import { SpriteInformation } from './types/music-types'
+import PlaybackContainer from './components/playback/playback-container'
+import DoubleSeekBarContainer from './components/double-seek-bar/double-seek-bar-container'
+import { SpriteContainer } from 'music-processing/sprite-container';
 
 interface Props {}
 interface State {
-
+  spriteContainer: SpriteContainer | null,
+  refresh: boolean,
 }
 
 class Main extends React.PureComponent<Props, State> {
-  spriteContainer: SpriteContainer
-  sprite: StaticSprite | DynamicSprite
-  fullSpriteContainer: SpriteContainer
-  fullSprite: StaticSprite | DynamicSprite
-
-  songLoader = new SongLoader()
   state = {
-    songs: [],
-    currentSeek: 0,
-    currentFullSeek: 0,
-    startPercent: 0,
-    endPercent: 0,
-  }
-  componentDidMount() {
-    this.fetchSongData()
+    spriteContainer: null,
+    refresh: false,
   }
 
-  onSeek = (seekValue: Percentage) =>  {
-    this.setState({currentSeek: seekValue})
-    this.spriteContainer.sprite.seekPercentage(seekValue)
+  setSpriteContainer = (spriteContainer: SpriteContainer) => {
+    spriteContainer.sprite.play().stop()
+    this.setState({spriteContainer})
   }
 
-  onSeekFull = (seekValue: Percentage) =>  {
-    this.setState({currentFullSeek: seekValue})
-    this.fullSpriteContainer.sprite.seekPercentage(seekValue)
+  setBounds = ({leftPosition, rightPosition}) => {
+    const {spriteContainer} = this.state
+    if (spriteContainer) {
+      const duration = spriteContainer.sprite.howl.duration()
+
+      spriteContainer.sprite.section.start = (leftPosition / 100) * duration
+      spriteContainer.sprite.section.end = (rightPosition / 100) * duration
+    }
+    this.refresh()
   }
 
-  fetchSongData = async() => {
-    const {data} = await axios.get('/public/data/song-data.json')
-    const fileName = data.songs[0].fileName
-    const blobUrl = await this.songLoader.fetch(fileName)
-    this.makeSprite(blobUrl, data)
-    this.fullSprite = new DynamicSprite(blobUrl, {name: 'full', start: 0, end: 0})
-    this.fullSpriteContainer = new SpriteContainer(this.fullSprite)
-    this.fullSpriteContainer.getObsvervableForInterval().subscribe((spriteInfo: SpriteInformation) => {
-      this.setState({currentFullSeek: spriteInfo.spriteProgress})
-    })
-
+  setSpriteStart = (num: number) => {
+    this.state.spriteContainer.sprite.section.start = num
+    this.refresh()
   }
 
-  makeSprite = (blobUrl: string, data: any) => {
-    const section = data.songs[0].sections[0] as Section
-    this.sprite = new DynamicSprite(blobUrl, section)
-    this.spriteContainer = new SpriteContainer(this.sprite)
-    this.spriteContainer.getObsvervableForInterval().subscribe((spriteInfo: SpriteInformation) => {
-      this.setState({currentSeek: spriteInfo.spriteProgress})
-    })
+  setSpriteEnd = (num: number) => {
+    this.state.spriteContainer.sprite.section.end = num
+    this.refresh()
+  }
+
+  refresh = () => {
+    this.setState({refresh: !this.state.refresh})
   }
 
   render() {
-    const fullSeekProps = {
-      onSeek: this.onSeekFull,
-      seekValue: this.state.currentFullSeek,
-      currentPercent: this.state.currentFullSeek,
+    const {spriteContainer, refresh} = this.state
+    let duration
+    if (spriteContainer) {
+      duration = spriteContainer.duration()
     }
-    const seekProps = {
-      onSeek: this.onSeek,
-      seekValue: this.state.currentSeek,
-      currentPercent: this.state.currentSeek,
-    }
-    const startSeekProps = {
-      onSeek: (seekValue: Percentage) => {
-        this.setState({startPercent: seekValue})
-        this.sprite.setStartPercentage(seekValue)
-        this.sprite.seekPercentage(seekValue)
-      },
-      seekValue: 0,
-      currentPercent: this.state.startPercent || (this.sprite && this.sprite.getStartPercentage()) || 0,
-    }
-    const endSeekProps = {
-      onSeek: (seekValue: Percentage) => {
-        this.setState({endPercent: seekValue})
-        this.sprite.setEndPercentage(seekValue)
-      },
-      seekValue: 0,
-      currentPercent: this.state.endPercent || (this.sprite && this.sprite.getEndPercentage()) || 0,
-    }
-    window.s = this.sprite
-
     return (
       <div>
-        <SeekBarContainter {...fullSeekProps} />
-        <Button bsClass='btn btn-default' onClick={() => this.fullSprite.play()}>Play</Button>
-        <Button onClick={() => this.fullSprite.pause()}>Pause</Button>
-        <Button onClick={() => this.fullSprite.howl.stop()}>Stop</Button>
-        <SeekBarContainter {...seekProps} />
-        <Button onClick={() => this.sprite.play()}>Play</Button>
-        <Button onClick={() => this.sprite.pause()}>Pause</Button>
-        <Button onClick={() => this.sprite.howl.stop()}>Stop</Button>
-        <SeekBarContainter {...startSeekProps} />
-        <SeekBarContainter {...endSeekProps} />
-        <input style={{fontSize: '40px'}} value={this.sprite && this.sprite.section.start.toFixed(2)} />
-        <input style={{fontSize: '40px'}} value={this.sprite && this.sprite.section.end.toFixed(2)} />
+        <PlaybackContainer
+          spriteContainer={spriteContainer}
+          setSpriteContainer={this.setSpriteContainer}
+          setSpriteStart={this.setSpriteStart}
+          setSpriteEnd={this.setSpriteEnd}
+          refresh={refresh}
+        />
+        {spriteContainer ? (
+          <React.Fragment>
+            <DoubleSeekBarContainer
+              spriteContainer={spriteContainer}
+              setBounds={this.setBounds}
+              leftPosition={(spriteContainer.sprite.section.start / duration) * 100}
+              rightPosition={(spriteContainer.sprite.section.end / duration) * 100}
+              duration={duration}
+            />
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <DoubleSeekBarContainer
+              spriteContainer={null}
+              setBounds={this.setBounds}
+              leftPosition={0}
+              rightPosition={100}
+              duration={duration}
+            />
+          </React.Fragment>
+        )}
       </div>
     )
     // return <MediaPlayerContainer />
