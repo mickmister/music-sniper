@@ -1,4 +1,4 @@
-import { SpriteInformation, Seconds, Milliseconds, Section, TimeIntervalMilliseconds } from 'types/music-types'
+import { SpriteInformation, Seconds, Section, TimeIntervalMilliseconds, Percentage } from 'types/music-types'
 import { IHowl } from '../interfaces/IHowl'
 
 export class Sprite {
@@ -9,11 +9,17 @@ export class Sprite {
     public filePath: string,
     public section: Section,
   ) {
+    if (!section.end) {
+      setTimeout(() => {
+        this.howl.once('load', () => section.end = this.howl.duration())
+      })
+    }
   }
 
   play = () => {}
 
   getSpriteInfo = () => {
+    if(!this.started) return this.getDefaultInfo()
     return {
       songPosition: this.songPosition(),
       spritePosition: this.spritePosition(),
@@ -41,8 +47,7 @@ export class Sprite {
   }
 
   songPosition = () => {
-    const position = this.howl.seek() as Milliseconds
-    return position / 1000 as Seconds
+    return this.howl.seek() as Seconds
   }
 
   getLength = () => {
@@ -55,15 +60,34 @@ export class Sprite {
   }
 
   spriteProgress = () => {
-    return this.spritePosition() / this.getLength()
+    const ratio = this.spritePosition() / this.getLength()
+    return ratio
   }
 
   windowProgress(win: Section) {
     return (this.spriteProgress() - win.start) / (win.end - win.start)
   }
 
+  getStartPercentage() {
+    const ratio = this.section.start / this.howl.duration()
+    return ratio
+  }
+
+  getEndPercentage() {
+    const ratio = this.section.end / this.howl.duration()
+    return ratio
+  }
+
+  setStartPercentage(start: Percentage) {
+    this.section.start = start * this.howl.duration()
+  }
+
+  setEndPercentage(end: Percentage) {
+    this.section.end = end * this.howl.duration()
+  }
+
   seekPercentage(percent: number) {
-    const targetPosition = this.getLength() * (percent / 100)
+    const targetPosition = this.getLength() * percent
     const relativeToSong = this.section.start + targetPosition
     this.seek(relativeToSong)
   }
@@ -77,11 +101,14 @@ export class DynamicSprite extends Sprite {
       src: [this.filePath],
       html5: true,
     })
-    howl.seek(this.section.start)
     return howl
   })()
 
   play = () => {
     this.howl.play()
+    if (!this.started) {
+      this.howl.seek(this.section.start)
+      this.started = true
+    }
   }
 }

@@ -40,7 +40,7 @@ class SeekBarContainer extends React.PureComponent<SeekBarContainerProps, SeekBa
             onSeekEnd: this.onSeekEnd,
             onIntent: (time: number) => this.setState(() => ({ lastIntent: time })),
             currentTime: this.props.currentPercent,
-            totalTime: 100,
+            totalTime: 1,
           }}
         />
       </React.Fragment>

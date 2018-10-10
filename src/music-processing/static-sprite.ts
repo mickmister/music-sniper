@@ -12,11 +12,6 @@ export class StaticSprite extends Sprite {
   })
 
   play = () => {
-    if (this.started) {
-      this.howl.play()
-      return
-    }
-    this.started = true
     this.howl.play('segment')
   }
 }

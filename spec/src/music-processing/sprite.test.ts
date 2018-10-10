@@ -3,13 +3,13 @@ import * as chai from 'chai'
 import * as sinon from 'sinon'
 import { MockHowl } from '../../mock/mock-howler'
 import { Sprite } from '../../../src/music-processing/sprite'
+import { SpriteInformation } from '../../../src/types/music-types'
 
 let sprite: Sprite
 const expect = chai.expect
 describe('Sprite', () => {
 
   beforeEach(() => {
-    sprite = new Sprite('', {name: '', start: 0, end: 20})
   })
 
   afterEach(() => {
@@ -17,12 +17,15 @@ describe('Sprite', () => {
   })
 
   it('it should do the thing', () => {
-    expect(sprite.section.start).to.eq(0)
+    sprite = new Sprite('', {name: '', start: 8, end: 22})
     const seekStub = sinon.stub()
     sprite.howl = new MockHowl()
-    sprite.howl.seek = seekStub
-    seekStub.returns(20)
-    expect(sprite.howl.seek()).to.eq(20)
-    expect(sprite.getLength()).to.eq(20)
+    sprite.howl.seek = seekStub.returns(20.8473)
+    const info: SpriteInformation = sprite.getSpriteInfo()
+
+    expect(info.songPosition).to.eq(20.8473)
+    expect(info.spritePosition).to.eq(12.8473)
+    expect(info.spriteProgress.toFixed(4)).to.eq('91.7664')
+    expect(info.length).to.eq(14)
   })
 })

@@ -1,26 +1,27 @@
-import {BehaviorSubject, Subject, Observable} from 'rxjs'
+import {Subject, Observable} from 'rxjs'
 import { takeUntil, filter } from 'rxjs/operators'
-import { Sprite } from './sprite'
+import { Sprite, DynamicSprite } from './sprite'
 import { SpriteInformation } from '../types/music-types'
+import { StaticSprite } from './static-sprite';
 
-const INTERVAL_PERIOD = 1000
+const INTERVAL_PERIOD = 250
 const NUM_CYCLES = 1000
 let currentCycle = 0
 
 export class SpriteContainer {
   private cancelSubject: Subject<boolean>
-  private subject: BehaviorSubject<SpriteInformation>
+  private subject: Subject<SpriteInformation>
   private observable: Observable<SpriteInformation>
   private interval: number
 
   constructor(
-    public sprite: Sprite,
+    public sprite: StaticSprite | DynamicSprite,
   ) {
     this.cancelSubject = new Subject<boolean>()
-    this.subject = new BehaviorSubject<SpriteInformation>(this.sprite.getSpriteInfo())
+    this.subject = new Subject<SpriteInformation>()
     this.observable = this.subject
       .pipe(takeUntil(this.cancelSubject.pipe(filter(x => x))))
-    // this.interval = setInterval(this.sendUpdates, INTERVAL_PERIOD)
+    this.interval = setInterval(this.sendUpdates, INTERVAL_PERIOD)
   }
 
   getObsvervableForInterval = () => this.observable
@@ -33,6 +34,10 @@ export class SpriteContainer {
   }
 
   sendUpdates = () => {
+    if (this.sprite.howl.playing() && this.sprite.spriteProgress() >= 1) {
+      this.sprite.howl.stop()
+      this.sprite.started = false
+    }
     const payload = this.sprite.getSpriteInfo()
     this.subject.next(payload)
     if (currentCycle++ >= NUM_CYCLES) {
