@@ -18,7 +18,7 @@ build_frontend:  # A job to build the static website - replace it with your buil
     - yarn build
   artifacts:
     paths:
-      - dist/  # This is what we want to publish, replace with your `dist` directory
+      - build/  # This is what we want to publish
 
 deploys3:
   image: "python:latest"  # We use python because there is a well-working AWS Sdk
@@ -28,7 +28,7 @@ deploys3:
   before_script:
     - pip install awscli # Install the SDK
   script:
-    - aws s3 cp dist s3://${BUCKET_NAME}/${CI_COMMIT_REF_SLUG} --recursive # Replace example-bucket with your bucket
+    - aws s3 cp build s3://${BUCKET_NAME}/${CI_COMMIT_REF_SLUG} --recursive # Replace example-bucket with your bucket
   environment:
     name: ${CI_COMMIT_REF_SLUG}
     url: http://${BUCKET_NAME}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com/${CI_COMMIT_REF_SLUG}  # This is the url of the bucket we saved before
