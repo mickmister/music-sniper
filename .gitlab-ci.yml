@@ -14,6 +14,7 @@ cache:
 build_frontend:  # A job to build the static website - replace it with your build methods
   stage: build
   script:
+    - yarn install --pure-lockfile
     - yarn build
   artifacts:
     paths:
@@ -27,7 +28,7 @@ deploys3:
   before_script:
     - pip install awscli # Install the SDK
   script:
-    - aws s3 cp _site s3://${BUCKET_NAME}/${CI_COMMIT_REF_SLUG} --recursive # Replace example-bucket with your bucket
+    - aws s3 cp dist s3://${BUCKET_NAME}/${CI_COMMIT_REF_SLUG} --recursive # Replace example-bucket with your bucket
   environment:
     name: ${CI_COMMIT_REF_SLUG}
     url: http://${BUCKET_NAME}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com/${CI_COMMIT_REF_SLUG}  # This is the url of the bucket we saved before
