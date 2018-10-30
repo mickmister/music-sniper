@@ -1,6 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter, Route, Redirect } from 'react-router-dom'
+import './config'
+import './styles/styles'
+
 import Main from './main'
 import SongChooserPage from './pages/song-chooser/song-chooser-page';
 import SongSplicerPage from './pages/song-splicer/song-splicer-page';

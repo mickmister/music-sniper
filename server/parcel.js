@@ -4,6 +4,8 @@ const Bundler = require('parcel-bundler')
 const express = require('express')
 const cors = require('cors')
 
+require('dotenv').config()
+
 let bundler = new Bundler('src/index.html')
 let app = express()
 app.use(cors())
