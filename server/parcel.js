@@ -14,6 +14,7 @@ app.use(cors())
 app.get('/public/data/song-data.json', (req, res) => res.sendFile('song-data.json', {root: path.join(__dirname, '../public/data')}))
 
 app.use('/api', proxy({target: 'http://localhost:3001', pathRewrite: {'^/api': ''}}));
+app.use('/audio_files', proxy({target: 'http://localhost:3001'}));
 app.use('/rails', proxy({target: 'http://localhost:3001'}));
 
 app.get('/*.mp3', (req, res) => res.sendFile(req.url, {root: path.join(__dirname, '.')}))

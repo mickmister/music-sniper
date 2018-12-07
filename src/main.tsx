@@ -45,6 +45,14 @@ class Main extends React.PureComponent<Props, State> {
     this.setState({refresh: !this.state.refresh})
   }
 
+  addSection = () => {
+    this.state.spriteContainer.sections.push({
+      start: this.state.spriteContainer.sprite.section.start,
+      end: this.state.spriteContainer.sprite.section.end,
+    })
+    this.refresh()
+  }
+
   render() {
     const {spriteContainer, refresh} = this.state
     let duration
@@ -80,6 +88,14 @@ class Main extends React.PureComponent<Props, State> {
               duration={duration}
             />
           </React.Fragment>
+        )}
+        {spriteContainer && (
+          <div>
+            <pre>
+              {JSON.stringify(spriteContainer.sections, null, 2)}
+            </pre>
+            <button onClick={this.addSection}>Add Section</button>
+          </div>
         )}
       </div>
     )

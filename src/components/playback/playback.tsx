@@ -11,6 +11,7 @@ import { StaticSprite } from '../../music-processing/static-sprite'
 import { SpriteContainer } from '../../music-processing/sprite-container'
 import { DynamicSprite } from '../../music-processing/sprite'
 import { SpriteInformation } from '../../types/music-types'
+import {displayTime} from '../../util/display-time'
 
 export interface PlaybackProps {
   spriteContainer: SpriteContainer | null,
@@ -51,8 +52,8 @@ export default class PlaybackComponent extends React.Component<PlaybackProps, an
 
   makeSprite = (blobUrl: string, data: any) => {
     const section = data.songs[0].sections[0] as Section
-    const sprite = new DynamicSprite(blobUrl, section)
-    const spriteContainer = new SpriteContainer(sprite)
+    const sprite = new DynamicSprite(blobUrl, {...section})
+    const spriteContainer = new SpriteContainer(sprite, data.songs[0].sections)
     spriteContainer.getObsvervableForInterval().subscribe((spriteInfo: SpriteInformation) => {
       this.setState({currentSeek: spriteInfo.spriteProgress})
     })
@@ -95,8 +96,14 @@ export default class PlaybackComponent extends React.Component<PlaybackProps, an
         <Button onClick={this.setStartToCurrentSeek}>Set Begin</Button>
         <Button onClick={this.setEndToCurrentSeek}>Set End</Button>
         <div>
-          <input type='number' step={0.1} style={{fontSize: '20px'}} onChange={this.changeSpriteStart} value={(sprite && sprite.section.start.toFixed(2)) || ''} />
-          <input type='number' step={0.1} style={{fontSize: '20px'}} onChange={this.changeSpriteEnd} value={(sprite && sprite.section.end.toFixed(2)) || ''} />
+          <div>
+            <input type='number' step={0.1} style={{fontSize: '20px'}} onChange={this.changeSpriteStart} value={(sprite && sprite.section.start.toFixed(2)) || ''} />
+            <input style={{fontSize: '20px'}} value={(sprite && displayTime(sprite.section.start)) || ''} />
+          </div>
+          <div>
+            <input type='number' step={0.1} style={{fontSize: '20px'}} onChange={this.changeSpriteEnd} value={(sprite && sprite.section.end.toFixed(2)) || ''} />
+            <input style={{fontSize: '20px'}} value={(sprite && displayTime(sprite.section.end)) || ''} />
+          </div>
         </div>
       </div>
     )

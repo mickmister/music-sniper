@@ -1,4 +1,4 @@
 {
-  "presets": ["env", "react", "stage-0"],
-  "plugins": ["transform-runtime", "transform-class-properties"]
+  "presets": [["@babel/env", {"modules": true}], "@babel/react", "@babel/preset-typescript"],
+  "plugins": ["@babel/plugin-transform-runtime"]
 }

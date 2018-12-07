@@ -18,7 +18,10 @@ export default class SongLoader {
     }
     const audioData = (await axios.get(
       fileName,
-      {responseType: 'arraybuffer'},
+      {
+        responseType: 'arraybuffer',
+        // onDownloadProgress: console.log,
+      },
     )).data as AudioData
 
     const blobUrl = makeBlobUrl(audioData)

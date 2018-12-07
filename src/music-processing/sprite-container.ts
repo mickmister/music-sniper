@@ -1,7 +1,7 @@
 import {Subject, Observable} from 'rxjs'
 import { takeUntil, filter } from 'rxjs/operators'
 import { Sprite, DynamicSprite } from './sprite'
-import { SpriteInformation } from '../types/music-types'
+import { SpriteInformation, Section } from '../types/music-types'
 import { StaticSprite } from './static-sprite';
 
 const INTERVAL_PERIOD = 250
@@ -16,6 +16,7 @@ export class SpriteContainer {
 
   constructor(
     public sprite: StaticSprite | DynamicSprite,
+    public sections: Section[]
   ) {
     this.cancelSubject = new Subject<boolean>()
     this.subject = new Subject<SpriteInformation>()
