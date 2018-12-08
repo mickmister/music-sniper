@@ -1,5 +1,14 @@
 import { TimeInterval } from "rxjs/internal/operators/timeInterval";
 
+export type AudioFile = {
+  id: number,
+  url: string,
+  file_name: string,
+  loading?: boolean,
+  playing?: boolean,
+  howl?: Howl,
+}
+
 export interface SongData {
   songs: Song[]
 }

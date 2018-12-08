@@ -1,45 +1,50 @@
 import React from 'react'
-import {Button} from 'react-bootstrap'
+import {Button, Grid, Row, Col} from 'react-bootstrap'
 
-import SongUploader from '../song-uploader'
-
-interface AudioFile {
-  id: number,
-  url: string,
-  file_name: string,
-}
+import SongUploader, {SongUploaderProps} from '../song-uploader'
+import styles from './song-chooser.module.scss'
+import { AudioFile } from '../../types/music-types'
 
 interface SongChooserProps {
-  selectedUploadFile: (file: File) => void,
   playFile: (audioFile: AudioFile) => void,
+  pauseFile: (audioFile: AudioFile) => void,
+  gotoShowSongPage: (audioFile: AudioFile) => void,
   songUploaderProps: SongUploaderProps,
+  audioFiles: AudioFile[],
 }
 
 class SongChooser extends React.PureComponent<SongChooserProps> {
-  renderFile = (file: AudioFile) => (
-    <div key={file.id}>
-      <h2>{file.file_name}</h2>
-      <Button bsClass='btn btn-primary' bsSize='large' onClick={() => this.clickedFile(file)}>Play</Button>
+  renderFile = (file: AudioFile) => {
+    const playing = file.playing
+    const buttonLabel = file.loading ? 'Loading' : (playing ? 'Pause' : 'Play')
+    const playFunc = playing ? this.props.pauseFile : this.props.playFile
+    return (
+    <div key={file.id} className={styles.browseGridCell}>
+      <p className={styles.songTitle}>{file.file_name}</p>
+      <Button bsClass={`btn btn-primary ${styles.playButton}`} bsSize='large' onClick={() => playFunc(file)} disabled={file.loading}>
+        {buttonLabel}
+      </Button>
     </div>
-  )
-
-  clickedFile = (file: AudioFile) => {
-    this.props.playFile(file)
+    )
   }
 
-  selectedUploadFile = (file: File) => {
-    console.log(file)
-  }
-
-  uploadFile = () => {
-
+  clickedSongTitle = (file: AudioFile) => {
+    this.props.gotoShowSongPage(file)
   }
 
   render() {
     return (
       <div>
         <SongUploader {...this.props.songUploaderProps} />
-        {this.props.audio_files.map(this.renderFile)}
+        <Grid bsClass={styles.browseGrid}>
+          <Row>
+            {this.props.audioFiles.map((file: AudioFile) => (
+              <Col lg={4} md={6} sm={6} xs={12} key={file.id}>
+                {this.renderFile(file)}
+              </Col>
+            ))}
+          </Row>
+        </Grid>
       </div>
     )
   }

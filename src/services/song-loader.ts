@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { IStringTMap } from 'types/generics'
+import { IStringTMap } from '../types/generics'
 
 type SongStore = IStringTMap<string>
 type AudioData = string

@@ -1,0 +1,48 @@
+$tablet-width: 768px;
+$desktop-width: 1024px;
+
+@mixin phone {
+  @media (max-width: #{$tablet-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$desktop-width}) {
+    @content;
+  }
+}
+
+.browseGridCell {
+  border: 1px solid;
+  border-color: green;
+  padding: 20px;
+}
+
+.browseGrid {
+  @include desktop {
+    padding-left: 100px;
+    padding-right: 100px;
+  }
+
+  @include phone {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+.playButton {
+  background-color: green;
+}
+
+.songTitle {
+  font-size: 20px;
+  cursor: pointer;
+  color: #fff;
+}

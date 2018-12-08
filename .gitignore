@@ -11,3 +11,4 @@ data
 .storybook
 yarn-error.log
 src/**/*.js
+*.mp3

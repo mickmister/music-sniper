@@ -2,18 +2,17 @@ import React from 'react'
 import axios from 'axios'
 import {Button} from 'react-bootstrap'
 
-export interface SongUploadProps {
-  onChange(file: File): void,
-  url: string,
+export interface SongUploaderProps {
+  selectUploadFile(file: File): void,
   uploadFile(): void
 }
 
-export default class SongUpload extends React.Component<SongUploadProps, any> {
+export default class SongUpload extends React.Component<SongUploaderProps, any> {
 
   selectedFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {files} = e.target
     if (files && files[0]) {
-      this.props.selectedFile(files[0])
+      this.props.selectUploadFile(files[0])
     }
   }
 
