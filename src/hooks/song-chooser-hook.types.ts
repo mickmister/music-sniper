@@ -11,7 +11,6 @@ export interface SongChooserHookActions {
   selectUploadFile: (file: File) => void,
   playFile: (file: AudioFile) => void,
   pauseFile: (file: AudioFile) => void,
-  gotoShowSongPage: (audioFile: AudioFile) => void,
 }
 
 export type SongChooserHookValue = [SongChooserHookState, SongChooserHookActions]

@@ -5,8 +5,9 @@ import './config'
 import './styles/styles'
 
 import Main from './main'
-import SongChooserPage from './pages/song-chooser/song-chooser-page'
+import ChooseSongPage from './pages/choose-song/choose-song-page'
 import SongSplicerPage from './pages/song-splicer/song-splicer-page'
+import ShowSongPage from './pages/show-song/show-song-page'
 // import Scratch from './scratch'
 
 import {SongChooserProvider} from './contexts/song-chooser-context'
@@ -18,9 +19,10 @@ ReactDOM.render(
   <BrowserRouter>
     <SongChooserProvider>
       <div>
-        <Route path="/song-chooser" component={SongChooserPage} />
+        <Route path="/choose-song" component={ChooseSongPage} />
         <Route path="/song-splicer" component={SongSplicerPage} />
-        <Route exact path="/" component={() => <Redirect exact from="/" to="/song-chooser" />} />
+        <Route path="/show-song/:id" component={ShowSongPage} />
+        <Route exact path="/" component={() => <Redirect exact from="/" to="/choose-song" />} />
       </div>
     </SongChooserProvider>
   </BrowserRouter>,

@@ -3,7 +3,7 @@ import {Howl, Howler} from 'howler'
 
 import {AudioFile} from '../types/music-types'
 import { SongChooserHookState, SongChooserHookActions, defaultState, withCallback } from './song-chooser-hook.types'
-import SongLoader from '../services/song-loader';
+import SongLoader from '../services/song-loader'
 
 async function componentDidMount(setState: withCallback) {
   const audioFiles = await fetchAudioFiles()
@@ -145,7 +145,6 @@ export function useSongChooserHook (initialState: SongChooserHookState, hooks: H
     pauseFile: (file: AudioFile) => setState(state => {
       return pauseFile(file, state)
     }),
-    gotoShowSongPage: (file: AudioFile) => {},
   } as SongChooserHookActions
 
   return [state, actions]

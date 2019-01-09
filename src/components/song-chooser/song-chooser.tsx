@@ -1,53 +1,54 @@
 import React from 'react'
 import {Button, Grid, Row, Col} from 'react-bootstrap'
+import {Link} from 'react-router-dom'
 
 import SongUploader, {SongUploaderProps} from '../song-uploader'
 import styles from './song-chooser.module.scss'
-import { AudioFile } from '../../types/music-types'
+import {AudioFile} from '../../types/music-types'
+import PlayButton from '../play-button'
 
-interface SongChooserProps {
+type FileSquareProps = {
+  file: AudioFile,
+}
+
+const FileSquare = (props: FileSquareProps) => {
+  const {file} = props
+
+  return (
+  <div key={file.id} className={styles.browseGridCell}>
+    <p className={styles.songTitle}>
+      <Link to={`/show-song/${file.id}`}>
+        {file.file_name}
+      </Link>
+    </p>
+    <PlayButton file={file} />
+  </div>
+  )
+}
+
+type SongChooserProps = {
   playFile: (audioFile: AudioFile) => void,
   pauseFile: (audioFile: AudioFile) => void,
-  gotoShowSongPage: (audioFile: AudioFile) => void,
   songUploaderProps: SongUploaderProps,
   audioFiles: AudioFile[],
 }
 
-class SongChooser extends React.PureComponent<SongChooserProps> {
-  renderFile = (file: AudioFile) => {
-    const playing = file.playing
-    const buttonLabel = file.loading ? 'Loading' : (playing ? 'Pause' : 'Play')
-    const playFunc = playing ? this.props.pauseFile : this.props.playFile
-    return (
-    <div key={file.id} className={styles.browseGridCell}>
-      <p className={styles.songTitle}>{file.file_name}</p>
-      <Button bsClass={`btn btn-primary ${styles.playButton}`} bsSize='large' onClick={() => playFunc(file)} disabled={file.loading}>
-        {buttonLabel}
-      </Button>
+export default function SongChooser(props: SongChooserProps) {
+  const {songUploaderProps, audioFiles} = props
+  return (
+    <div>
+      <SongUploader {...songUploaderProps} />
+      <Grid bsClass={styles.browseGrid}>
+        <Row>
+          {audioFiles.map((file: AudioFile) => (
+            <Col lg={4} md={6} sm={6} xs={12} key={file.id}>
+              <FileSquare
+                file={file}
+              />
+            </Col>
+          ))}
+        </Row>
+      </Grid>
     </div>
-    )
-  }
-
-  clickedSongTitle = (file: AudioFile) => {
-    this.props.gotoShowSongPage(file)
-  }
-
-  render() {
-    return (
-      <div>
-        <SongUploader {...this.props.songUploaderProps} />
-        <Grid bsClass={styles.browseGrid}>
-          <Row>
-            {this.props.audioFiles.map((file: AudioFile) => (
-              <Col lg={4} md={6} sm={6} xs={12} key={file.id}>
-                {this.renderFile(file)}
-              </Col>
-            ))}
-          </Row>
-        </Grid>
-      </div>
-    )
-  }
+  )
 }
-
-export default SongChooser

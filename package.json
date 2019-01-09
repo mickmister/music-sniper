@@ -40,6 +40,7 @@
     "react-bootstrap": "^0.32.4",
     "react-dom": "^16.7.0-alpha.2",
     "react-piano": "^3.1.2",
+    "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "reactdom": "^2.0.0",
     "rx": "^4.1.0",
