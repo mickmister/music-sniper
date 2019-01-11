@@ -12,3 +12,4 @@ data
 yarn-error.log
 src/**/*.js
 *.mp3
+*.code-workspace

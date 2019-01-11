@@ -1,6 +1,7 @@
 import React from 'react'
 import {Button, Grid, Row, Col} from 'react-bootstrap'
 import {Link} from 'react-router-dom'
+import {useStore} from 'easy-peasy'
 
 import SongUploader, {SongUploaderProps} from '../song-uploader'
 import styles from './song-chooser.module.scss'
@@ -27,17 +28,16 @@ const FileSquare = (props: FileSquareProps) => {
 }
 
 type SongChooserProps = {
-  playFile: (audioFile: AudioFile) => void,
-  pauseFile: (audioFile: AudioFile) => void,
-  songUploaderProps: SongUploaderProps,
-  audioFiles: AudioFile[],
+  // songUploaderProps: SongUploaderProps,
+  // audioFiles: AudioFile[],
 }
 
 export default function SongChooser(props: SongChooserProps) {
-  const {songUploaderProps, audioFiles} = props
+  const audioFiles = useStore(state => state.songs.audioFiles)
+
   return (
     <div>
-      <SongUploader {...songUploaderProps} />
+      <SongUploader />
       <Grid bsClass={styles.browseGrid}>
         <Row>
           {audioFiles.map((file: AudioFile) => (

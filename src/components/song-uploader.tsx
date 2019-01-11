@@ -1,27 +1,28 @@
 import React from 'react'
 import axios from 'axios'
 import {Button} from 'react-bootstrap'
+import {useAction} from 'easy-peasy'
 
 export interface SongUploaderProps {
   selectUploadFile(file: File): void,
   uploadFile(): void
 }
 
-export default class SongUpload extends React.Component<SongUploaderProps, any> {
+export default function SongUpload() {
+  const selectUploadFile = useAction(dispatch => dispatch.songs.selectUploadFile)
+  const uploadFile = useAction(dispatch => dispatch.songs.uploadFile)
 
-  selectedFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const selectedFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {files} = e.target
     if (files && files[0]) {
-      this.props.selectUploadFile(files[0])
+      selectUploadFile(files[0])
     }
   }
 
-  render() {
-    return (
-      <div>
-        <input type='file' onChange={this.selectedFile} />
-        <Button bsClass='btn btn-primary' onClick={this.props.uploadFile}>{'Upload'}</Button>
-      </div>
-    )
-  }
+  return (
+    <div>
+      <input type='file' onChange={selectedFile} />
+      <Button bsClass='btn btn-primary' onClick={uploadFile}>{'Upload'}</Button>
+    </div>
+  )
 }

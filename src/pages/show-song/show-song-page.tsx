@@ -1,6 +1,7 @@
-import React, {useEffect, useContext} from 'react'
+import React, {useEffect} from 'react'
+import {useStore} from 'easy-peasy'
 
-import {Comment} from '../../types/music-types'
+import {Comment, AudioFile} from '../../types/music-types'
 import SongChooserContext, {SongChooserContextValue} from '../../contexts/song-chooser-context'
 import SongPlayer from '../../components/song-player/song-player'
 import CommentSection from '../../components/comment-section/comment-section'
@@ -20,8 +21,8 @@ export default function ShowSongPage(props: ShowSongPageProps) {
     // like comments. display cached data, but also fetch fresh data
   }, [])
 
-  const {state} = useContext(SongChooserContext) as SongChooserContextValue
-  const audioFile = state.audioFiles.find(file => file.id === audioFileId)
+  const audioFiles = useStore(state => state.songs.audioFiles)
+  const audioFile = audioFiles.find((file: AudioFile) => file.id === audioFileId)
 
   if (!audioFile) {
     return (
