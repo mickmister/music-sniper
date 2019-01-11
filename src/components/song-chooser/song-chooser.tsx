@@ -17,7 +17,7 @@ const FileSquare = (props: FileSquareProps) => {
   return (
   <div key={file.id} className={styles.browseGridCell}>
     <p className={styles.songTitle}>
-      <Link to={`/show-song/${file.id}`}>
+      <Link to={`/songs/${file.id}/play`}>
         {file.file_name}
       </Link>
     </p>

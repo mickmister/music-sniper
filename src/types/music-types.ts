@@ -1,5 +1,12 @@
 import { TimeInterval } from "rxjs/internal/operators/timeInterval";
 
+export type Comment = {
+  id: number,
+  user_id: number,
+  created_at: string,
+  text: string,
+}
+
 export type AudioFile = {
   id: number,
   url: string,
@@ -7,6 +14,7 @@ export type AudioFile = {
   loading?: boolean,
   playing?: boolean,
   howl?: Howl,
+  comments: Comment[],
 }
 
 export interface SongData {

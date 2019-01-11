@@ -1,19 +1,21 @@
 import React from 'react'
 
+import {Comment} from '../../types/music-types'
+
+import SavedComment from './saved-comment'
+
 type CommentSectionProps = {
-  comments: string[],
+  comments: Comment[],
 }
 
 export default function CommentSection(props: CommentSectionProps) {
   return (
     <div>
       <h1>
-        Comment Section
+        Comments
       </h1>
       {props.comments.map(comment => (
-        <div key={comment}>
-          {comment}
-        </div>
+        <SavedComment key={comment.id} comment={comment} />
       ))}
     </div>
   )

@@ -2,7 +2,10 @@ body {
   background-color: #001f3f;
   padding-left: 50px;
   padding-right: 50px;
-  text-align: center;
+
+  h1, h2 {
+    text-align: center;
+  }
 }
 
 h2 {

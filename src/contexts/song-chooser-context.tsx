@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 
 import {useSongChooserHook} from '../hooks/song-chooser-hook'
 import {SongChooserHookState, SongChooserHookActions} from '../hooks/song-chooser-hook.types'
@@ -20,7 +20,7 @@ const defaultState: SongChooserHookState = {
 }
 
 export function SongChooserProvider(props: Props) {
-  const [state, actions] = useSongChooserHook(defaultState, {useState, useContext, useEffect})
+  const [state, actions] = useSongChooserHook(defaultState, {useState, useEffect})
 
   return (
     <Context.Provider value={{state, actions} as SongChooserContextValue}>
