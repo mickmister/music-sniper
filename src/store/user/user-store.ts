@@ -1,3 +1,4 @@
+import axios from 'axios'
 import {effect} from 'easy-peasy'
 
 import { UserHookState, UserHookActions, User } from './user-store.types'
@@ -10,18 +11,8 @@ const UserStore: IUserStore = {
     state.users = state.users.concat(payload)
   },
   fetchUsers: effect(async (dispatch: any) => {
-    dispatch.users.addUsers([
-      {
-        id: 1,
-        username: 'Michael',
-        image_url: 'https://cdn-images-1.medium.com/max/1200/1*i2skbfmDsHayHhqPfwt6pA.png',
-      },
-      {
-        id: 2,
-        username: 'Jimmy',
-        image_url: 'https://cdn-images-1.medium.com/max/1200/1*i2skbfmDsHayHhqPfwt6pA.png',
-      }
-    ])
+    const {data} = await axios.get('/api/users')
+    dispatch.users.addUsers(data)
   }),
 }
 

@@ -110,6 +110,7 @@ const SongStore: ISongStore = {
     const state = getState().songs
     return pauseFile(state, dispatch, file)
   }),
+  updateFile,
 }
 
 export default SongStore

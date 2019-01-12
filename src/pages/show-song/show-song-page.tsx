@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import {useStore} from 'easy-peasy'
+import {useStore, useAction} from 'easy-peasy'
 
 import {Comment, AudioFile} from '../../types/music-types'
 import SongChooserContext, {SongChooserContextValue} from '../../contexts/song-chooser-context'
@@ -15,9 +15,11 @@ type ShowSongPageProps = {
 export default function ShowSongPage(props: ShowSongPageProps) {
   const audioFileId = parseInt(props.match.params.id)
 
+  const fetchComments = useAction(dispatch => dispatch.comments.fetchComments)
+
   useEffect(() => {
     console.log('fetching file ' + audioFileId)
-    // use route param to load data for show page
+    fetchComments(audioFileId)
     // like comments. display cached data, but also fetch fresh data
   }, [])
 
@@ -30,25 +32,10 @@ export default function ShowSongPage(props: ShowSongPageProps) {
     )
   }
 
-  const comments = [
-    {
-      id: 1,
-      user_id: 1,
-      created_at: '',
-      text: 'Nice fill! Totally dude, sick fill. Totally dude, sick fill.',
-    },
-    {
-      id: 2,
-      user_id: 2,
-      created_at: '',
-      text: 'Totally dude, sick fill. Totally dude, sick fill. Totally dude, sick fill. Totally dude, sick fill.',
-    },
-] as Comment[]
-
   return (
     <div>
       <SongPlayer file={audioFile} />
-      <CommentSection comments={comments} />
+      <CommentSection audioFile={audioFile} />
     </div>
   )
 }

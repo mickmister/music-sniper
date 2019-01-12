@@ -1,8 +1,9 @@
 .savedComment {
-  border: 1px solid;
+  border: 5px solid;
   width: 100%;
   max-width: 1000px;
-  height: 180px;
+  height: 240px;
+  margin-bottom: 30px;
 }
 
 .textContainer {
@@ -14,10 +15,26 @@
   vertical-align: top;
 }
 
+textarea.commentText {
+  background-color: #444;
+}
+
 .commentText {
   font-size: 16px;
   color: #999;
+  width: 100%;
+  height: 80%;
+
+  background-color: inherit;
+  border: none;
+  outline: none;
   // word-break: break-all;
+}
+
+.leftSide {
+  width: 160px;
+  height: 100%;
+  display: inline-block;
 }
 
 .userImage {
@@ -31,10 +48,27 @@
 }
 
 .commentUser {
-  display: inline-block;
-  width: 160px;
   border: 1px solid;
-  height: 100%;
+  height: 80%;
   text-align: center;
   padding-top: 10px;
+}
+
+.actionButtons {
+  height: 20%;
+  button {
+    margin: 5px;
+  }
+}
+
+.editButton {
+  background-color: #39CCCC;
+}
+
+.saveButton {
+  background-color: #39CCCC;
+}
+
+.cancelButton {
+  background-color: #39CCCC;
 }

@@ -1,3 +1,6 @@
+// Copyright (c) 2018-present Kochell Software. All Rights Reserved.
+// See LICENSE.txt for license information.
+
 const path = require('path')
 const proxy = require('http-proxy-middleware')
 const Bundler = require('parcel-bundler')

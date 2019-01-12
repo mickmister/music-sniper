@@ -3,6 +3,7 @@ import { TimeInterval } from "rxjs/internal/operators/timeInterval";
 export type Comment = {
   id: number,
   user_id: number,
+  audio_file_id: number,
   created_at: string,
   text: string,
 }

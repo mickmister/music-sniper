@@ -1,5 +1,4 @@
 import React from 'react'
-import {Button} from 'react-bootstrap'
 import {useAction} from 'easy-peasy'
 
 import {AudioFile} from '../types/music-types'
@@ -19,8 +18,8 @@ export default function PlayButton(props: PlayButtonProps) {
   const playFunc = playing ? pauseFile : playFile
 
   return (
-    <Button bsClass={`btn btn-primary ${styles.playButton}`} bsSize='large' onClick={() => playFunc(file)} disabled={file.loading}>
+    <button className={`btn btn-primary btn-lg ${styles.playButton}`} onClick={() => playFunc(file)} disabled={file.loading}>
       {buttonLabel}
-    </Button>
+    </button>
   )
 }

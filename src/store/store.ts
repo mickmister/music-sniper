@@ -3,10 +3,12 @@ import {createStore, useAction} from 'easy-peasy'
 
 import UserStore from './user/user-store'
 import SongStore from './song/song-store'
+import CommentStore from './comment/comment-store'
 
 const store = createStore({
   users: UserStore,
   songs: SongStore,
+  comments: CommentStore,
 })
 
 export function StoreInit(props: {children: any}) {
