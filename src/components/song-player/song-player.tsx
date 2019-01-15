@@ -13,12 +13,12 @@ export default function SongPlayer(props: SongPlayerProps) {
 
   if (!file) {
     return (
-      <div className={styles.browseGridCell} />
+      <div />
     )
   }
 
   return (
-    <div key={file.id} className={styles.browseGridCell}>
+    <div key={file.id}>
       <p className={styles.songTitle}>
         {file.file_name}
       </p>

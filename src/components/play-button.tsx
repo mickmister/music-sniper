@@ -22,7 +22,7 @@ export default function PlayButton(props: PlayButtonProps) {
 
   return (
     <button
-      className={`btn btn-primary btn-lg ${styles.playButton}`}
+      className={`btn btn-primary btn-md ${styles.playButton}`}
       onClick={() => playFunc(file)}
       disabled={file.loading}
     >
