@@ -13,7 +13,6 @@ export interface SongUploaderProps {
 export default function SongUpload() {
   const {history} = useRouter()
 
-  const selectUploadFile = useAction(dispatch => dispatch.songs.selectUploadFile)
   const uploadFile = useAction(dispatch => dispatch.songs.uploadFile)
 
   const didChooseFile = async (e: React.ChangeEvent<HTMLInputElement>) => {

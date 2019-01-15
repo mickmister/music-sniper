@@ -107,6 +107,15 @@ const SongStore: ISongStore = {
     state.currentPlayingSongId = audioFile.id
   },
 
+  currentPlayingSong: select((state: SongChooserHookState) => {
+    const id = state.currentPlayingSongId
+    if (!id) {
+      return null
+    }
+
+    return state.audioFiles.find(file => file.id === id)
+  }),
+
   addAudioFileToCollection: (state: SongChooserHookState, audio_file: AudioFile) => {
     state.audioFiles.push(audio_file)
   },
@@ -118,10 +127,6 @@ const SongStore: ISongStore = {
   uploadFile: effect((dispatch: DispatchSongChooserActions, file: File) => {
     return uploadFile(file, dispatch)
   }),
-
-  selectUploadFile: (state: SongChooserHookState, file: File) => {
-    state.selectedFile = file
-  },
 
   playFile: effect((dispatch: DispatchSongChooserActions, file: AudioFile, getState: any) => {
     const state = getState().songs

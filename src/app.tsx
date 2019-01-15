@@ -13,6 +13,7 @@ import ChooseSongPage from './pages/choose-song/choose-song-page'
 import SongSplicerPage from './pages/song-splicer/song-splicer-page'
 import ShowSongPage from './pages/show-song/show-song-page'
 import Navbar from './components/navbar/navbar';
+import Footer from './components/footer/footer';
 
 const root = document.getElementById('main')
 
@@ -27,6 +28,7 @@ ReactDOM.render(
         <Route path="/songs" exact component={ChooseSongPage} />
         <Route path="/songs/:id/splice" component={SongSplicerPage} />
         <Route path="/songs/:id/play" component={ShowSongPage} />
+        <Footer />
       </StoreInit>
     </StoreProvider>
   </BrowserRouter>,

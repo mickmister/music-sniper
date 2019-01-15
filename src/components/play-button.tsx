@@ -9,13 +9,16 @@ type PlayButtonProps = {
 }
 
 export default function PlayButton(props: PlayButtonProps) {
-  const playFile = useAction((dispatch: any) => dispatch.songs.playFile)
-  const pauseFile = useAction((dispatch: any) => dispatch.songs.pauseFile)
+  // const playFile = useAction((dispatch: any) => dispatch.songs.playFile)
+  // const pauseFile = useAction((dispatch: any) => dispatch.songs.pauseFile)
+  const setCurrentPlayingSong = useAction((dispatch: any) => dispatch.songs.setCurrentPlayingSong)
 
   const {file} = props
-  const playing = file.playing
-  const buttonLabel = file.loading ? 'Loading' : (playing ? 'Pause' : 'Play')
-  const playFunc = playing ? pauseFile : playFile
+  // const playing = file.playing
+  // const buttonLabel = file.loading ? 'Loading' : (playing ? 'Pause' : 'Play')
+  // const playFunc = playing ? pauseFile : playFile
+  const playFunc = setCurrentPlayingSong
+  const buttonLabel = 'Play'
 
   return (
     <button

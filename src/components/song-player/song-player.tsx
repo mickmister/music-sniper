@@ -11,18 +11,24 @@ type SongPlayerProps = {
 export default function SongPlayer(props: SongPlayerProps) {
   const {file} = props
 
+  if (!file) {
+    return (
+      <div className={styles.browseGridCell} />
+    )
+  }
+
   return (
-  <div key={file.id} className={styles.browseGridCell}>
-    <p className={styles.songTitle}>
-      {file.file_name}
-    </p>
-    <audio
-      src={file.url}
-      controls
-      style={{width: '100%'}}
-      // autoPlay
-    />
-    {/* <PlayButton file={file} /> */}
-  </div>
+    <div key={file.id} className={styles.browseGridCell}>
+      <p className={styles.songTitle}>
+        {file.file_name}
+      </p>
+      <audio
+        src={file.url}
+        controls
+        style={{width: '100%'}}
+        // autoPlay
+      />
+      {/* <PlayButton file={file} /> */}
+    </div>
   )
 }
