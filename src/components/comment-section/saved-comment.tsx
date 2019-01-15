@@ -14,16 +14,19 @@ type SavedCommentProps = {
 type DraftState = {
   draft: string,
   editing: boolean,
+  error: Error | null,
 }
 
 type DraftActions = {
   setDraft: (draft: string) => void,
   setEditing: (editing: boolean) => void,
   resetDraft: () => void,
+  setError: (e: Error) => void,
+  set: (payload: any) => void,
 }
 
 const useDraft = (draft: string) => {
-  const [state, setState] = useState({draft, editing: false})
+  const [state, setState] = useState({draft, editing: false, error: null})
 
   const set = slice => setState(state => ({...state, ...slice}))
 
@@ -31,7 +34,13 @@ const useDraft = (draft: string) => {
     setDraft: (draft: string) => set({draft}),
     setEditing: (editing: boolean) => set({editing}),
     resetDraft: () => set({draft: draft || '', editing: false}),
+    setError: (error: Error) => set({error}),
+    set,
   }] as [DraftState, DraftActions]
+}
+
+const isTimeStamp = (word: string) => {
+  return false
 }
 
 const getUser = (id: number) => (state: any) => state.users.users.find((user: any) => user.id === id)
@@ -42,12 +51,12 @@ export default function SavedComment(props: SavedCommentProps) {
   const userId = comment.user_id
   const user = useStore(getUser(userId))
 
-  const [draftState, draftActions] = useDraft(comment.text)
-  const {draft, editing} = draftState
-  const {setDraft, setEditing, resetDraft} = draftActions
+  const [draftState, draftActions] = useDraft(comment.text || '')
+  const {draft, editing, error} = draftState
+  const {setDraft, setEditing, resetDraft, set, setError} = draftActions
 
   const saveDraft = async () => {
-    setEditing(false)
+    set({editing: false, error: null})
     try {
       const newComment = await props.saveComment({...comment, text: draft})
       if (comment.id) {
@@ -59,7 +68,12 @@ export default function SavedComment(props: SavedCommentProps) {
     }
     catch (e) {
       console.log(e)
-      setEditing(true)
+      if (e.response && e.response.data && e.response.data.exception) {
+        set({error: e.response.data.exception, editing: true})
+      }
+      else {
+        set({error: e.message, editing: true})
+      }
     }
   }
 
@@ -94,7 +108,14 @@ export default function SavedComment(props: SavedCommentProps) {
   else {
     textBody = (
       <p className={styles.commentText}>
-        {draft}
+        {draft.split(' ').map((word, i) => {
+          if (isTimeStamp) {
+            return <span key={i}>{word}</span>
+          }
+          else {
+            return <span key={i}>{word}</span>
+          }
+        })}
       </p>
     )
   }
@@ -125,6 +146,9 @@ export default function SavedComment(props: SavedCommentProps) {
       </div>
       <div className={styles.textContainer}>
         {textBody}
+        <span>
+          {error}
+        </span>
       </div>
     </div>
   )

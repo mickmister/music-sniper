@@ -8,10 +8,10 @@ const upsert = async (name: string, payload: {}) => {
 
   let res
   if (id) {
-    res = await axios.put(`/api/${name}/${id}`, payload)
+    res = await axios.put(`/${name}/${id}`, payload)
   }
   else {
-    res = await axios.post(`/api/${name}`, payload)
+    res = await axios.post(`/${name}`, payload)
   }
   return res.data
 }
@@ -19,7 +19,7 @@ const upsert = async (name: string, payload: {}) => {
 const deleteRecord = (name: string, payload: {}) => {
   const id = payload.id
 
-  return axios.delete(`/api/${name}/${id}`)
+  return axios.delete(`/${name}/${id}`)
 }
 
 const defaultState = [
@@ -82,7 +82,10 @@ export default {
   },
 
   fetchComments: effect(async (dispatch: any, audioFileId: number) => {
-    const {data} = await axios.get('/api/comments', {params: {audio_file_id: audioFileId}})
-    dispatch.comments.addComments(data)
+    const {data} = await axios.get('/comments', {params: {audio_file_id: audioFileId}})
+
+    if (data) {
+      dispatch.comments.addComments(data)
+    }
   }),
 }

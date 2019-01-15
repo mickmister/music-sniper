@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {useAction} from 'easy-peasy'
 
 import {AudioFile} from '../types/music-types'
@@ -18,7 +18,11 @@ export default function PlayButton(props: PlayButtonProps) {
   const playFunc = playing ? pauseFile : playFile
 
   return (
-    <button className={`btn btn-primary btn-lg ${styles.playButton}`} onClick={() => playFunc(file)} disabled={file.loading}>
+    <button
+      className={`btn btn-primary btn-lg ${styles.playButton}`}
+      onClick={() => playFunc(file)}
+      disabled={file.loading}
+    >
       {buttonLabel}
     </button>
   )

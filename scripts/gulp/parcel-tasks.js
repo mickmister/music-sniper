@@ -4,6 +4,7 @@ const del = require('del')
 
 const assetHost = process.env.ASSET_HOST
 const buildDir = process.env.BUILD_DIR
+process.env.NODE_ENV = 'production'
 
 gulp.task('clean-dir', () => {
   return del(['build', 'dist'])

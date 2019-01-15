@@ -4,11 +4,12 @@ export interface User {
   image_url: string,
 }
 
-export interface UserHookState {
+export interface UserStoreState {
   users: User[],
 }
 
-export type UserHookActions = {
+export type UserStoreActions = {
   fetchUsers: () => void,
-  addUsers: (state: UserHookState, payload: User[]) => void,
+  addUsers: (state: UserStoreState, payload: User[]) => void,
+  login: () => void,
 }

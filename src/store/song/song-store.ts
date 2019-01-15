@@ -1,10 +1,9 @@
 import axios from 'axios'
 import {Howl, Howler} from 'howler'
-import {effect} from 'easy-peasy'
+import {effect, select} from 'easy-peasy'
 
 import {AudioFile} from '../../types/music-types'
 import {SongChooserHookState, SongChooserHookActions} from './song-store.types'
-import SongLoader from '../../services/song-loader'
 
 
 const uploadFile = async (state: SongChooserHookState, dispatch: any) => {
@@ -17,7 +16,7 @@ const uploadFile = async (state: SongChooserHookState, dispatch: any) => {
   form.append('audio_file[attached_file]', selectedFile)
 
   const {data} = await axios.post('audio_files', form, { headers: {'Content-Type': 'multipart/form-data' }})
-  dispatch.songs.addSong(data)
+  dispatch.songs.addSongs([data])
 }
 
 export const updateFile = (state: SongChooserHookState, file: AudioFile) => {
@@ -29,12 +28,11 @@ export const updateFile = (state: SongChooserHookState, file: AudioFile) => {
   }
 }
 
-const loader = new SongLoader()
 const playFile = async (state: SongChooserHookState, dispatch: any, file: AudioFile) => {
 
   // pause all other files
   state.audioFiles.forEach((f: AudioFile) => {
-    if (f.howl && f.id !== file.id && f.playing) {
+    if (f.id !== file.id && f.howl && f.playing) {
       pause(f.howl)
       dispatch.songs.updateFile({...f, playing: false})
     }
@@ -53,16 +51,26 @@ const playFile = async (state: SongChooserHookState, dispatch: any, file: AudioF
   }
 
   //load file
-  const loadingFile = {...file, loading: true}
+  const howl = new Howl({src: file.url, format: 'mp3', html5: true})
+  const loadingFile = {...file, howl, loading: true}
   dispatch.songs.updateFile(loadingFile)
 
-  const blobUrl = await loader.fetch(file.url)
-  const howl = new Howl({src: blobUrl, format: 'mp3'})
+  howl.on('load', () => {
+    play(howl)
+    const playingFile = {...file, loading: false, playing: true}
+    dispatch.songs.updateFile(playingFile)
+  })
 
-  // play new file
-  const playingFile = {...file, howl, loading: false, playing: true}
-  dispatch.songs.updateFile(playingFile)
-  play(howl)
+  howl.on('loaderror', () => {
+    const errorFile = {...file, loading: false, error: 'Failed to fetch/load file'}
+    dispatch.songs.updateFile(errorFile)
+  })
+
+  if(howl.state() === 'loaded') {
+    play(howl)
+    const playingFile = {...file, loading: false, playing: true}
+    dispatch.songs.updateFile(playingFile)
+  }
 }
 
 const play = (howl: Howl) => setTimeout(() => howl.play(), 0)
@@ -80,8 +88,10 @@ const pauseFile = (state: SongChooserHookState, dispatch: any, file: AudioFile) 
 }
 
 const fetchAudioFiles = async (dispatch: any) => {
-  const res = await axios.get('/audio_files', {onDownloadProgress: console.log})
-  dispatch.songs.addSongs(res.data)
+  const {data} = await axios.get('/audio_files', {onDownloadProgress: console.log})
+  if (data) {
+    dispatch.songs.addSongs(data)
+  }
 }
 
 type ISongStore = SongChooserHookState & SongChooserHookActions
@@ -89,28 +99,46 @@ type ISongStore = SongChooserHookState & SongChooserHookActions
 const SongStore: ISongStore = {
   audioFiles: [],
   selectedFile: null,
+  currentPlayingSongId: null,
   fetchAudioFiles: effect(fetchAudioFiles),
+  updateFile,
+
+  setCurrentPlayingSong: (state, audioFile) => {
+    state.currentPlayingSongId = audioFile.id
+  },
+
   addAudioFileToCollection: (state: SongChooserHookState, audio_file: AudioFile) => {
     state.audioFiles.push(audio_file)
   },
+
   addSongs: (state: SongChooserHookState, songs: AudioFile[]) => {
     state.audioFiles = state.audioFiles.concat(songs)
   },
+
   uploadFile: effect((dispatch: any, _: any, getState: any) => {
     uploadFile(getState().songs, dispatch)
   }),
+
   selectUploadFile: (state: SongChooserHookState, file: File) => {
     state.selectedFile = file
   },
+
   playFile: effect((dispatch: any, file: AudioFile, getState: any) => {
     const state = getState().songs
     playFile(state, dispatch, file)
   }),
+
   pauseFile: effect((dispatch: any, file: AudioFile, getState: any) => {
     const state = getState().songs
     return pauseFile(state, dispatch, file)
   }),
-  updateFile,
+
+  playingInfo: {
+
+  },
+  songsWithPlayingInfo: select(() => {
+
+  }),
 }
 
 export default SongStore

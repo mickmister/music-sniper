@@ -19,7 +19,7 @@ export default function CommentSection(props: CommentSectionProps) {
   const saveAction = useAction(dispatch => dispatch.comments.saveComment)
   const deleteAction = useAction(dispatch => dispatch.comments.deleteComment)
 
-  const saveComment = (comment: Comment) => saveAction(comment)
+  const saveComment = (comment: Comment) => saveAction({...comment, audio_file_id: audioFile.id})
   const deleteComment = (comment: Comment) => deleteAction(comment)
 
   return (
@@ -29,7 +29,7 @@ export default function CommentSection(props: CommentSectionProps) {
       </h1>
       <SavedComment
         key={'new'}
-        comment={{user_id: 1, audio_file_id: 1}}
+        comment={{audio_file_id: audioFile.id}}
         saveComment={saveComment}
         deleteComment={deleteComment}
         />

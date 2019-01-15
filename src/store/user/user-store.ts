@@ -1,19 +1,29 @@
 import axios from 'axios'
 import {effect} from 'easy-peasy'
 
-import { UserHookState, UserHookActions, User } from './user-store.types'
+import { UserStoreState, UserStoreActions, User } from './user-store.types'
 
-type IUserStore = UserHookActions & UserHookState
+type IUserStore = UserStoreActions & UserStoreState
 
 const UserStore: IUserStore = {
+  currentUser: null,
   users: [],
-  addUsers: (state: UserHookState, payload: User[]) => {
+
+  addUsers: (state: UserStoreState, payload: User[]) => {
     state.users = state.users.concat(payload)
   },
+
   fetchUsers: effect(async (dispatch: any) => {
-    const {data} = await axios.get('/api/users')
-    dispatch.users.addUsers(data)
+    const {data} = await axios.get('/users')
+
+    if (data) {
+      dispatch.users.addUsers(data)
+    }
   }),
+
+  setCurrentUser: (state, payload) => {
+    state.currentUser = payload
+  },
 }
 
 export default UserStore

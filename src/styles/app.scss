@@ -20,3 +20,12 @@ button:focus {
   outline: none !important;
   box-shadow: none !important;
 }
+
+span, p, label {
+  color: #999;
+}
+
+a {
+  cursor: pointer;
+  font-weight: bold;
+}

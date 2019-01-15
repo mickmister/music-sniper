@@ -16,7 +16,13 @@ export default function SongPlayer(props: SongPlayerProps) {
     <p className={styles.songTitle}>
       {file.file_name}
     </p>
-    <PlayButton file={file} />
+    <audio
+      src={file.url}
+      controls
+      style={{width: '100%'}}
+      // autoPlay
+    />
+    {/* <PlayButton file={file} /> */}
   </div>
   )
 }
