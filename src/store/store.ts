@@ -22,6 +22,7 @@ const saveState = (state) => {
   }
   const toPersist = {
     auth: state.auth,
+    users: state.users,
   }
   localStorage.setItem('redux-state', JSON.stringify(toPersist))
 }

@@ -78,6 +78,7 @@
     "eslint-plugin-react-hooks": "^0.0.0",
     "eslint-plugin-typescript": "^0.13.0",
     "gulp": "^3.0.0",
+    "gulp-cloudfront-invalidate": "^0.1.5",
     "gulp-parcel": "^0.3.5",
     "gulp-s3": "^0.11.0",
     "mocha": "^5.2.0",

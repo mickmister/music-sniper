@@ -107,13 +107,13 @@ export default function SavedComment(props: SavedCommentProps) {
   }
   else {
     textBody = (
-      <p className={styles.commentText}>
+      <p className={styles.commentText} style={{whiteSpace: 'pre'}}>
         {draft.split(' ').map((word, i) => {
           if (isTimeStamp) {
-            return <span key={i}>{word}</span>
+            return <span key={i}>{word} </span>
           }
           else {
-            return <span key={i}>{word}</span>
+            return <span key={i}>{word} </span>
           }
         })}
       </p>

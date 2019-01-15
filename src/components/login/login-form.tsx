@@ -1,12 +1,24 @@
 import React, {useState} from 'react'
 import {useAction} from 'easy-peasy'
 
-const useLogin = (props) => {
+type State = {
+  email?: string,
+  password?: string,
+}
+
+type Actions = {
+  setEmail: (e: any) => void,
+  setPassword: (e: any) => void,
+  login: (e: any) => void
+}
+
+const useLogin = (props): [State, Actions] => {
   const [state, setState] = useState({
     email: '',
     password: '',
   })
-  const set = slice => setState(state => ({...state, ...slice}))
+
+  const set = (slice: State) => setState((state: State) => ({...state, ...slice}))
 
   const login = useAction(dispatch => dispatch.auth.login)
 
@@ -14,7 +26,11 @@ const useLogin = (props) => {
   {
     setEmail: e => set({email: e.target.value}),
     setPassword: e => set({password: e.target.value}),
-    login: async () => {
+    login: async (e) => {
+      if (e && e.preventDefault) {
+        e.preventDefault()
+      }
+
       await login({email: state.email, password: state.password})
       props.gotoMainPage()
     },
@@ -24,14 +40,8 @@ const useLogin = (props) => {
 export default function LoginForm(props) {
   const [{email, password}, {setEmail, setPassword, login}] = useLogin(props)
 
-  const submitButton = (
-    <button onClick={login}>
-      Submit
-    </button>
-  )
-
   return (
-    <div>
+    <form onSubmit={login}>
       <div>
         <label>Email</label>
         <input value={email} onChange={setEmail} />
@@ -41,8 +51,8 @@ export default function LoginForm(props) {
         <input value={password} onChange={setPassword} type='password' />
       </div>
       <div>
-        {submitButton}
+        <button className='btn btn-primary'>Submit</button>
       </div>
-    </div>
+    </form>
   )
 }

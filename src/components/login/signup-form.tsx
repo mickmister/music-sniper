@@ -68,14 +68,14 @@ export default function SignupForm(props: Props) {
       signup,
     }] = useSignup(props)
 
-  const submitButton = (
-    <button onClick={signup}>
-      Submit
-    </button>
-  )
+  const clickedSignup = (e: any) => {
+    e.preventDefault()
+
+    signup()
+  }
 
   return (
-    <div>
+    <form onSubmit={clickedSignup}>
       <div>
         <label>Email</label>
         <input value={email} onChange={setEmail} />
@@ -101,8 +101,8 @@ export default function SignupForm(props: Props) {
         <input value={last_name} onChange={setLastName} />
       </div>
       <div>
-        {submitButton}
+        <button className='btn btn-primary'>Submit</button>
       </div>
-    </div>
+    </form>
   )
 }

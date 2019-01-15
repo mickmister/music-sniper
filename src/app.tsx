@@ -12,6 +12,7 @@ import LoginPage from './pages/login/login-page'
 import ChooseSongPage from './pages/choose-song/choose-song-page'
 import SongSplicerPage from './pages/song-splicer/song-splicer-page'
 import ShowSongPage from './pages/show-song/show-song-page'
+import Navbar from './components/navbar/navbar';
 
 const root = document.getElementById('main')
 
@@ -20,6 +21,7 @@ ReactDOM.render(
   <BrowserRouter>
     <StoreProvider store={store}>
       <StoreInit>
+        <Navbar />
         <Route exact path="/" component={() => <Redirect exact from="/" to="/songs" />} />
         <Route path="/login" exact component={LoginPage} />
         <Route path="/songs" exact component={ChooseSongPage} />

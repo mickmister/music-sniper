@@ -1,5 +1,6 @@
 const fs = require('fs')
 const gulp = require('gulp')
+const cloudfront = require('gulp-cloudfront-invalidate')
 const s3 = require('gulp-s3')
 const getCreds = require('./get-s3-creds')
 
@@ -19,7 +20,25 @@ gulp.task('check-s3-env-vars', () => {
   getCreds.checkMissing(creds)
 })
 
-gulp.task('deploy', () => gulp
-  .src(`${buildDir}/*`)
-  .pipe(s3(creds))
+const options = {
+  headers: {
+    'Cache-Control': 'no-cache',
+  },
+}
+
+gulp.task('deploy', ['deploy-index', 'deploy-assets'])
+
+gulp.task('deploy-index', () => {
+  return gulp.src(`${buildDir}/index.html`)
+    .pipe(s3(creds, options))
+})
+
+gulp.task('deploy-assets', () => {
+  return gulp.src([`${buildDir}/*`, `!${buildDir}/index.html`])
+    .pipe(s3(creds))
+})
+
+gulp.task('deploy-and-invalidate', ['deploy'], () => gulp
+  .src(`${buildDir}/index.html`)
+  .pipe(cloudfront({...creds, paths: ['/', '/index.html']}))
 )

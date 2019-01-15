@@ -11,17 +11,12 @@ const AuthStoreOld = {
     return state.authToken
   }),
 
-  currentUser: null,
-  setCurrentUser: (state, user) => {
-    state.currentUser = user
-  },
-
   login: effect(async (dispatch: any, payload: {}) => {
     const {data} = await axios.post('/authentication/login', payload)
     axios.defaults.headers.common['Authorization'] = data.auth_token
 
     dispatch.auth.setAuthToken(data.auth_token)
-    dispatch.auth.setCurrentUser(data.user)
+    dispatch.users.setCurrentUser(data.user)
     dispatch.store.init()
   }),
 
@@ -30,7 +25,7 @@ const AuthStoreOld = {
     axios.defaults.headers.common['Authorization'] = data.auth_token
 
     dispatch.auth.setAuthToken(data.auth_token)
-    dispatch.auth.setCurrentUser(data.user)
+    dispatch.users.setCurrentUser(data.user)
     dispatch.store.init()
   }),
 }

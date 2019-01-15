@@ -3,7 +3,6 @@ import {Button, Grid, Row, Col} from 'react-bootstrap'
 import {Link} from 'react-router-dom'
 import {useStore} from 'easy-peasy'
 
-import SongUploader, {SongUploaderProps} from '../song-uploader'
 import styles from './song-chooser.module.scss'
 import {AudioFile, Comment} from '../../types/music-types'
 import PlayButton from '../play-button'
@@ -42,7 +41,6 @@ export default function SongChooser(props: SongChooserProps) {
 
   return (
     <div>
-      <SongUploader />
       <Grid bsClass={styles.browseGrid}>
         <Row>
           {audioFiles.map((file: AudioFile) => (

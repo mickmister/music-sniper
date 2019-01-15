@@ -3,11 +3,10 @@ import {Howl, Howler} from 'howler'
 import {effect, select} from 'easy-peasy'
 
 import {AudioFile} from '../../types/music-types'
-import {SongChooserHookState, SongChooserHookActions} from './song-store.types'
+import {SongChooserHookState, SongChooserHookActions, DispatchSongChooserActions} from './song-store.types'
 
 
-const uploadFile = async (state: SongChooserHookState, dispatch: any) => {
-  const {selectedFile} = state
+const uploadFile = async (selectedFile: File, dispatch: DispatchSongChooserActions) => {
   if (!selectedFile) {
     return
   }
@@ -17,6 +16,7 @@ const uploadFile = async (state: SongChooserHookState, dispatch: any) => {
 
   const {data} = await axios.post('audio_files', form, { headers: {'Content-Type': 'multipart/form-data' }})
   dispatch.songs.addSongs([data])
+  return data
 }
 
 export const updateFile = (state: SongChooserHookState, file: AudioFile) => {
@@ -28,7 +28,7 @@ export const updateFile = (state: SongChooserHookState, file: AudioFile) => {
   }
 }
 
-const playFile = async (state: SongChooserHookState, dispatch: any, file: AudioFile) => {
+const playFile = async (state: SongChooserHookState, dispatch: DispatchSongChooserActions, file: AudioFile) => {
 
   // pause all other files
   state.audioFiles.forEach((f: AudioFile) => {
@@ -76,7 +76,7 @@ const playFile = async (state: SongChooserHookState, dispatch: any, file: AudioF
 const play = (howl: Howl) => setTimeout(() => howl.play(), 0)
 const pause = (howl: Howl) => setTimeout(() => howl.pause(), 0)
 
-const pauseFile = (state: SongChooserHookState, dispatch: any, file: AudioFile) => {
+const pauseFile = (state: SongChooserHookState, dispatch: DispatchSongChooserActions, file: AudioFile) => {
   if (!file.howl) {
     return state
   }
@@ -87,7 +87,7 @@ const pauseFile = (state: SongChooserHookState, dispatch: any, file: AudioFile) 
   pause(file.howl)
 }
 
-const fetchAudioFiles = async (dispatch: any) => {
+const fetchAudioFiles = async (dispatch: DispatchSongChooserActions) => {
   const {data} = await axios.get('/audio_files', {onDownloadProgress: console.log})
   if (data) {
     dispatch.songs.addSongs(data)
@@ -115,20 +115,20 @@ const SongStore: ISongStore = {
     state.audioFiles = state.audioFiles.concat(songs)
   },
 
-  uploadFile: effect((dispatch: any, _: any, getState: any) => {
-    uploadFile(getState().songs, dispatch)
+  uploadFile: effect((dispatch: DispatchSongChooserActions, file: File) => {
+    return uploadFile(file, dispatch)
   }),
 
   selectUploadFile: (state: SongChooserHookState, file: File) => {
     state.selectedFile = file
   },
 
-  playFile: effect((dispatch: any, file: AudioFile, getState: any) => {
+  playFile: effect((dispatch: DispatchSongChooserActions, file: AudioFile, getState: any) => {
     const state = getState().songs
     playFile(state, dispatch, file)
   }),
 
-  pauseFile: effect((dispatch: any, file: AudioFile, getState: any) => {
+  pauseFile: effect((dispatch: DispatchSongChooserActions, file: AudioFile, getState: any) => {
     const state = getState().songs
     return pauseFile(state, dispatch, file)
   }),
