@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {effect, select} from 'easy-peasy'
 
-const AuthStoreOld = {
+export const AuthStore = {
   authToken: null,
   setAuthToken: (state, authToken) => {
     axios.defaults.headers.common['Authorization'] = authToken
@@ -30,9 +30,5 @@ const AuthStoreOld = {
   }),
 }
 
-class AuthStore {
-
-}
-
 // export default new AuthStore()
-export default AuthStoreOld
+export default AuthStore

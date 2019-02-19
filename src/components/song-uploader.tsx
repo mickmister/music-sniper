@@ -1,7 +1,7 @@
 import React, {useRef} from 'react'
 import useRouter from 'use-react-router'
 import axios from 'axios'
-import {Button} from 'react-bootstrap'
+import Button from '@material-ui/core/Button';
 import {useAction} from 'easy-peasy'
 import { AudioFile } from '../types/music-types';
 
@@ -34,7 +34,7 @@ export default function SongUpload() {
   return (
     <div>
       <input ref={hiddenFileInput} type='file' style={{display: 'none'}} onChange={didChooseFile} />
-      <Button bsClass='btn btn-primary' onClick={pickFile}>Upload Song</Button>
+      <Button variant='contained' color='primary' onClick={pickFile}>Upload Song</Button>
     </div>
   )
 }

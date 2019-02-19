@@ -2,6 +2,7 @@ import React, {useRef} from 'react'
 import {Link} from 'react-router-dom'
 import useRouter from 'use-react-router'
 import {useStore} from 'easy-peasy'
+import Button from '@material-ui/core/Button';
 
 import SongUploader, {SongUploaderProps} from '../song-uploader'
 import styles from './navbar.module.scss'
@@ -25,8 +26,10 @@ export default function Navbar() {
   return (
     <div className={styles.navbar}>
       <div className={styles.leftSideContainer}>
-        <Link className='btn btn-primary' to={`/songs`}>
-          Home
+        <Link to={`/songs`}>
+          <Button variant='contained'>
+            Home
+          </Button>
         </Link>
         <SongUploader />
       </div>

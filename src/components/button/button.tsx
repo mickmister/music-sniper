@@ -1,4 +1,5 @@
 import React from 'react'
+import Button from '@material-ui/core/Button'
 
 type Props = {
   onClick: () => void,
@@ -7,16 +8,18 @@ type Props = {
   disabled?: boolean,
 }
 
-export default function Button(props: Props) {
+export default function CustomButton(props: Props) {
   const {onClick, className, children, disabled} = props
 
   return (
-    <button
+    <Button
+      variant='contained'
+      color='primary'
       disabled={disabled}
-      className={`btn btn-primary ${className}`}
+      className={className}
       onClick={onClick}
     >
       {children}
-    </button>
+    </Button>
   )
 }

@@ -22,18 +22,29 @@ type Props = {
   gotoMainPage: () => void,
 }
 
+type stateCallback = (state: State) => State
+type withCallback = (cb: stateCallback) => void
+const initialState = {
+  email: '',
+  password: '',
+  username: '',
+  first_name: '',
+  last_name: '',
+} as State
+
 const useSignup = (props: Props): [State, Actions] => {
-  const [state, setState] = useState({
-    email: '',
-    password: '',
-    username: '',
-    first_name: '',
-    last_name: '',
-  })
-  const set = (name: string) => (e: any) => {
+  const [state, setState] = (useState as any)(initialState) as [State, withCallback]
+  const set = (name: keyof State) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    setState((state: State) => ({...state, [name]: value})
-  })
+    const sState = setState
+    sState(
+      (state: State) => {
+        return {
+          ...state,
+          [name]: value
+        }
+      }
+    )}
 
   const signup = useAction(dispatch => dispatch.auth.signup)
 

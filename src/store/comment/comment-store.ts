@@ -38,7 +38,7 @@ const defaultState = [
   },
 ] as Comment[]
 
-export default {
+export const CommentStore = {
   items: [],
 
   saveComment: effect(async (dispatch, comment: Comment) => {
@@ -55,7 +55,7 @@ export default {
   removeComment: (state, payload) => {
     const index = state.items.findIndex(com => com.id === payload.id)
     state.items.splice(index, 1)
-  }
+  },
 
   storeComment: (state, comment: Comment) => {
     const comments = state.items
@@ -89,3 +89,5 @@ export default {
     }
   }),
 }
+
+export default CommentStore

@@ -1,11 +1,11 @@
 import React from 'react'
 // import ReactHowler from 'react-howler'
-import {Segment, Section} from '../types/props'
+import {Segment, Section} from '../../types/props'
 import { PlayButton, PauseButton } from 'react-player-controls'
 
-import {displayTime} from '../util/display-time'
-import SeekBarContainer from './seek-bar-container'
-import AudioSlicer from '../music-processing/audio-slicer'
+import {displayTime} from '../../util/display-time'
+import SeekBarContainer from './../seek-bar-container'
+import AudioSlicer from '../../music-processing/audio-slicer'
 
 type MediaPlayerState = {
   lastSeekEnd: number,
@@ -79,7 +79,7 @@ class MediaPlayer extends React.PureComponent<{}, MediaPlayerState> {
     this.setState({workingSegment: {...seg, name: e.target.value}})
   }
 
-  play = (: Segment = {begin: 0, end: 0, name: 'd'}) => {
+  play = (s: Segment = {start: 0, end: 0, name: 'd'}) => {
     if (this.interval) {
       clearInterval(this.interval)
     }
@@ -105,7 +105,7 @@ class MediaPlayer extends React.PureComponent<{}, MediaPlayerState> {
 
   playSection = (sec: Section) => {
     this.slicer.playSegment(sec)
-    this.play(s)=
+    this.play(sec)
   }
 
   render() {

@@ -1,12 +1,13 @@
 import axios from 'axios'
 import {useEffect} from 'react'
 import useReactRouter from 'use-react-router';
-import {createStore, useAction, useStore, effect} from 'easy-peasy'
+import {createStore, useAction, useStore, effect, EasyPeasyConfig, thunk, State} from 'easy-peasy'
 
 import AuthStore from './auth/auth-store'
-import UserStore from './user/user-store'
+import UserStore from './user-store'
 import SongStore from './song/song-store'
 import CommentStore from './comment/comment-store'
+import {IGlobalStore} from './store-types'
 
 const loadState = () => {
   const state = localStorage.getItem('redux-state')
@@ -16,7 +17,7 @@ const loadState = () => {
   return JSON.parse(state)
 }
 
-const saveState = (state) => {
+const saveState = (state: State<IGlobalStore>) => {
   if (!state) {
     return
   }
@@ -29,14 +30,14 @@ const saveState = (state) => {
 
 const persisted = loadState()
 
-const store = createStore({
+const store = createStore<IGlobalStore, EasyPeasyConfig>({
   auth: AuthStore,
   users: UserStore,
   songs: SongStore,
   comments: CommentStore,
   settings: {},
   store: {
-    init: effect((dispatch) => {
+    init: thunk((actions, _, {dispatch}) => {
       dispatch.users.fetchUsers()
       dispatch.songs.fetchAudioFiles()
       dispatch.comments.fetchComments()
@@ -49,12 +50,6 @@ const store = createStore({
 store.subscribe(() => {
   saveState(store.getState())
 })
-
-/*
-  https://egghead.io/lessons/javascript-redux-persisting-the-state-to-the-local-storage
-  or
-  https://github.com/rt2zz/redux-persist
-*/
 
 export function StoreInit(props: {children: any}) {
   const {history, location} = useReactRouter()

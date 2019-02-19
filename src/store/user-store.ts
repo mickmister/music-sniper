@@ -1,15 +1,18 @@
 import axios from 'axios'
-import {effect, select} from 'easy-peasy'
+import {select, thunk} from 'easy-peasy'
 
-import { UserStoreState, UserStoreActions, User } from './user-store.types'
-import { StatelessComponent } from 'react';
+import {IUserStore} from './store-types'
 
-type IUserStore = UserStoreActions & UserStoreState
+export interface User {
+  id: number,
+  username: string,
+  image_url: string,
+}
 
-const UserStore: IUserStore = {
+export const UserStore: IUserStore = {
   users: [],
 
-  addUsers: (state: UserStoreState, payload: User[]) => {
+  addUsers: (state, payload: User[]) => {
     payload.forEach((user: User) => {
       const index = state.users.findIndex(u => u.id === user.id)
       if (index === -1) {
@@ -24,11 +27,11 @@ const UserStore: IUserStore = {
     })
   },
 
-  fetchUsers: effect(async (dispatch: any) => {
+  fetchUsers: thunk(async (actions: any) => {
     const {data} = await axios.get('/users')
 
     if (data) {
-      dispatch.users.addUsers(data)
+      actions.addUsers(data)
     }
   }),
 
@@ -40,7 +43,7 @@ const UserStore: IUserStore = {
     state.currentUserId = user.id
   },
 
-  uploadAvatar: effect(async (dispatch: any, selectedFile: File, getState: any) => {
+  uploadAvatar: thunk(async (actions, selectedFile: File, {getState, dispatch}) => {
     if (!selectedFile) {
       return
     }
