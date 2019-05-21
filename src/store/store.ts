@@ -7,6 +7,7 @@ import AuthStore from './auth/auth-store'
 import UserStore from './user-store'
 import SongStore from './song/song-store'
 import CommentStore from './comment/comment-store'
+import TagStore from './tag/tag-store'
 import {IGlobalStore} from './store-types'
 
 const loadState = () => {
@@ -34,6 +35,7 @@ const store = createStore<IGlobalStore, EasyPeasyConfig>({
   auth: AuthStore,
   users: UserStore,
   songs: SongStore,
+  tags: TagStore,
   comments: CommentStore,
   settings: {},
   store: {

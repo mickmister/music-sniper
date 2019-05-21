@@ -15,7 +15,19 @@
     "lib": [
       "dom",
       "es7"
-    ]
+    ],
+    "baseUrl": "src",
+    "paths": {
+      "@components/*": ["components/*"],
+      "@interfaces/*": ["interfaces/*"],
+      "@music-processing/*": ["music-processing/*"],
+      "@pages/*": ["pages/*"],
+      "@services/*": ["services/*"],
+      "@store": ["store/*"],
+      "@src": ["./*"],
+      "@types/*": ["src/types/*"],
+      "@util": ["util/*"]
+    }
   },
   "include": [
     "src/**/*.ts",

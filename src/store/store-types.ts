@@ -3,6 +3,7 @@ import { AuthStore } from './auth/auth-store'
 import { CommentStore } from './comment/comment-store'
 import { UserStore } from './user-store'
 import { User } from './user-store';
+import { Tag } from '../types/music-types';
 
 export interface IStoreInit {
   init: Thunk<IStoreInit, void, void, IGlobalStore>,
@@ -14,6 +15,11 @@ export interface ISettingsStore {
 
 export interface IAuthStore {
 
+}
+
+export interface ITagStore {
+  items: Tag[],
+  setTags: Action<ITagStore, Tag[]>,
 }
 
 export interface IUserStore {
@@ -40,6 +46,7 @@ export type IGlobalStore = {
   auth: IAuthStore,
   users: IUserStore,
   songs: ISongStore,
+  tags: ITagStore,
   comments: ICommentStore,
   settings: ISettingsStore,
 }

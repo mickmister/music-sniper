@@ -2,17 +2,17 @@ import axios from 'axios'
 import {Howl, Howler} from 'howler'
 import {effect, select} from 'easy-peasy'
 
-import {AudioFile} from '../../types/music-types'
+import {AudioFile, Tag} from '../../types/music-types'
 import {SongChooserHookState, SongChooserHookActions, DispatchSongChooserActions} from './song-store.types'
 
-
-const uploadFile = async (selectedFile: File, dispatch: DispatchSongChooserActions) => {
+const uploadFile = async (selectedFile: File, tag: Tag, dispatch: DispatchSongChooserActions) => {
   if (!selectedFile) {
     return
   }
 
   const form = new FormData()
   form.append('audio_file[attached_file]', selectedFile)
+  form.append('audio_file[tag]', JSON.stringify(tag))
 
   const {data} = await axios.post('audio_files', form, { headers: {'Content-Type': 'multipart/form-data' }})
   dispatch.songs.addSongs([data])
@@ -124,8 +124,10 @@ const SongStore: ISongStore = {
     state.audioFiles = state.audioFiles.concat(songs)
   },
 
-  uploadFile: effect((dispatch: DispatchSongChooserActions, file: File) => {
-    return uploadFile(file, dispatch)
+  uploadFile: effect((dispatch: DispatchSongChooserActions, payload) => {
+    const file: File = payload.file
+    const tag: Tag = payload.tag
+    return uploadFile(file, tag, dispatch)
   }),
 
   playFile: effect((dispatch: DispatchSongChooserActions, file: AudioFile, getState: any) => {

@@ -18,6 +18,11 @@ export type AudioFile = {
   comments: Comment[],
 }
 
+export type Tag = {
+  id: number,
+  name: string,
+}
+
 export interface SongData {
   songs: Song[]
 }
