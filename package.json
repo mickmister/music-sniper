@@ -20,6 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "@material-ui/core": "^3.9.2",
+    "@material-ui/icons": "^4.2.1",
     "@types/loglevel": "^1.5.3",
     "@types/react": "^16.3.17",
     "@types/rx": "^4.1.1",

@@ -16,9 +16,10 @@ app.use(cors())
 // app.use('/public', express.static('../public'))
 app.get('/public/data/song-data.json', (req, res) => res.sendFile('song-data.json', {root: path.join(__dirname, '../public/data')}))
 
-app.use('/api', proxy({target: 'http://localhost:3001', pathRewrite: {'^/api': ''}}));
-app.use('/audio_files', proxy({target: 'http://localhost:3001'}));
-app.use('/rails', proxy({target: 'http://localhost:3001'}));
+app.use('/api', proxy({target: 'http://localhost:3000', pathRewrite: {'^/api': ''}}));
+app.use('/audio_files', proxy({target: 'http://localhost:3000'}));
+app.use('/authentication', proxy({target: 'http://localhost:3000'}));
+app.use('/rails', proxy({target: 'http://localhost:3000'}));
 
 app.get('/*.mp3', (req, res) => res.sendFile(req.url, {root: path.join(__dirname, '.')}))
 app.use(bundler.middleware())
