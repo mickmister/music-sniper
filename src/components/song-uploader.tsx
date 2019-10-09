@@ -34,7 +34,7 @@ export default function SongUpload() {
   return (
     <div>
       <input ref={hiddenFileInput} type='file' style={{display: 'none'}} onChange={didChooseFile} />
-      <Button variant='contained' color='primary' onClick={pickFile}>Upload Song</Button>
+      <span variant='contained' color='primary' onClick={pickFile}>Upload Song</span>
     </div>
   )
 }

@@ -18,27 +18,20 @@ import Mobile from './components/mobile/mobile'
 
 const root = document.getElementById('main')
 
-ReactDOM.render(<Mobile />, root)
-
-const r = () => {
-
-
-  ReactDOM.render(
-    // @ts-ignore
-    <BrowserRouter>
+ReactDOM.render(
+  <BrowserRouter>
     <StoreProvider store={store}>
-    <StoreInit>
-    <Navbar />
-    <Route exact path="/" component={() => <Redirect exact from="/" to="/songs" />} />
-    <Route path="/login" exact component={LoginPage} />
-    <Route path="/songs" exact component={ChooseSongPage} />
-    <Route path="/songs/:id/splice" component={SongSplicerPage} />
-    <Route path="/songs/:id/play" component={ShowSongPage} />
-    <Footer />
-    </StoreInit>
+      <StoreInit>
+      <Navbar />
+      <Route exact path="/" component={() => <Redirect exact from="/" to="/dashboard" />} />
+      <Route path="/dashboard" exact component={Mobile} />
+      <Route path="/login" exact component={LoginPage} />
+      <Route path="/songs" exact component={ChooseSongPage} />
+      <Route path="/songs/:id/splice" component={SongSplicerPage} />
+      <Route path="/songs/:id/play" component={ShowSongPage} />
+      <Footer />
+      </StoreInit>
     </StoreProvider>
-    </BrowserRouter>,
-    root,
-    )
-
-  }
+  </BrowserRouter>,
+  root,
+)

@@ -1,81 +1,90 @@
 import React from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Collapse from '@material-ui/core/Collapse';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import DraftsIcon from '@material-ui/icons/Drafts';
-import SendIcon from '@material-ui/icons/Send';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import StarBorder from '@material-ui/icons/StarBorder';
+import ListSubheader from '@material-ui/core/ListSubheader'
+import List from '@material-ui/core/List'
 
-// const useStyles = makeStyles((theme: Theme) =>
-// const useStyles = () => createStyles({
-const styles = {
-  root: {
-    width: '100%',
-    // maxWidth: 360,
-    backgroundColor: 'white',
-    // backgroundColor: theme.palette.background.paper,
-  },
-  nested: {
-    paddingLeft: 100,
-    // paddingLeft: theme.spacing(4),
-  },
+import Folder from '@material-ui/icons/Folder'
+import FolderOpen from '@material-ui/icons/FolderOpen'
+import LibraryMusic from '@material-ui/icons/LibraryMusic'
+import MusicNote from '@material-ui/icons/MusicNote'
+
+import {Field} from './props'
+import Accordion from './accordion'
+import CreateItem from './create-item'
+
+import styles from './styles.module.scss'
+
+type State = {
+  [field: string]: {open: boolean}
 }
 
-export default function NestedList() {
-  // const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+const fields: Field[] = [
+  {
+    name: 'Project',
+    icon: FolderOpen,
+    collectionIcon: Folder,
+  },
+  {
+    name: 'Audio File',
+    icon: MusicNote,
+    collectionIcon: LibraryMusic,
+  },
+  {
+    name: 'Clip',
+    icon: MusicNote,
+    collectionIcon: LibraryMusic,
+  },
+]
 
-  function handleClick() {
-    setOpen(!open);
+
+export default function NestedList() {
+  const initialState = fields.reduce((hash, field) => {
+    hash[field.name] = {open: false};
+    return hash;
+  }, {} as State)
+
+  const [state, setState] = React.useState(initialState);
+
+  function handleClick(field: Field) {
+    const oldState = state[field.name]
+    setState({
+      ...state,
+      [field.name]: {
+        ...oldState,
+        open: !oldState.open,
+      },
+    });
   }
+
+  const createAccordion = (field: Field) => {
+    const topElement = (
+      <CreateItem field={field} />
+    )
+
+    return (
+      <Accordion
+        key={field.name}
+        topElement={topElement}
+        field={field}
+        fieldState={state[field.name]}
+        handleClick={handleClick}
+      />
+    )
+  }
+
+  console.log(styles.root)
 
   return (
     <List
-      component="nav"
-      aria-labelledby="nested-list-subheader"
+      component='nav'
+      aria-labelledby='nested-list-subheader'
       subheader={
-        <ListSubheader component="div" id="nested-list-subheader">
+        <ListSubheader component='div' id='nested-list-subheader'>
           Nested List Items
         </ListSubheader>
       }
-      style={styles.root}
+      className={styles.root}
     >
-      <ListItem button>
-        <ListItemIcon>
-          <SendIcon />
-        </ListItemIcon>
-        <ListItemText style={{fontSize: '20px'}} primary="Sent mail" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon>
-          <DraftsIcon />
-        </ListItemIcon>
-        <ListItemText primary="Drafts" />
-      </ListItem>
-      <ListItem button onClick={handleClick}>
-        <ListItemIcon>
-          <InboxIcon />
-        </ListItemIcon>
-        <ListItemText primary="Inbox" />
-        {open ? <ExpandLess /> : <ExpandMore />}
-      </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <ListItem button style={styles.nested}>
-            <ListItemIcon>
-              <StarBorder />
-            </ListItemIcon>
-            <ListItemText primary="Starred" />
-          </ListItem>
-        </List>
-      </Collapse>
+      {fields.map(createAccordion)}
     </List>
   );
 }
