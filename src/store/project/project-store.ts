@@ -6,12 +6,14 @@ import { Project } from '../../types/music-types'
 
 const ProjectStore: IProjectStore = {
     projects: [],
-    storeProject: action((state, project) => {
-        const index = state.projects.findIndex(p => p.id === project.id)
-        if (index > -1) {
-            state.projects.splice(index, 1, project)
-        } else {
-            state.projects.push(project)
+    storeProjects: action((state, projects) => {
+        for (const project of projects) {
+            const index = state.projects.findIndex(p => p.id === project.id)
+            if (index > -1) {
+                state.projects.splice(index, 1, project)
+            } else {
+                state.projects.push(project)
+            }
         }
     }),
     createOrUpdateProject: thunk(async (actions, project) => {
@@ -30,8 +32,17 @@ const ProjectStore: IProjectStore = {
             throw new Error('didnt create')
         }
 
-        actions.storeProject(res.data as Project)
+        actions.storeProjects([res.data] as Project[])
         return res
+    }),
+    fetchProjects: thunk(async (actions) => {
+        const {data} = await axios.get('/projects')
+
+        if (data) {
+          actions.storeProjects(data as Project[])
+        }
+
+        return data as Project[]
     }),
 }
 

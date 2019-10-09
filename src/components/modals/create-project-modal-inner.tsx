@@ -41,6 +41,8 @@ export function CreateProjectModalInner(props: Props) {
         name: '',
     })
 
+    const {closeModal} = props
+
     const [serverError, setServerError] = useState('')
 
     const handleChange = (name: keyof FormState) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +53,7 @@ export function CreateProjectModalInner(props: Props) {
     const submitForm = async () => {
       try {
         await createProject(formState)
-        props.closeModal()
+        closeModal()
       } catch (e) {
         setServerError(e.message)
       }
@@ -76,6 +78,7 @@ export function CreateProjectModalInner(props: Props) {
             />
             <div>
                 <Button onClick={submitForm}>Submit</Button>
+                <Button onClick={closeModal}>Cancel</Button>
             </div>
             {error}
         </form>

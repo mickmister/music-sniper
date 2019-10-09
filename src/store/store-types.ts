@@ -45,8 +45,9 @@ export interface ICommentStore {
 
 export interface IProjectStore {
   projects: Project[]
-  storeProject: Action<IProjectStore, Project>
+  storeProjects: Action<IProjectStore, Project[]>
   createOrUpdateProject: Thunk<IProjectStore, Project, void, IGlobalStore, Promise<AxiosResponse<Project | string>>>
+  fetchProjects: Thunk<IProjectStore, void, void, IGlobalStore, Project[]>,
 }
 
 export type IGlobalStore = {

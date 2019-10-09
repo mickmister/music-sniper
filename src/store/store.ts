@@ -45,6 +45,7 @@ const store = createStore<IGlobalStore, EasyPeasyConfig>({
           dispatch.users.fetchUsers()
           dispatch.songs.fetchAudioFiles()
           dispatch.comments.fetchComments()
+          dispatch.projects.fetchProjects()
       }),
   },
 }, {

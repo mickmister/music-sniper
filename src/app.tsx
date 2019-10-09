@@ -12,6 +12,7 @@ import LoginPage from './pages/login/login-page'
 import ChooseSongPage from './pages/choose-song/choose-song-page'
 import SongSplicerPage from './pages/song-splicer/song-splicer-page'
 import ShowSongPage from './pages/show-song/show-song-page'
+import ShowProjectPage from './pages/show-project/show-project-page'
 import Navbar from './components/navbar/navbar'
 import Footer from './components/footer/footer'
 import Mobile from './components/mobile/mobile'
@@ -30,6 +31,7 @@ ReactDOM.render(
       <Route path="/songs" exact component={ChooseSongPage} />
       <Route path="/songs/:id/splice" component={SongSplicerPage} />
       <Route path="/songs/:id/play" component={ShowSongPage} />
+      <Route path="/projects/:id" component={ShowProjectPage} />
       <Footer />
       <AllModals />
       </StoreInit>

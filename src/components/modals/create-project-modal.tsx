@@ -42,7 +42,7 @@ export default function CreateProjectModal (props: Props) {
             aria-labelledby='simple-modal-title'
             aria-describedby='simple-modal-description'
             open={props.open}
-            onClose={handleClose}
+            onClose={closeModal}
         >
             <div style={modalStyle} className={classes.paper}>
                 <h1>Create Project</h1>

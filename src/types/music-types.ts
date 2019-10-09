@@ -21,6 +21,7 @@ export type AudioFile = {
 export type Project = {
   id?: number
   name: string
+  project_attachments: [{id: number, item_type: string, item_id: number}]
 }
 
 export interface SongData {
