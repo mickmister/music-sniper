@@ -1,7 +1,7 @@
 import React, {useRef} from 'react'
 import {Link} from 'react-router-dom'
 import useRouter from 'use-react-router'
-import {useStore} from 'easy-peasy'
+import {useStoreState, State} from 'easy-peasy'
 import Button from '@material-ui/core/Button'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -13,6 +13,7 @@ import styles from './navbar.module.scss'
 import Avatar from '../avatar/avatar';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import { IGlobalStore } from '../../store/store-types'
 
 export default function Navbar() {
   const {location} = useRouter()
@@ -20,12 +21,12 @@ export default function Navbar() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
-  const user = useStore(state => state.users.currentUser)
+  const user = useStoreState((state: State<IGlobalStore>) => state.users.currentUser)
   const avatar = user && (
-    <Avatar
-      user={user}
-      shouldUpload
-    />
+      <Avatar
+          user={user}
+          shouldUpload
+      />
   )
 
   if (location.pathname === '/login') {

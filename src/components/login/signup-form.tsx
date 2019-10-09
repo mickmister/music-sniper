@@ -46,7 +46,7 @@ const useSignup = (props: Props): [State, Actions] => {
       }
     )}
 
-  const signup = useAction(dispatch => dispatch.auth.signup)
+  const signup = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.auth.signup)
 
   return [state,
   {

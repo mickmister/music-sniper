@@ -2,8 +2,9 @@ import React, {useRef} from 'react'
 import useRouter from 'use-react-router'
 import axios from 'axios'
 import Button from '@material-ui/core/Button';
-import {useAction} from 'easy-peasy'
+import {useAction, useStoreActions, Actions} from 'easy-peasy'
 import { AudioFile } from '../types/music-types';
+import { IGlobalStore } from '../store/store-types';
 
 export interface SongUploaderProps {
   selectUploadFile(file: File): void,
@@ -13,7 +14,7 @@ export interface SongUploaderProps {
 export default function SongUpload() {
   const {history} = useRouter()
 
-  const uploadFile = useAction(dispatch => dispatch.songs.uploadFile)
+  const uploadFile = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.songs.uploadFile)
 
   const didChooseFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const {files} = e.target

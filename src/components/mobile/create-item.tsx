@@ -9,13 +9,14 @@ import {Field} from './props'
 
 type Props = {
   field: Field
+  onClick: () => {}
 }
 
 export default function CreateItem(props: Props) {
   const {field} = props
 
   return (
-    <ListItem button className={styles.nested}>
+    <ListItem button className={styles.nested} onClick={props.onClick}>
       <ListItemIcon>
         <LibraryAdd />
       </ListItemIcon>

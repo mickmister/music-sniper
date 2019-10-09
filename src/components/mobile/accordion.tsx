@@ -10,14 +10,20 @@ import ListItemText from '@material-ui/core/ListItemText'
 
 import styles from './styles.module.scss'
 import {Field} from './props'
-import { useStore } from 'easy-peasy';
-import { AudioFile } from '../../types/music-types';
+import { useStoreState, State } from 'easy-peasy';
+import { AudioFile, Project } from '../../types/music-types';
+import { IGlobalStore } from '../../store/store-types'
+
+type Item = Project | AudioFile
 
 type Props = {
   field: Field,
   handleClick: (field: Field) => void,
   fieldState: {open: boolean},
   topElement?: React.ReactElement<{}>,
+  getName: (item: Item) => string
+  items: Item[]
+  getUrl: (item: Item) => string
 }
 
 export default function Accordion(props: Props) {
@@ -25,8 +31,6 @@ export default function Accordion(props: Props) {
 
   const CollectionIcon = field.collectionIcon
   const Icon = field.icon
-
-  const audioFiles = useStore(state => state.songs.audioFiles) as AudioFile[]
 
   return (
     <React.Fragment>
@@ -41,13 +45,13 @@ export default function Accordion(props: Props) {
       <Collapse in={fieldState.open} timeout='auto' unmountOnExit>
         <List disablePadding>
           {topElement}
-          {audioFiles.map((audioFile) => (
-            <Link to={`/songs/${audioFile.id}/play`}>
+          {props.items.map((item: Item) => (
+            <Link to={props.getUrl(item)}>
               <ListItem button className={styles.nested}>
                 <ListItemIcon>
                   <Icon />
                 </ListItemIcon>
-                <ListItemText primary={`${audioFile.file_name}`} />
+                <ListItemText primary={props.getName(item)} />
               </ListItem>
             </Link>
           ))}

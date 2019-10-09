@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {Howl, Howler} from 'howler'
-import {effect, select} from 'easy-peasy'
+import {thunk, computed, action} from 'easy-peasy'
 
 import {AudioFile} from '../../types/music-types'
 import {SongChooserHookState, SongChooserHookActions, DispatchSongChooserActions} from './song-store.types'
@@ -15,7 +15,7 @@ const uploadFile = async (selectedFile: File, dispatch: DispatchSongChooserActio
   form.append('audio_file[attached_file]', selectedFile)
 
   const {data} = await axios.post('audio_files', form, { headers: {'Content-Type': 'multipart/form-data' }})
-  dispatch.songs.addSongs([data])
+  dispatch.addSongs([data])
   return data
 }
 
@@ -34,7 +34,7 @@ const playFile = async (state: SongChooserHookState, dispatch: DispatchSongChoos
   state.audioFiles.forEach((f: AudioFile) => {
     if (f.id !== file.id && f.howl && f.playing) {
       pause(f.howl)
-      dispatch.songs.updateFile({...f, playing: false})
+      dispatch.updateFile({...f, playing: false})
     }
   })
 
@@ -46,30 +46,30 @@ const playFile = async (state: SongChooserHookState, dispatch: DispatchSongChoos
   if (file.howl) {
     play(file.howl)
     const updatedFile = {...file, loading: false, playing: true}
-    dispatch.songs.updateFile(updatedFile)
+    dispatch.updateFile(updatedFile)
     return
   }
 
   //load file
   const howl = new Howl({src: file.url, format: 'mp3', html5: true})
   const loadingFile = {...file, howl, loading: true}
-  dispatch.songs.updateFile(loadingFile)
+  dispatch.updateFile(loadingFile)
 
   howl.on('load', () => {
     play(howl)
     const playingFile = {...file, loading: false, playing: true}
-    dispatch.songs.updateFile(playingFile)
+    dispatch.updateFile(playingFile)
   })
 
   howl.on('loaderror', () => {
     const errorFile = {...file, loading: false, error: 'Failed to fetch/load file'}
-    dispatch.songs.updateFile(errorFile)
+    dispatch.updateFile(errorFile)
   })
 
   if(howl.state() === 'loaded') {
     play(howl)
     const playingFile = {...file, loading: false, playing: true}
-    dispatch.songs.updateFile(playingFile)
+    dispatch.updateFile(playingFile)
   }
 }
 
@@ -82,7 +82,7 @@ const pauseFile = (state: SongChooserHookState, dispatch: DispatchSongChooserAct
   }
 
   const updatedFile = {...file, playing: false}
-  dispatch.songs.updateFile(updatedFile)
+  dispatch.updateFile(updatedFile)
 
   pause(file.howl)
 }
@@ -90,7 +90,7 @@ const pauseFile = (state: SongChooserHookState, dispatch: DispatchSongChooserAct
 const fetchAudioFiles = async (dispatch: DispatchSongChooserActions) => {
   const {data} = await axios.get('/audio_files', {onDownloadProgress: console.log})
   if (data) {
-    dispatch.songs.addSongs(data)
+    dispatch.addSongs(data)
   }
 }
 
@@ -100,14 +100,14 @@ const SongStore: ISongStore = {
   audioFiles: [],
   selectedFile: null,
   currentPlayingSongId: null,
-  fetchAudioFiles: effect(fetchAudioFiles),
+  fetchAudioFiles: thunk(fetchAudioFiles),
   updateFile,
 
   setCurrentPlayingSong: (state, audioFile) => {
     state.currentPlayingSongId = audioFile.id
   },
 
-  currentPlayingSong: select((state: SongChooserHookState) => {
+  currentPlayingSong: computed((state: SongChooserHookState) => {
     const id = state.currentPlayingSongId
     if (!id) {
       return null
@@ -116,32 +116,32 @@ const SongStore: ISongStore = {
     return state.audioFiles.find(file => file.id === id)
   }),
 
-  addAudioFileToCollection: (state: SongChooserHookState, audio_file: AudioFile) => {
+  addAudioFileToCollection: action((state: SongChooserHookState, audio_file: AudioFile) => {
     state.audioFiles.push(audio_file)
-  },
+  }),
 
-  addSongs: (state: SongChooserHookState, songs: AudioFile[]) => {
+  addSongs: action((state: SongChooserHookState, songs: AudioFile[]) => {
     state.audioFiles = state.audioFiles.concat(songs)
-  },
+  }),
 
-  uploadFile: effect((dispatch: DispatchSongChooserActions, file: File) => {
+  uploadFile: thunk((dispatch: DispatchSongChooserActions, file: File) => {
     return uploadFile(file, dispatch)
   }),
 
-  playFile: effect((dispatch: DispatchSongChooserActions, file: AudioFile, getState: any) => {
+  playFile: thunk((dispatch: DispatchSongChooserActions, audioFile: AudioFile, getState: any) => {
     const state = getState().songs
-    playFile(state, dispatch, file)
+    playFile(state, dispatch, audioFile)
   }),
 
-  pauseFile: effect((dispatch: DispatchSongChooserActions, file: AudioFile, getState: any) => {
+  pauseFile: thunk((dispatch: DispatchSongChooserActions, audioFile: AudioFile, getState: any) => {
     const state = getState().songs
-    return pauseFile(state, dispatch, file)
+    return pauseFile(state, dispatch, audioFile)
   }),
 
   playingInfo: {
 
   },
-  songsWithPlayingInfo: select(() => {
+  songsWithPlayingInfo: computed(() => {
 
   }),
 }

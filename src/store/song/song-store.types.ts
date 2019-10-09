@@ -19,7 +19,6 @@ export interface SongChooserHookActions {
 }
 
 export interface DispatchSongChooserActions {
-  songs: {
     addAudioFileToCollection: (audio_file: AudioFile) => void,
     uploadFile: (file: File) => void,
     setCurrentPlayingSong: (audioFile: AudioFile) => void,
@@ -28,7 +27,6 @@ export interface DispatchSongChooserActions {
     fetchAudioFiles: () => void,
     addSongs: (songs: AudioFile[]) => void,
     updateFile: (file: AudioFile) => void,
-  },
 }
 
 export type SongChooserHookValue = [SongChooserHookState, SongChooserHookActions]

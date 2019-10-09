@@ -3,6 +3,8 @@ import { AuthStore } from './auth/auth-store'
 import { CommentStore } from './comment/comment-store'
 import { UserStore } from './user-store'
 import { User } from './user-store';
+import { Project } from '../types/music-types';
+import { AxiosResponse, AxiosPromise } from 'axios';
 
 export interface IStoreInit {
   init: Thunk<IStoreInit, void, void, IGlobalStore>,
@@ -13,7 +15,13 @@ export interface ISettingsStore {
 }
 
 export interface IAuthStore {
+  authToken: string | null
+}
 
+export interface IModalStore {
+  openedCreateProjectModal: boolean,
+  openCreateProjectModal: Action<IModalStore>,
+  closeCreateProjectModal: Action<IModalStore>,
 }
 
 export interface IUserStore {
@@ -35,11 +43,19 @@ export interface ICommentStore {
   fetchComments: Thunk<ICommentStore, void, void, IGlobalStore>,
 }
 
+export interface IProjectStore {
+  projects: Project[]
+  storeProject: Action<IProjectStore, Project>
+  createOrUpdateProject: Thunk<IProjectStore, Project, void, IGlobalStore, Promise<AxiosResponse<Project | string>>>
+}
+
 export type IGlobalStore = {
   store: IStoreInit,
   auth: IAuthStore,
   users: IUserStore,
   songs: ISongStore,
+  projects: IProjectStore,
   comments: ICommentStore,
   settings: ISettingsStore,
+  modals: IModalStore,
 }

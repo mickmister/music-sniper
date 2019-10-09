@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {select, thunk} from 'easy-peasy'
+import {computed, thunk, action} from 'easy-peasy'
 
 import {IUserStore} from './store-types'
 
@@ -12,7 +12,7 @@ export interface User {
 export const UserStore: IUserStore = {
   users: [],
 
-  addUsers: (state, payload: User[]) => {
+  addUsers: action((state, payload: User[]) => {
     payload.forEach((user: User) => {
       const index = state.users.findIndex(u => u.id === user.id)
       if (index === -1) {
@@ -25,7 +25,7 @@ export const UserStore: IUserStore = {
         ...user,
       }
     })
-  },
+  }),
 
   fetchUsers: thunk(async (actions: any) => {
     const {data} = await axios.get('/users')
@@ -36,12 +36,12 @@ export const UserStore: IUserStore = {
   }),
 
   currentUserId: null,
-  currentUser: select((state: any) => {
+  currentUser: computed((state: any) => {
     return state.users.find((user: User) => user.id === state.currentUserId)
   }),
-  setCurrentUser: (state, user) => {
+  setCurrentUser: action((state, user) => {
     state.currentUserId = user.id
-  },
+  }),
 
   uploadAvatar: thunk(async (actions, selectedFile: File, {getState, dispatch}) => {
     if (!selectedFile) {

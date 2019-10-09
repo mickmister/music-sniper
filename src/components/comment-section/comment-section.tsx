@@ -1,9 +1,10 @@
 import React from 'react'
-import {useStore, useAction} from 'easy-peasy'
+import {useStore, useAction, useStoreActions, Actions, useStoreState, State} from 'easy-peasy'
 
 import {AudioFile, Comment} from '../../types/music-types'
 
 import SavedComment from './saved-comment'
+import { IGlobalStore } from '../../store/store-types'
 
 type CommentSectionProps = {
   audioFile: AudioFile,
@@ -12,12 +13,12 @@ type CommentSectionProps = {
 export default function CommentSection(props: CommentSectionProps) {
   const {audioFile} = props
 
-  const comments = useStore(state => state.comments.items)
+  const comments = useStoreState((state: State<IGlobalStore>) => state.comments.items)
     .filter((com: Comment) => com.audio_file_id === audioFile.id)
     .sort((com1, com2) => (com1.created_at < com2.created_at) - (com1.created_at > com2.created_at))
 
-  const saveAction = useAction(dispatch => dispatch.comments.saveComment)
-  const deleteAction = useAction(dispatch => dispatch.comments.deleteComment)
+  const saveAction = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.comments.saveComment)
+  const deleteAction = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.comments.deleteComment)
 
   const saveComment = (comment: Comment) => saveAction({...comment, audio_file_id: audioFile.id})
   const deleteComment = (comment: Comment) => deleteAction(comment)
