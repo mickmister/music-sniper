@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {thunk, action} from 'easy-peasy'
 
-import {Comment} from '../../types/music-types'
+import {Comment} from '../types/music-types'
 
 const upsert = async (name: string, payload: {}) => {
   const id = payload.id

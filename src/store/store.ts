@@ -3,12 +3,12 @@ import {useEffect} from 'react'
 import useReactRouter from 'use-react-router';
 import {createStore, useAction, useStore, effect, EasyPeasyConfig, thunk, State, useStoreActions, Actions, useStoreState} from 'easy-peasy'
 
-import AuthStore from './auth/auth-store'
+import AuthStore from './auth-store'
 import UserStore from './user-store'
-import SongStore from './song/song-store'
-import CommentStore from './comment/comment-store'
-import ModalStore from './modal/modal-store'
-import ProjectStore from './project/project-store'
+import SongStore from './song-store'
+import CommentStore from './comment-store'
+import ModalStore from './modal-store'
+import ProjectStore from './project-store'
 import {IGlobalStore} from './store-types'
 
 const loadState = () => {

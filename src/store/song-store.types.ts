@@ -1,4 +1,4 @@
-import {AudioFile} from '../../types/music-types'
+import {AudioFile} from '../types/music-types'
 
 export interface SongChooserHookState {
   audioFiles: AudioFile[],

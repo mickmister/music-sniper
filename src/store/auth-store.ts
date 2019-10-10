@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {thunk, computed, action} from 'easy-peasy'
 
-import {IAuthStore} from '../store-types'
+import {IAuthStore} from './store-types'
 
 export const AuthStore: IAuthStore = {
   authToken: null,

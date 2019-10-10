@@ -5,11 +5,7 @@ import { useStoreState } from 'easy-peasy'
 import { IGlobalStore } from '../../store/store-types'
 
 export default function AllModals() {
-    const openedCreateProjectModal = useStoreState((state: IGlobalStore) => state.modals.openedCreateProjectModal)
-
-    const modalOpenStates = {
-        createProject: openedCreateProjectModal,
-    }
+    const modalOpenStates = useStoreState((state: IGlobalStore) => state.modals.modalStates.result)
 
     return (
         <React.Fragment>

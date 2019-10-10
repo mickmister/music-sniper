@@ -1,6 +1,6 @@
-import { Action, Thunk, Select } from 'easy-peasy'
-import { AuthStore } from './auth/auth-store'
-import { CommentStore } from './comment/comment-store'
+import { Action, Thunk, Select, Computed } from 'easy-peasy'
+import { AuthStore } from './auth-store'
+import { CommentStore } from './comment-store'
 import { UserStore } from './user-store'
 import { User } from './user-store';
 import { Project } from '../types/music-types';
@@ -18,10 +18,13 @@ export interface IAuthStore {
   authToken: string | null
 }
 
+type ModalStates = {
+  createProject: boolean
+}
 export interface IModalStore {
-  openedCreateProjectModal: boolean,
   openCreateProjectModal: Action<IModalStore>,
   closeCreateProjectModal: Action<IModalStore>,
+  modalStates: ModalStates
 }
 
 export interface IUserStore {

@@ -2,7 +2,7 @@ import axios from 'axios'
 import {Howl, Howler} from 'howler'
 import {thunk, computed, action} from 'easy-peasy'
 
-import {AudioFile} from '../../types/music-types'
+import {AudioFile} from '../types/music-types'
 import {SongChooserHookState, SongChooserHookActions, DispatchSongChooserActions} from './song-store.types'
 
 

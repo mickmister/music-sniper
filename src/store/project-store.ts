@@ -1,8 +1,8 @@
 import axios, { AxiosResponse, AxiosPromise } from 'axios'
 
-import {IProjectStore} from '../store-types'
+import {IProjectStore} from './store-types'
 import { thunk, action } from 'easy-peasy'
-import { Project } from '../../types/music-types'
+import { Project } from '../types/music-types'
 
 const ProjectStore: IProjectStore = {
     projects: [],
