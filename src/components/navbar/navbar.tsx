@@ -8,7 +8,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 
-import SongUploader, {SongUploaderProps} from '../song-uploader'
+import {useSongUpload} from '../../hooks/hooks'
 import styles from './navbar.module.scss'
 import Avatar from '../avatar/avatar';
 import Menu from '@material-ui/core/Menu';
@@ -43,6 +43,8 @@ export default function Navbar() {
   function handleClose() {
     setAnchorEl(null);
   }
+
+  const [SongUpload, chooseAudioFile] = useSongUpload()
 
   return (
     <AppBar position="static">
@@ -80,27 +82,14 @@ export default function Navbar() {
               </Link>
             </MenuItem>
             <MenuItem onClick={handleClose}>
-              <SongUploader />
+              <div>
+                <span onClick={chooseAudioFile}>Upload Song</span>
+                {SongUpload}
+              </div>
             </MenuItem>
           </Menu>
         </div>
       </Toolbar>
     </AppBar>
-  )
-
-  return (
-    <div className={styles.navbar}>
-      <div className={styles.leftSideContainer}>
-        <Link to={`/`}>
-          <Button variant='contained'>
-            Home
-          </Button>
-        </Link>
-        <SongUploader />
-      </div>
-      <div className={styles.avatarContainer}>
-        {avatar}
-      </div>
-    </div>
   )
 }

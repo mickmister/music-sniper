@@ -5,7 +5,7 @@ import { useStoreState } from 'easy-peasy'
 import { IGlobalStore } from '../../store/store-types'
 
 export default function AllModals() {
-    const modalOpenStates = useStoreState((state: IGlobalStore) => state.modals.modalStates.result)
+    const modalOpenStates = useStoreState((state: IGlobalStore) => state.modals.modalStates)
 
     return (
         <React.Fragment>

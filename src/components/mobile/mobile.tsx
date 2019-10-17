@@ -10,6 +10,7 @@ import MusicNote from '@material-ui/icons/MusicNote'
 import {Field} from './props'
 import Accordion from './accordion'
 import CreateItem from './create-item'
+import {useSongUpload} from '../../hooks/hooks'
 
 import styles from './styles.module.scss'
 import { useStoreState, State, Actions, useStoreActions } from 'easy-peasy';
@@ -57,6 +58,8 @@ export default function NestedList() {
     });
   }
 
+  const [SongUpload, chooseAudioFile] = useSongUpload()
+
   const audioFiles = useStoreState((state: State<IGlobalStore>) => state.songs.audioFiles)
   const projects = useStoreState((state: State<IGlobalStore>) => state.projects.projects)
 
@@ -88,11 +91,12 @@ export default function NestedList() {
             items={audioFiles}
             getName={(f: AudioFile) => f.file_name}
             getUrl={(f: AudioFile) => `/songs/${f.id}/play`}
-            topElement={<CreateItem field={fields.audioFiles} />}
+            topElement={<CreateItem field={fields.audioFiles} onClick={chooseAudioFile} />}
             field={fields.audioFiles}
             fieldState={state[fields.audioFiles.name]}
             handleClick={handleClick}
         />
+        {SongUpload}
     </List>
   );
 }

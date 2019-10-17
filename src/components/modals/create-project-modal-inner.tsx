@@ -36,10 +36,10 @@ type Props = {
 
 export function CreateProjectModalInner(props: Props) {
     const project = props.project
-    const classes = useStyles()
+    const classes = useStyles('')
     const [formState, setFormState] = useState<FormState>(project || {
         name: '',
-    })
+    } as Project)
 
     const {closeModal} = props
 
