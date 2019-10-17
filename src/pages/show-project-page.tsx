@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { IGlobalStore } from '../../store/store-types'
+import { IGlobalStore } from '../store/store-types'
 import { useStoreState, State, useStoreActions, Actions } from 'easy-peasy'
-import { AudioFile } from '../../types/music-types'
+import { AudioFile } from '../types/music-types'
 import Button from '@material-ui/core/Button'
 import { Link } from 'react-router-dom'
 
