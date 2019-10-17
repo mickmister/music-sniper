@@ -3,7 +3,7 @@ import { AuthStore } from './auth-store'
 import { CommentStore } from './comment-store'
 import { UserStore } from './user-store'
 import { User } from './user-store';
-import { Project } from '../types/music-types';
+import { Project, Comment, AudioFile, Clip } from '../types/music-types';
 import { AxiosResponse, AxiosPromise } from 'axios';
 
 export interface IStoreInit {
@@ -39,18 +39,40 @@ export interface IUserStore {
 }
 
 export interface ISongStore {
-  fetchAudioFiles: Thunk<ISongStore, void, void, IGlobalStore>,
+  audioFiles: AudioFile[],
+  selectedFile: File | null,
+  currentPlayingSongId: number | null,
+  currentPlayingSong: Computed<ISongStore>
+  addAudioFileToCollection: Action<ISongStore, AudioFile>
+  uploadFile: Thunk<ISongStore, File>
+  setCurrentPlayingSong: Action<ISongStore, AudioFile>
+  playFile: Thunk<ISongStore, AudioFile>
+  pauseFile: Thunk<ISongStore, AudioFile>
+  fetchAudioFiles: Thunk<ISongStore, void, void, Promise<AudioFile[]>>,
+  addSongs: Action<ISongStore, AudioFile[]>
+  updateFile: Action<ISongStore, AudioFile>
+
+  createOrUpdateClip: Thunk<ISongStore, Clip>
+  clips: Clip[]
+  storeClips: Action<ISongStore, Clip[]>
+  addClipToAudioFile: Action<ISongStore, Clip>
 }
 
 export interface ICommentStore {
-  fetchComments: Thunk<ICommentStore, void, void, IGlobalStore>,
+  items: Comment[]
+  saveComment: Thunk<ICommentStore, Comment>
+  deleteComment: Thunk<ICommentStore, Comment>
+  removeComment: Action<ICommentStore, Comment>
+  storeComment: Action<ICommentStore, Comment>
+  addComments: Action<ICommentStore, Comment[]>
+  fetchComments: Thunk<ICommentStore, void, void, IGlobalStore, Promise<Comment[]>>
 }
 
 export interface IProjectStore {
   projects: Project[]
   storeProjects: Action<IProjectStore, Project[]>
   createOrUpdateProject: Thunk<IProjectStore, Project, void, IGlobalStore, Promise<AxiosResponse<Project | string>>>
-  fetchProjects: Thunk<IProjectStore, void, void, IGlobalStore, Project[]>,
+  fetchProjects: Thunk<IProjectStore, void, void, IGlobalStore, Promise<Project[]>>,
 }
 
 export type IGlobalStore = {

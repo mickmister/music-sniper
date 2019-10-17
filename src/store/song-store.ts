@@ -1,32 +1,11 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import {Howl, Howler} from 'howler'
 import {thunk, computed, action} from 'easy-peasy'
 
-import {AudioFile} from '../types/music-types'
-import {SongChooserHookState, SongChooserHookActions, DispatchSongChooserActions} from './song-store.types'
-
-
-const uploadFile = async (selectedFile: File, dispatch: DispatchSongChooserActions) => {
-  if (!selectedFile) {
-    return
-  }
-
-  const form = new FormData()
-  form.append('audio_file[attached_file]', selectedFile)
-
-  const {data} = await axios.post('audio_files', form, { headers: {'Content-Type': 'multipart/form-data' }})
-  dispatch.addSongs([data])
-  return data
-}
-
-export const updateFile = (state: SongChooserHookState, file: AudioFile) => {
-  const files = state.audioFiles
-  const index = files.findIndex(f => file.id === f.id)
-  files[index] = {
-    ...files[index],
-    ...file,
-  }
-}
+import {AudioFile, Project, Clip} from '../types/music-types'
+import {SongChooserHookState, DispatchSongChooserActions} from './song-store.types'
+import {ISongStore} from './store-types'
+import { createOrUpdateEntity, storeEntities } from './shared-store-logic'
 
 const playFile = async (state: SongChooserHookState, dispatch: DispatchSongChooserActions, file: AudioFile) => {
 
@@ -87,27 +66,40 @@ const pauseFile = (state: SongChooserHookState, dispatch: DispatchSongChooserAct
   pause(file.howl)
 }
 
-const fetchAudioFiles = async (dispatch: DispatchSongChooserActions) => {
+const fetchAudioFiles = async (dispatch) => {
   const {data} = await axios.get('/audio_files', {onDownloadProgress: console.log})
   if (data) {
     dispatch.addSongs(data)
   }
 }
 
-type ISongStore = SongChooserHookState & SongChooserHookActions
+// type ISongStore = SongChooserHookState & SongChooserHookActions
 
 const SongStore: ISongStore = {
   audioFiles: [],
   selectedFile: null,
   currentPlayingSongId: null,
-  fetchAudioFiles: thunk(fetchAudioFiles),
-  updateFile,
 
-  setCurrentPlayingSong: (state, audioFile) => {
+  fetchAudioFiles: thunk(async (actions) => {
+    const {data} = await axios.get('/audio_files', {onDownloadProgress: console.log})
+    if (data) {
+      actions.addSongs(data)
+    }
+  }),
+  updateFile: action((state, file) => {
+    const files = state.audioFiles
+    const index = files.findIndex(f => file.id === f.id)
+    files[index] = {
+      ...files[index],
+      ...file,
+    }
+  }),
+
+  setCurrentPlayingSong: action((state, audioFile) => {
     state.currentPlayingSongId = audioFile.id
-  },
+  }),
 
-  currentPlayingSong: computed((state: SongChooserHookState) => {
+  currentPlayingSong: computed((state) => {
     const id = state.currentPlayingSongId
     if (!id) {
       return null
@@ -124,26 +116,56 @@ const SongStore: ISongStore = {
     state.audioFiles = state.audioFiles.concat(songs)
   }),
 
-  uploadFile: thunk((dispatch: DispatchSongChooserActions, file: File) => {
-    return uploadFile(file, dispatch)
+  uploadFile: thunk(async (actions, file) => {
+    if (!file) {
+      return
+    }
+
+    const form = new FormData()
+    form.append('audio_file[attached_file]', file)
+
+    const {data} = await axios.post('audio_files', form, { headers: {'Content-Type': 'multipart/form-data' }})
+    actions.addSongs([data])
+    return data
   }),
 
-  playFile: thunk((dispatch: DispatchSongChooserActions, audioFile: AudioFile, getState: any) => {
+  playFile: thunk((actions, audioFile, getState: any) => {
     const state = getState().songs
-    playFile(state, dispatch, audioFile)
+    playFile(state, actions, audioFile)
   }),
 
-  pauseFile: thunk((dispatch: DispatchSongChooserActions, audioFile: AudioFile, getState: any) => {
+  pauseFile: thunk((actions, audioFile, getState: any) => {
     const state = getState().songs
-    return pauseFile(state, dispatch, audioFile)
+    return pauseFile(state, actions, audioFile)
   }),
 
-  playingInfo: {
-
-  },
-  songsWithPlayingInfo: computed(() => {
-
+  clips: [],
+  storeClips: action((state, clips) => {
+    storeEntities(state.clips, clips)
   }),
+
+  createOrUpdateClip: thunk(async (actions, clip) => {
+    const res = (await createOrUpdateEntity('clips', clip)) as AxiosResponse<Clip>
+
+    actions.storeClips([res.data])
+    actions.addClipToAudioFile(res.data)
+    return res
+  }),
+
+  addClipToAudioFile: action((state, clip) => {
+    const file = state.audioFiles.find(f => f.id === clip.audio_file_id)
+    const index = file.clip_ids.indexOf(clip.id)
+    if (index === -1) {
+      file.clip_ids.push(clip.id)
+    }
+  }),
+
+  // playingInfo: {
+
+  // },
+  // songsWithPlayingInfo: computed(() => {
+
+  // }),
 }
 
 export default SongStore

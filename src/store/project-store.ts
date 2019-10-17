@@ -3,43 +3,25 @@ import axios, { AxiosResponse, AxiosPromise } from 'axios'
 import {IProjectStore} from './store-types'
 import { thunk, action } from 'easy-peasy'
 import { Project } from '../types/music-types'
+import { createOrUpdateEntity, storeEntities } from './shared-store-logic'
 
 const ProjectStore: IProjectStore = {
     projects: [],
     storeProjects: action((state, projects) => {
-        for (const project of projects) {
-            const index = state.projects.findIndex(p => p.id === project.id)
-            if (index > -1) {
-                state.projects.splice(index, 1, project)
-            } else {
-                state.projects.push(project)
-            }
-        }
+        storeEntities(state.projects, projects)
     }),
     createOrUpdateProject: thunk(async (actions, project) => {
-        let res;
-        if (project.id) {
-            res = await axios.put(`/projects/${project.id}`, project)
-        } else {
-            res = await axios.post('/projects', project)
-        }
+        const res = (await createOrUpdateEntity('projects', project)) as AxiosResponse<Project>
 
-        res = res.response || res as AxiosResponse<Project | string>
-
-        if (res.status >= 400) {
-            throw new Error(res.data as string)
-        } else if (!res.data.id) {
-            throw new Error('didnt create')
-        }
-
-        actions.storeProjects([res.data] as Project[])
+        actions.storeProjects([res.data])
         return res
     }),
+
     fetchProjects: thunk(async (actions) => {
-        const {data} = await axios.get('/projects')
+        const {data} = (await axios.get('/projects')) as AxiosResponse<Project[]>
 
         if (data) {
-          actions.storeProjects(data as Project[])
+          actions.storeProjects(data)
         }
 
         return data as Project[]

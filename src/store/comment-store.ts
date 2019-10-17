@@ -2,6 +2,7 @@ import axios from 'axios'
 import {thunk, action} from 'easy-peasy'
 
 import {Comment} from '../types/music-types'
+import { ICommentStore } from './store-types'
 
 const upsert = async (name: string, payload: {}) => {
   const id = payload.id
@@ -38,7 +39,7 @@ const defaultState = [
   },
 ] as Comment[]
 
-export const CommentStore = {
+export const CommentStore: ICommentStore = {
   items: [],
 
   saveComment: thunk(async (dispatch, comment: Comment) => {
@@ -81,12 +82,13 @@ export const CommentStore = {
     })
   }),
 
-  fetchComments: thunk(async (dispatch: any, audioFileId: number) => {
+  fetchComments: thunk(async (dispatch, audioFileId) => {
     const {data} = await axios.get('/comments', {params: {audio_file_id: audioFileId}})
 
     if (data) {
       dispatch.addComments(data)
     }
+    return data
   }),
 }
 
