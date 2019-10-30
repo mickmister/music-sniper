@@ -2,7 +2,8 @@ import React, {useState, useCallback, useEffect} from 'react'
 // import { ReactMic } from 'react-mic'
 // import Recorder from 'react-recorder'
 import Recorder from './recorder'
-import { useAction } from 'easy-peasy';
+import { Actions, useStoreActions } from 'easy-peasy';
+import { IGlobalStore } from '../../store/store-types';
 
 export default function AudioRecorder {
 
@@ -11,7 +12,7 @@ export default function AudioRecorder {
   const [blobURL, setBlobURL] = useState('');
   const [blob, setBlob] = useState(null);
 
-  const uploadFile = useAction(dispatch => dispatch.songs.uploadFile)
+  const uploadFile = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.songs.uploadFile)
 
   const upload = () => {
     blob.lastModifiedDate = new Date()

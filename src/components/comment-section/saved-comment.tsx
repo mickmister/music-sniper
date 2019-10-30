@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react'
-import {useStore} from 'easy-peasy'
+import {useStore, State, useStoreState} from 'easy-peasy'
 
 import {Comment} from '../../types/music-types'
 import Button from '../button/button'
 
 import styles from './comment-section.module.scss'
+import { IGlobalStore } from '../../store/store-types'
 
 type SavedCommentProps = {
   comment: Comment,
@@ -43,13 +44,13 @@ const isTimeStamp = (word: string) => {
   return false
 }
 
-const getUser = (id: number) => (state: any) => state.users.users.find((user: any) => user.id === id)
+const getUser = (id: number) => (state: State<IGlobalStore>) => state.users.users.find((user: any) => user.id === id)
 
 export default function SavedComment(props: SavedCommentProps) {
   const {comment} = props
 
   const userId = comment.user_id
-  const user = useStore(getUser(userId))
+  const user = useStoreState(getUser(userId))
 
   const [draftState, draftActions] = useDraft(comment.text || '')
   const {draft, editing, error} = draftState

@@ -1,7 +1,8 @@
 import axios from 'axios'
-import {effect} from 'easy-peasy'
+import {thunk, action} from 'easy-peasy'
 
-import {Comment} from '../../types/music-types'
+import {Comment} from '../types/music-types'
+import { ICommentStore } from './store-types'
 
 const upsert = async (name: string, payload: {}) => {
   const id = payload.id
@@ -38,26 +39,26 @@ const defaultState = [
   },
 ] as Comment[]
 
-export const CommentStore = {
+export const CommentStore: ICommentStore = {
   items: [],
 
-  saveComment: effect(async (dispatch, comment: Comment) => {
+  saveComment: thunk(async (dispatch, comment: Comment) => {
     const newComment = await upsert('comments', comment)
-    dispatch.comments.storeComment(newComment)
+    dispatch.storeComment(newComment)
     return newComment
   }),
 
-  deleteComment: effect(async (dispatch, comment: Comment) => {
+  deleteComment: thunk(async (dispatch, comment: Comment) => {
     await deleteRecord('comments', comment)
-    dispatch.comments.removeComment(comment)
+    dispatch.removeComment(comment)
   }),
 
-  removeComment: (state, payload) => {
+  removeComment: action((state, payload) => {
     const index = state.items.findIndex(com => com.id === payload.id)
     state.items.splice(index, 1)
-  },
+  }),
 
-  storeComment: (state, comment: Comment) => {
+  storeComment: action((state, comment: Comment) => {
     const comments = state.items
 
     const index = comments.findIndex((com: Comment) => com.id === comment.id)
@@ -67,9 +68,9 @@ export const CommentStore = {
     else {
       comments.push(comment)
     }
-  },
+  }),
 
-  addComments: (state: {}, comments: Comment[]) => {
+  addComments: action((state: {}, comments: Comment[]) => {
     comments.forEach(comment => {
       const index = state.items.findIndex((com: Comment) => com.id === comment.id)
       if (index > -1) {
@@ -79,14 +80,15 @@ export const CommentStore = {
         state.items.push(comment)
       }
     })
-  },
+  }),
 
-  fetchComments: effect(async (dispatch: any, audioFileId: number) => {
+  fetchComments: thunk(async (dispatch, audioFileId) => {
     const {data} = await axios.get('/comments', {params: {audio_file_id: audioFileId}})
 
     if (data) {
-      dispatch.comments.addComments(data)
+      dispatch.addComments(data)
     }
+    return data
   }),
 }
 

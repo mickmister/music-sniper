@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
-import {useAction} from 'easy-peasy'
+import {useStoreActions} from 'easy-peasy'
+import { IGlobalStore } from '../../store/store-types'
 
 type State = {
   email?: string,
@@ -20,7 +21,7 @@ const useLogin = (props): [State, Actions] => {
 
   const set = (slice: State) => setState((state: State) => ({...state, ...slice}))
 
-  const login = useAction(dispatch => dispatch.auth.login)
+  const login = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.auth.login)
 
   return [state,
   {

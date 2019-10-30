@@ -1,17 +1,20 @@
 import axios from 'axios'
-import {effect, select} from 'easy-peasy'
+import {thunk, computed, action} from 'easy-peasy'
 
-export const AuthStore = {
+import {IAuthStore} from './store-types'
+
+export const AuthStore: IAuthStore = {
   authToken: null,
-  setAuthToken: (state, authToken) => {
+  setAuthToken: action((state, authToken) => {
     axios.defaults.headers.common['Authorization'] = authToken
     state.authToken = authToken
-  },
-  getAuthToken: select((state) => {
+  }),
+
+  getAuthToken: computed((state) => {
     return state.authToken
   }),
 
-  login: effect(async (dispatch: any, payload: {}) => {
+  login: thunk(async (dispatch: any, payload: {}) => {
     const {data} = await axios.post('/authentication/login', payload)
     axios.defaults.headers.common['Authorization'] = data.auth_token
 
@@ -20,7 +23,7 @@ export const AuthStore = {
     dispatch.store.init()
   }),
 
-  signup: effect(async (dispatch: any, payload: {}) => {
+  signup: thunk(async (dispatch: any, payload: {}) => {
     const {data} = await axios.post('/authentication/signup', payload)
     axios.defaults.headers.common['Authorization'] = data.auth_token
 

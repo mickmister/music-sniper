@@ -10,39 +10,42 @@ import MusicNote from '@material-ui/icons/MusicNote'
 import {Field} from './props'
 import Accordion from './accordion'
 import CreateItem from './create-item'
+import {useSongUpload} from '../../hooks/hooks'
 
 import styles from './styles.module.scss'
+import { useStoreState, State, Actions, useStoreActions } from 'easy-peasy';
+import { IGlobalStore } from '../../store/store-types';
+import { AudioFile, Project } from '../../types/music-types';
 
-type State = {
+type FormState = {
   [field: string]: {open: boolean}
 }
 
-const fields: Field[] = [
-  {
+const fields = {
+  projects: {
     name: 'Project',
     icon: FolderOpen,
     collectionIcon: Folder,
   },
-  {
+  audioFiles: {
     name: 'Audio File',
     icon: MusicNote,
     collectionIcon: LibraryMusic,
   },
-  {
+  clips: {
     name: 'Clip',
     icon: MusicNote,
     collectionIcon: LibraryMusic,
   },
-]
-
+}
 
 export default function NestedList() {
-  const initialState = fields.reduce((hash, field) => {
+  const initialState = Object.values(fields).reduce((hash, field) => {
     hash[field.name] = {open: false};
     return hash;
-  }, {} as State)
+  }, {} as FormState)
 
-  const [state, setState] = React.useState(initialState);
+  const [state, setState] = React.useState(initialState)
 
   function handleClick(field: Field) {
     const oldState = state[field.name]
@@ -55,36 +58,45 @@ export default function NestedList() {
     });
   }
 
-  const createAccordion = (field: Field) => {
-    const topElement = (
-      <CreateItem field={field} />
-    )
+  const [SongUpload, chooseAudioFile] = useSongUpload()
 
-    return (
-      <Accordion
-        key={field.name}
-        topElement={topElement}
-        field={field}
-        fieldState={state[field.name]}
-        handleClick={handleClick}
-      />
-    )
-  }
+  const audioFiles = useStoreState((state: State<IGlobalStore>) => state.songs.audioFiles)
+  const projects = useStoreState((state: State<IGlobalStore>) => state.projects.projects)
 
-  console.log(styles.root)
+  const openCreateProjectModal = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.modals.openCreateProjectModal)
 
   return (
-    <List
-      component='nav'
-      aria-labelledby='nested-list-subheader'
-      subheader={
+     <List
+        component='nav'
+        aria-labelledby='nested-list-subheader'
+        subheader={
         <ListSubheader component='div' id='nested-list-subheader'>
           Nested List Items
         </ListSubheader>
       }
       className={styles.root}
     >
-      {fields.map(createAccordion)}
+        <Accordion
+            key={fields.projects.name}
+            items={projects}
+            getName={(p: Project) => p.name}
+            getUrl={(p: Project) => `/projects/${p.id}`}
+            topElement={<CreateItem field={fields.projects} onClick={openCreateProjectModal} />}
+            field={fields.projects}
+            fieldState={state[fields.projects.name]}
+            handleClick={handleClick}
+        />
+        <Accordion
+            key={fields.audioFiles.name}
+            items={audioFiles}
+            getName={(f: AudioFile) => f.file_name}
+            getUrl={(f: AudioFile) => `/songs/${f.id}/play`}
+            topElement={<CreateItem field={fields.audioFiles} onClick={chooseAudioFile} />}
+            field={fields.audioFiles}
+            fieldState={state[fields.audioFiles.name]}
+            handleClick={handleClick}
+        />
+        {SongUpload}
     </List>
   );
 }

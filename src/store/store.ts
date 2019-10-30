@@ -1,12 +1,14 @@
 import axios from 'axios'
 import {useEffect} from 'react'
 import useReactRouter from 'use-react-router';
-import {createStore, useAction, useStore, effect, EasyPeasyConfig, thunk, State} from 'easy-peasy'
+import {createStore, useAction, useStore, effect, EasyPeasyConfig, thunk, State, useStoreActions, Actions, useStoreState} from 'easy-peasy'
 
-import AuthStore from './auth/auth-store'
+import AuthStore from './auth-store'
 import UserStore from './user-store'
-import SongStore from './song/song-store'
-import CommentStore from './comment/comment-store'
+import SongStore from './song-store'
+import CommentStore from './comment-store'
+import ModalStore from './modal-store'
+import ProjectStore from './project-store'
 import {IGlobalStore} from './store-types'
 
 const loadState = () => {
@@ -35,13 +37,16 @@ const store = createStore<IGlobalStore, EasyPeasyConfig>({
   users: UserStore,
   songs: SongStore,
   comments: CommentStore,
+  projects: ProjectStore,
   settings: {},
+  modals: ModalStore,
   store: {
-    init: thunk((actions, _, {dispatch}) => {
-      dispatch.users.fetchUsers()
-      dispatch.songs.fetchAudioFiles()
-      dispatch.comments.fetchComments()
-    }),
+      init: thunk((actions, _, {dispatch}) => {
+          dispatch.users.fetchUsers()
+          dispatch.songs.fetchAudioFiles()
+          dispatch.comments.fetchComments()
+          dispatch.projects.fetchProjects()
+      }),
   },
 }, {
   initialState: persisted,
@@ -53,9 +58,9 @@ store.subscribe(() => {
 
 export function StoreInit(props: {children: any}) {
   const {history, location} = useReactRouter()
-  const init = useAction(dispatch => dispatch.store.init)
-  const token = useStore(state => state.auth.authToken)
-  // const token = useStore(state => state.auth.authToken)
+  const init = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.store.init)
+  const token = useStoreState((state: State<IGlobalStore>) => state.auth.authToken)
+  // const token = useStoreState((state: State<IGlobalStore>) => state.auth.authToken)
 
   // may want to make this more secure. another library could be using axios
   axios.defaults.headers.common['Authorization'] = token

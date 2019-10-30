@@ -16,6 +16,22 @@ export type AudioFile = {
   playing?: boolean,
   howl?: Howl,
   comments: Comment[],
+  clip_ids: number[]
+}
+
+export type Clip = {
+  id: number,
+  name: string,
+  audio_file_id: number,
+  user_id: number,
+  start: number,
+  end: number,
+}
+
+export type Project = {
+  id?: number
+  name: string
+  project_attachments: [{id: number, item_type: string, item_id: number}]
 }
 
 export interface SongData {

@@ -1,7 +1,7 @@
 import React from 'react'
 import {Grid, Row, Col} from 'react-bootstrap'
 import {Link} from 'react-router-dom'
-import {useStore} from 'easy-peasy'
+import {useStoreState, State} from 'easy-peasy'
 
 import styles from './song-chooser.module.scss'
 import {AudioFile, Comment} from '../../types/music-types'
@@ -36,8 +36,8 @@ type SongChooserProps = {
 }
 
 export default function SongChooser(props: SongChooserProps) {
-  const audioFiles = useStore(state => state.songs.audioFiles)
-  const comments = useStore(state => state.comments.items)
+  const audioFiles = useStoreState((state: State<IGlobalStore>) => state.songs.audioFiles)
+  const comments = useStoreState((state: State<IGlobalStore>) => state.comments.items)
 
   return (
     <div>
