@@ -1,56 +1,60 @@
-import React, {useState} from 'react'
-import {useStoreActions} from 'easy-peasy'
-import { IGlobalStore } from '../../store/store-types'
+import React from 'react'
+import {Actions, useStoreActions} from 'easy-peasy'
+import useReactRouter from 'use-react-router'
 
-type State = {
-  email?: string,
-  password?: string,
+import {IGlobalStore, LoginPayload, SignupPayload} from '../../store/store-types'
+import {useForm, FormActions} from '../../hooks/use-form'
+
+type LoginState = LoginPayload
+type LoginActions = FormActions & {
+    login: () => void
 }
 
-type Actions = {
-  setEmail: (e: any) => void,
-  setPassword: (e: any) => void,
-  login: (e: any) => void
+export function useLogin(): [LoginState, LoginActions] {
+    const initialState: LoginState = {
+        email: '',
+        password: '',
+    }
+
+    const [state, formActions] = useForm(initialState)
+    const {history} = useReactRouter()
+
+    const login = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.auth.login)
+
+    return [state, {
+        ...formActions,
+        login: async () => {
+            await login({
+                email: state.email,
+                password: state.password
+            })
+            history.push('/')
+        },
+    }]
 }
 
-const useLogin = (props): [State, Actions] => {
-  const [state, setState] = useState({
-    email: '',
-    password: '',
-  })
 
-  const set = (slice: State) => setState((state: State) => ({...state, ...slice}))
+export default function LoginForm() {
+  const [state, {setInputFieldValue, login}] = useLogin()
 
-  const login = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.auth.login)
+  const fields = [
+    {name: 'email', value: state.email, label: 'Email'},
+    {name: 'password', value: state.password, label: 'Password'},
+  ]
 
-  return [state,
-  {
-    setEmail: e => set({email: e.target.value}),
-    setPassword: e => set({password: e.target.value}),
-    login: async (e) => {
-      if (e && e.preventDefault) {
-        e.preventDefault()
-      }
-
-      await login({email: state.email, password: state.password})
-      props.gotoMainPage()
-    },
-  }]
-}
-
-export default function LoginForm(props) {
-  const [{email, password}, {setEmail, setPassword, login}] = useLogin(props)
+  const clickedLogin = (e: any) => {
+    e.preventDefault()
+    login()
+  }
 
   return (
-    <form onSubmit={login}>
-      <div>
-        <label>Email</label>
-        <input value={email} onChange={setEmail} />
-      </div>
-      <div>
-        <label>Password</label>
-        <input value={password} onChange={setPassword} type='password' />
-      </div>
+    <form onSubmit={clickedLogin}>
+      {fields.map(f => (
+        <div>
+          <label>{f.label}</label>
+          <input name={f.name} value={f.value} onChange={setInputFieldValue} />
+        </div>
+      ))}
       <div>
         <button className='btn btn-primary'>Submit</button>
       </div>

@@ -1,116 +1,63 @@
-import React, {useState} from 'react'
-import {useAction} from 'easy-peasy'
+import React from 'react'
+import {useStoreActions, Actions} from 'easy-peasy'
+import useReactRouter from 'use-react-router'
 
-type State = {
-  email: string,
-  password: string,
-  username: string,
-  first_name: string,
-  last_name: string,
+import {SignupPayload, IGlobalStore} from '../../store/store-types'
+import {FormActions, useForm} from '../../hooks/use-form'
+
+type SignupState = SignupPayload
+type SignupActions = FormActions & {
+    signup: () => Promise<void>
 }
 
-type Actions = {
-  setEmail: (e: any) => void,
-  setPassword: (e: any) => void,
-  setUsername: (e: any) => void,
-  setFirstName: (e: any) => void,
-  setLastName: (e: any) => void,
-  signup: () => void,
+export function useSignup(): [SignupState, SignupActions] {
+    const initialState: SignupState = {
+        email: '',
+        password: '',
+        confirm_password: '',
+        username: '',
+        first_name: '',
+        last_name: '',
+    }
+
+    const [state, formActions] = useForm(initialState)
+    const signup = useStoreActions((dispatch: Actions <IGlobalStore>) => dispatch.auth.signup)
+    const {history} = useReactRouter()
+
+    return [state, {
+        ...formActions,
+        signup: async () => {
+            await signup(state)
+            history.push('/')
+        },
+    }]
 }
 
-type Props = {
-  gotoMainPage: () => void,
-}
-
-type stateCallback = (state: State) => State
-type withCallback = (cb: stateCallback) => void
-const initialState = {
-  email: '',
-  password: '',
-  username: '',
-  first_name: '',
-  last_name: '',
-} as State
-
-const useSignup = (props: Props): [State, Actions] => {
-  const [state, setState] = (useState as any)(initialState) as [State, withCallback]
-  const set = (name: keyof State) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    const sState = setState
-    sState(
-      (state: State) => {
-        return {
-          ...state,
-          [name]: value
-        }
-      }
-    )}
-
-  const signup = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.auth.signup)
-
-  return [state,
-  {
-    setEmail: set('email'),
-    setPassword: set('password'),
-    setUsername: set('username'),
-    setFirstName: set('first_name'),
-    setLastName: set('last_name'),
-    signup: async () => {
-      await signup(state)
-      props.gotoMainPage()
-    },
-  }]
-}
-
-export default function SignupForm(props: Props) {
-  const [
-    {
-      email,
-      password,
-      username,
-      first_name,
-      last_name,
-    }, {
-      setEmail,
-      setPassword,
-      setUsername,
-      setFirstName,
-      setLastName,
-      signup,
-    }] = useSignup(props)
+export default function SignupForm() {
+  const [state, {setInputFieldValue, signup}] = useSignup()
 
   const clickedSignup = (e: any) => {
     e.preventDefault()
-
     signup()
   }
 
+  const fields = [
+    {name: 'email', value: state.email, label: 'Email'},
+    {name: 'password', value: state.password, label: 'Password', type: 'password'},
+    {name: 'confirm_password', value: state.confirm_password, label: 'Password Confirmation', type: 'password'},
+    {name: 'username', value: state.username, label: 'Username'},
+    {name: 'first_name', value: state.first_name, label: 'First Name'},
+    {name: 'last_name', value: state.last_name, label: 'Last Name'},
+  ]
+
   return (
     <form onSubmit={clickedSignup}>
-      <div>
-        <label>Email</label>
-        <input value={email} onChange={setEmail} />
-      </div>
-      <div>
-        <label>Password</label>
-        <input value={password} onChange={setPassword} type='password' />
-      </div>
-      <div>
-        <label>Password Confirmation</label>
-        <input value={password} onChange={setPassword} type='password' />
-      </div>
-      <div>
-        <label>Username</label>
-        <input value={username} onChange={setUsername} />
-      </div>
-      <div>
-        <label>First Name</label>
-        <input value={first_name} onChange={setFirstName} />
-      </div>
-      <div>
-        <label>Last Name</label>
-        <input value={last_name} onChange={setLastName} />
-      </div>
+      {fields.map(f => (
+        <div>
+          <label>{f.label}</label>
+          <input name={f.name} value={f.value} onChange={setInputFieldValue} type={f.type} />
+        </div>
+      ))}
       <div>
         <button className='btn btn-primary'>Submit</button>
       </div>

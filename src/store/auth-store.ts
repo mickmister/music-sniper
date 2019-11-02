@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {thunk, computed, action} from 'easy-peasy'
 
-import {IAuthStore} from './store-types'
+import {IAuthStore, LoginPayload} from './store-types'
 
 export const AuthStore: IAuthStore = {
   authToken: null,
@@ -14,20 +14,20 @@ export const AuthStore: IAuthStore = {
     return state.authToken
   }),
 
-  login: thunk(async (dispatch: any, payload: {}) => {
+  login: thunk(async (actions, payload, {dispatch}) => {
     const {data} = await axios.post('/authentication/login', payload)
     axios.defaults.headers.common['Authorization'] = data.auth_token
 
-    dispatch.auth.setAuthToken(data.auth_token)
+    actions.setAuthToken(data.auth_token)
     dispatch.users.setCurrentUser(data.user)
     dispatch.store.init()
   }),
 
-  signup: thunk(async (dispatch: any, payload: {}) => {
+  signup: thunk(async (actions, payload, {dispatch}) => {
     const {data} = await axios.post('/authentication/signup', payload)
     axios.defaults.headers.common['Authorization'] = data.auth_token
 
-    dispatch.auth.setAuthToken(data.auth_token)
+    actions.setAuthToken(data.auth_token)
     dispatch.users.setCurrentUser(data.user)
     dispatch.store.init()
   }),

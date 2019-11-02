@@ -29,13 +29,6 @@ export default function Navbar() {
       />
   )
 
-  if (location.pathname === '/login') {
-    return <div className={styles.navbar} />
-  }
-
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-  }
-
   function handleMenu(event: React.MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
   }
@@ -45,6 +38,10 @@ export default function Navbar() {
   }
 
   const [SongUpload, chooseAudioFile] = useSongUpload()
+
+  if (location.pathname === '/login') {
+    return <div className={styles.navbar} />
+  }
 
   return (
     <AppBar position="static">

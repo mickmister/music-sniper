@@ -14,8 +14,14 @@ export interface ISettingsStore {
 
 }
 
+export type LoginPayload = {email: string, password: string}
+export type SignupPayload = {email: string, password: string, confirm_password: string, username: string, first_name: string, last_name: string}
 export interface IAuthStore {
   authToken: string | null
+  setAuthToken: Action<IAuthStore, string>
+  getAuthToken: Computed<IAuthStore, string>
+  login: Thunk<IAuthStore, LoginPayload, void, IGlobalStore>
+  signup: Thunk<IAuthStore, SignupPayload, void, IGlobalStore>
 }
 
 type ModalStates = {
