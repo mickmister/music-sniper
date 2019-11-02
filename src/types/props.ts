@@ -1,18 +1,18 @@
 export interface SongData {
-  songs: Song[]
+    songs: Song[]
 }
 
 export interface Song {
-  filePath: string
-  length: number
-  sections: Section[]
+    filePath: string
+    length: number
+    sections: Section[]
 }
 
 export type Segment = {
-  start: number
-  end: number
+    start: number
+    end: number
 }
 
 export type Section = {
-  name:  string
+    name: string
 } & Segment

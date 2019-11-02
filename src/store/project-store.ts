@@ -1,9 +1,12 @@
-import axios, { AxiosResponse, AxiosPromise } from 'axios'
+import axios, {AxiosResponse, AxiosPromise} from 'axios'
+
+import {thunk, action} from 'easy-peasy'
+
+import {Project} from '../types/music-types'
 
 import {IProjectStore} from './store-types'
-import { thunk, action } from 'easy-peasy'
-import { Project } from '../types/music-types'
-import { createOrUpdateEntity, storeEntities } from './shared-store-logic'
+
+import {createOrUpdateEntity, storeEntities} from './shared-store-logic'
 
 const ProjectStore: IProjectStore = {
     projects: [],
@@ -21,7 +24,7 @@ const ProjectStore: IProjectStore = {
         const {data} = (await axios.get('/projects')) as AxiosResponse<Project[]>
 
         if (data) {
-          actions.storeProjects(data)
+            actions.storeProjects(data)
         }
 
         return data as Project[]

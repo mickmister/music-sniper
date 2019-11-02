@@ -21,21 +21,52 @@ import AllModals from './components/modals/all-modals'
 const root = document.getElementById('main')
 
 ReactDOM.render(
-  <BrowserRouter>
-    <StoreProvider store={store}>
-      <StoreInit>
-      <Navbar />
-      <Route exact path="/" component={() => <Redirect exact from="/" to="/dashboard" />} />
-      <Route path="/dashboard" exact component={Mobile} />
-      <Route path="/login" exact component={LoginPage} />
-      <Route path="/songs" exact component={ChooseSongPage} />
-      <Route path="/songs/:id/splice" component={SongSplicerPage} />
-      <Route path="/songs/:id/play" component={ShowSongPage} />
-      <Route path="/projects/:id" component={ShowProjectPage} />
-      <Footer />
-      <AllModals />
-      </StoreInit>
-    </StoreProvider>
-  </BrowserRouter>,
-  root,
+    <BrowserRouter>
+        <StoreProvider store={store}>
+            <StoreInit>
+                <Navbar/>
+                <Route
+                    exact={true}
+                    path='/'
+                    component={(): JSX.Element => (
+                        <Redirect
+                            exact={true}
+                            from='/'
+                            to='/dashboard'
+                        />
+                    )}
+                />
+                <Route
+                    path='/dashboard'
+                    exact={true}
+                    component={Mobile}
+                />
+                <Route
+                    path='/login'
+                    exact={true}
+                    component={LoginPage}
+                />
+                <Route
+                    path='/songs'
+                    exact={true}
+                    component={ChooseSongPage}
+                />
+                <Route
+                    path='/songs/:id/splice'
+                    component={SongSplicerPage}
+                />
+                <Route
+                    path='/songs/:id/play'
+                    component={ShowSongPage}
+                />
+                <Route
+                    path='/projects/:id'
+                    component={ShowProjectPage}
+                />
+                <Footer/>
+                <AllModals/>
+            </StoreInit>
+        </StoreProvider>
+    </BrowserRouter>,
+    root,
 )

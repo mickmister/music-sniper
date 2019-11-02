@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {FormEvent} from 'react'
 import {useStoreActions, Actions} from 'easy-peasy'
 import useReactRouter from 'use-react-router'
 
@@ -34,33 +34,38 @@ export function useSignup(): [SignupState, SignupActions] {
 }
 
 export default function SignupForm() {
-  const [state, {setInputFieldValue, signup}] = useSignup()
+    const [state, {setInputFieldValue, signup}] = useSignup()
 
-  const clickedSignup = (e: any) => {
-    e.preventDefault()
-    signup()
-  }
+    const clickedSignup = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        signup()
+    }
 
-  const fields = [
-    {name: 'email', value: state.email, label: 'Email'},
-    {name: 'password', value: state.password, label: 'Password', type: 'password'},
-    {name: 'confirm_password', value: state.confirm_password, label: 'Password Confirmation', type: 'password'},
-    {name: 'username', value: state.username, label: 'Username'},
-    {name: 'first_name', value: state.first_name, label: 'First Name'},
-    {name: 'last_name', value: state.last_name, label: 'Last Name'},
-  ]
+    const fields = [
+        {name: 'email', value: state.email, label: 'Email'},
+        {name: 'password', value: state.password, label: 'Password', type: 'password'},
+        {name: 'confirm_password', value: state.confirm_password, label: 'Password Confirmation', type: 'password'},
+        {name: 'username', value: state.username, label: 'Username'},
+        {name: 'first_name', value: state.first_name, label: 'First Name'},
+        {name: 'last_name', value: state.last_name, label: 'Last Name'},
+    ]
 
-  return (
-    <form onSubmit={clickedSignup}>
-      {fields.map(f => (
-        <div>
-          <label>{f.label}</label>
-          <input name={f.name} value={f.value} onChange={setInputFieldValue} type={f.type} />
-        </div>
-      ))}
-      <div>
-        <button className='btn btn-primary'>Submit</button>
-      </div>
-    </form>
-  )
+    return (
+        <form onSubmit={clickedSignup}>
+            {fields.map((f) => (
+                <div key={f.name}>
+                    <label>{f.label}</label>
+                    <input
+                        name={f.name}
+                        value={f.value}
+                        onChange={setInputFieldValue}
+                        type={f.type}
+                    />
+                </div>
+            ))}
+            <div>
+                <button className='btn btn-primary'>{'Submit'}</button>
+            </div>
+        </form>
+    )
 }

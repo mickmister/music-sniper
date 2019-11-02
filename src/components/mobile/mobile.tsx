@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import ListSubheader from '@material-ui/core/ListSubheader'
 import List from '@material-ui/core/List'
 
@@ -7,96 +7,109 @@ import FolderOpen from '@material-ui/icons/FolderOpen'
 import LibraryMusic from '@material-ui/icons/LibraryMusic'
 import MusicNote from '@material-ui/icons/MusicNote'
 
+import {useStoreState, State, Actions, useStoreActions} from 'easy-peasy'
+
+import {useSongUpload} from '../../hooks/hooks'
+
+import {IGlobalStore} from '../../store/store-types'
+
+import {AudioFile, Project} from '../../types/music-types'
+
 import {Field} from './props'
 import Accordion from './accordion'
 import CreateItem from './create-item'
-import {useSongUpload} from '../../hooks/hooks'
 
 import styles from './styles.module.scss'
-import { useStoreState, State, Actions, useStoreActions } from 'easy-peasy';
-import { IGlobalStore } from '../../store/store-types';
-import { AudioFile, Project } from '../../types/music-types';
 
 type FormState = {
-  [field: string]: {open: boolean}
+    [field: string]: {open: boolean};
 }
 
 const fields = {
-  projects: {
-    name: 'Project',
-    icon: FolderOpen,
-    collectionIcon: Folder,
-  },
-  audioFiles: {
-    name: 'Audio File',
-    icon: MusicNote,
-    collectionIcon: LibraryMusic,
-  },
-  clips: {
-    name: 'Clip',
-    icon: MusicNote,
-    collectionIcon: LibraryMusic,
-  },
+    projects: {
+        name: 'Project',
+        icon: FolderOpen,
+        collectionIcon: Folder,
+    },
+    audioFiles: {
+        name: 'Audio File',
+        icon: MusicNote,
+        collectionIcon: LibraryMusic,
+    },
+    clips: {
+        name: 'Clip',
+        icon: MusicNote,
+        collectionIcon: LibraryMusic,
+    },
 }
 
 export default function NestedList() {
-  const initialState = Object.values(fields).reduce((hash, field) => {
-    hash[field.name] = {open: false};
-    return hash;
-  }, {} as FormState)
+    const initialState = Object.values(fields).reduce((hash, field) => {
+        hash[field.name] = {open: false}
+        return hash
+    }, {} as FormState)
 
-  const [state, setState] = React.useState(initialState)
+    const [state, setState] = React.useState(initialState)
 
-  function handleClick(field: Field) {
-    const oldState = state[field.name]
-    setState({
-      ...state,
-      [field.name]: {
-        ...oldState,
-        open: !oldState.open,
-      },
-    });
-  }
+    function handleClick(field: Field) {
+        const oldState = state[field.name]
+        setState({
+            ...state,
+            [field.name]: {
+                ...oldState,
+                open: !oldState.open,
+            },
+        })
+    }
 
-  const [SongUpload, chooseAudioFile] = useSongUpload()
+    const [SongUpload, chooseAudioFile] = useSongUpload()
 
-  const audioFiles = useStoreState((state: State<IGlobalStore>) => state.songs.audioFiles)
-  const projects = useStoreState((state: State<IGlobalStore>) => state.projects.projects)
+    const audioFiles = useStoreState((store: State<IGlobalStore>) => store.songs.audioFiles)
+    const projects = useStoreState((store: State<IGlobalStore>) => store.projects.projects)
 
-  const openCreateProjectModal = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.modals.openCreateProjectModal)
+    const openCreateProjectModal = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.modals.openCreateProjectModal)
 
-  return (
-     <List
-        component='nav'
-        aria-labelledby='nested-list-subheader'
-        subheader={
-        <ListSubheader component='div' id='nested-list-subheader'>
-          Nested List Items
-        </ListSubheader>
-      }
-      className={styles.root}
-    >
-        <Accordion
-            key={fields.projects.name}
-            items={projects}
-            getName={(p: Project) => p.name}
-            getUrl={(p: Project) => `/projects/${p.id}`}
-            topElement={<CreateItem field={fields.projects} onClick={openCreateProjectModal} />}
-            field={fields.projects}
-            fieldState={state[fields.projects.name]}
-            handleClick={handleClick}
-        />
-        <Accordion
-            key={fields.audioFiles.name}
-            items={audioFiles}
-            getName={(f: AudioFile) => f.file_name}
-            getUrl={(f: AudioFile) => `/songs/${f.id}/play`}
-            topElement={<CreateItem field={fields.audioFiles} onClick={chooseAudioFile} />}
-            field={fields.audioFiles}
-            fieldState={state[fields.audioFiles.name]}
-            handleClick={handleClick}
-        />
-        {SongUpload}
-    </List>
-  );
+    return (
+        <List
+            component='nav'
+            aria-labelledby='nested-list-subheader'
+            subheader={
+                <ListSubheader
+                    component='div'
+                    id='nested-list-subheader'
+                >
+                    {'Nested List Items'}
+                </ListSubheader>
+            }
+            className={styles.root}
+        >
+            <Accordion
+                key={fields.projects.name}
+                items={projects}
+                getName={(p: Project) => p.name}
+                getUrl={(p: Project) => `/projects/${p.id}`}
+                topElement={<CreateItem
+                    field={fields.projects}
+                    onClick={openCreateProjectModal}
+                />}
+                field={fields.projects}
+                fieldState={state[fields.projects.name]}
+                handleClick={handleClick}
+            />
+            <Accordion
+                key={fields.audioFiles.name}
+                items={audioFiles}
+                getName={(f: AudioFile) => f.file_name}
+                getUrl={(f: AudioFile) => `/songs/${f.id}/play`}
+                topElement={<CreateItem
+                    field={fields.audioFiles}
+                    onClick={chooseAudioFile}
+                />}
+                field={fields.audioFiles}
+                fieldState={state[fields.audioFiles.name]}
+                handleClick={handleClick}
+            />
+            {SongUpload}
+        </List>
+    )
 }

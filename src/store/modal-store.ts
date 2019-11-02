@@ -1,13 +1,14 @@
+import {action, computed} from 'easy-peasy'
+
 import {IModalStore} from './store-types'
-import {action, computed} from 'easy-peasy';
 
 export const ModalStore: IModalStore = {
     openCreateProjectModal: action((state) => {
-        state.modalStates.createProject = true;
+        state.modalStates.createProject = true
     }),
 
     closeCreateProjectModal: action((state) => {
-        state.modalStates.createProject = false;
+        state.modalStates.createProject = false
     }),
 
     modalStates: {
