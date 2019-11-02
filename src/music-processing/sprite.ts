@@ -17,7 +17,10 @@ export class Sprite {
     }
   }
 
-  play = () => {}
+  play = () => {
+    this.stopped = false
+    this.started = true
+  }
 
   getSpriteInfo = () => {
     if(!this.started) return this.getDefaultInfo()
@@ -26,6 +29,8 @@ export class Sprite {
       spritePosition: this.spritePosition(),
       spriteProgress: this.spriteProgress(),
       length: this.getLength(),
+      playing: this.howl.playing(),
+      section: this.section,
     } as SpriteInformation
   }
 
@@ -35,6 +40,7 @@ export class Sprite {
       spritePosition: this.section.start,
       spriteProgress: 0,
       length: this.getLength(),
+      playing: false,
     } as SpriteInformation
   }
 
@@ -99,6 +105,7 @@ export class Sprite {
   }
   stop = () => {
     this.howl.stop()
+    this.started = false
     this.stopped = true
     return this
   }

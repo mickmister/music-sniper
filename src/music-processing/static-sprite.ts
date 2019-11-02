@@ -1,5 +1,6 @@
 import { Sprite } from './sprite'
 import { throwIfEmpty } from "rxjs/operators";
+import { Section } from '../types/music-types';
 
 export class StaticSprite extends Sprite {
   howl = new Howl({
@@ -11,7 +12,19 @@ export class StaticSprite extends Sprite {
     format: 'mp3',
   })
 
+  constructor(name: string, section: Section) {
+    super(name, section)
+  }
+
   play = () => {
+    if (this.started) {
+      this.howl.play()
+      return this
+    }
     this.howl.play('segment')
+    this.stopped = false
+    this.started = true
+
+    return this
   }
 }

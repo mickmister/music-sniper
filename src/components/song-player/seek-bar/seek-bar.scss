@@ -1,0 +1,59 @@
+:global {
+
+  .selectedCircle {
+    color: blueviolet;
+    background-color: yellowgreen;
+  }
+
+  .highlightMarker {
+    height: 20px;
+    width: 55px;
+    border-radius: 25px;
+    background-color: teal;
+    font-size: 13px;
+    color: white;
+    padding-left: 10px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .seekBarHighlight {
+    top: 20;
+    position: absolute;
+  }
+
+  .seekBarCircle {
+    border: 1px solid;
+  }
+
+  .fading {
+    opacity: 0;
+    transition: 1s opacity;
+  }
+
+  .fade-in {
+    opacity: 1;
+  }
+
+  .example-enter {
+    opacity: 0.01;
+    width: 0px;
+  }
+
+  .example-enter.example-enter-active {
+    opacity: 1;
+    width: 100px;
+    transition: 700ms;
+  }
+
+  .example-leave {
+    opacity: 1;
+    width: 100px;
+  }
+
+  .example-leave.example-leave-active {
+    opacity: 0.01;
+    width: 0px;
+    transition: 700ms;
+  }
+}

@@ -13,6 +13,7 @@ export class SpriteContainer {
   private subject: Subject<SpriteInformation>
   private observable: Observable<SpriteInformation>
   private interval: number
+  private lastProgress: number
 
   constructor(
     public sprite: StaticSprite | DynamicSprite,
@@ -35,16 +36,25 @@ export class SpriteContainer {
   }
 
   sendUpdates = () => {
-    if (this.sprite.howl.playing() && this.sprite.spriteProgress() >= 1) {
-      this.sprite.howl.stop()
-      this.sprite.started = false
-      this.sprite.stopped = true
-    }
-    const payload = this.sprite.getSpriteInfo()
-    this.subject.next(payload)
     if (currentCycle++ >= NUM_CYCLES) {
-      this.cleanUp()
+      // this.cleanUp()
     }
+
+    if (this.sprite.stopped) {
+      return
+    }
+
+    if (this.sprite.spriteProgress() === 0 ||
+      (this.sprite.howl.playing() && (this.sprite.spriteProgress() >= 1))) {
+      this.sprite.stop()
+    }
+    const payload: SpriteInformation = this.sprite.getSpriteInfo()
+    if (!payload.playing && this.lastProgress === payload.spriteProgress) {
+      return
+    }
+
+    this.lastProgress = payload.spriteProgress
+    this.subject.next(payload)
   }
 
   duration = () => {

@@ -60,6 +60,8 @@ export type SpriteInformation = {
   spriteProgress: Percentage,
   length: Seconds,
   segment: Segment,
+  playing: boolean,
+  section: Section,
 }
 
 export type TimeInterval = [number, number]

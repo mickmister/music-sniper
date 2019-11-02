@@ -3,8 +3,10 @@ import { AuthStore } from './auth-store'
 import { CommentStore } from './comment-store'
 import { UserStore } from './user-store'
 import { User } from './user-store';
-import { Project, Comment, AudioFile, Clip } from '../types/music-types';
+import { Project, Comment, AudioFile, Clip, SpriteInformation, Percentage } from '../types/music-types';
 import { AxiosResponse, AxiosPromise } from 'axios';
+import { Sprite } from '../music-processing/sprite';
+import { SpriteContainer } from '../music-processing/sprite-container';
 
 export interface IStoreInit {
   init: Thunk<IStoreInit, void, void, IGlobalStore>,
@@ -62,6 +64,13 @@ export interface ISongStore {
   clips: Clip[]
   storeClips: Action<ISongStore, Clip[]>
   addClipToAudioFile: Action<ISongStore, Clip>
+  fetchClips: Thunk<ISongStore, number, void, IGlobalStore, Promise<Clip[]>>
+  playClip: Thunk<ISongStore, Clip, void, IGlobalStore>
+  updateActiveSpriteInfo: Action<ISongStore, SpriteInformation>
+  activeSpriteInfo: SpriteInformation
+  seekActiveSprite: Action<ISongStore, Percentage>
+  activeSpriteContainer: SpriteContainer | null
+  setActiveSpriteContainer: Action<ISongStore, SpriteContainer | null>
 }
 
 export interface ICommentStore {
@@ -71,7 +80,7 @@ export interface ICommentStore {
   removeComment: Action<ICommentStore, Comment>
   storeComment: Action<ICommentStore, Comment>
   addComments: Action<ICommentStore, Comment[]>
-  fetchComments: Thunk<ICommentStore, void, void, IGlobalStore, Promise<Comment[]>>
+  fetchComments: Thunk<ICommentStore, number, void, IGlobalStore, Promise<Comment[]>>
 }
 
 export interface IProjectStore {

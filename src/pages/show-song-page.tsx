@@ -1,12 +1,13 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useCallback} from 'react'
 import {useStoreActions, useStoreState, Actions, State} from 'easy-peasy'
 import Input from '@material-ui/core/Input'
 
-import {Comment, AudioFile, Clip} from '../types/music-types'
+import {Comment, AudioFile, Clip, Percentage} from '../types/music-types'
 import SongPlayer from '../components/song-player/song-player'
 import CommentSection from '../components/comment-section/comment-section'
 import { IGlobalStore } from '../store/store-types'
 import Button from '@material-ui/core/Button'
+import { displayTime } from '../util/display-time'
 
 type ShowSongPageProps = {
   match: {
@@ -19,30 +20,46 @@ type FormProps = {
   createClip: (clip: Clip) => Promise<Clip>
 }
 
+const emptyClip = {
+  name: '',
+  start: 0,
+  end: 0,
+}
+
 const ClipForm = (props: FormProps) => {
-  const [formState, setFormState] = useState({
-    name: 'ssw',
-    start: 10,
-    end: 20,
-  } as Clip)
+  const [formState, setFormState] = useState(emptyClip)
 
   const submitForm = (e) => {
     e.preventDefault()
 
-    if (!formState.name || !formState.start || !formState.end) {
+    if (!formState.name) {
+      return
+    }
+
+    if (formState.start >= formState.end) {
       return
     }
 
     const clip = {...formState, audio_file_id: props.audio_file_id}
     props.createClip(clip).then(() => {
-      setFormState({} as Clip)
+      setFormState(emptyClip)
     })
   }
 
+  const changedFormValue = (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value: string | number = e.target.value
+    if (name === 'start' || name === 'end') {
+      value = parseInt(value)
+    }
+    setFormState({...formState, [name]: value})
+  }
+
   return (
-    <form onSubmit={submitForm}>
+    <form onSubmit={submitForm} style={{backgroundColor: 'yellow'}}>
       <h1>iji</h1>
-      <Input></Input>
+      <Input onChange={changedFormValue('name')} value={formState.name} />
+      <Input onChange={changedFormValue('start')} value={formState.start} type='number' />
+      <Input onChange={changedFormValue('end')} value={formState.end} type='number' />
       <Button type='submit'>Submit</Button>
     </form>
   )
@@ -54,16 +71,23 @@ export default function ShowSongPage(props: ShowSongPageProps) {
   const fetchComments = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.comments.fetchComments)
   const createOrUpdateClip = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.songs.createOrUpdateClip)
 
+  const fetchClips = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.songs.fetchClips)
+  // const clips = useStoreState((state: State<IGlobalStore>) => state.songs.clips).filter(c => c.audio_file_id === audioFileId)
+
   useEffect(() => {
     console.log('fetching file ' + audioFileId)
     fetchComments(audioFileId)
+    fetchClips(audioFileId)
     // like comments. display cached data, but also fetch fresh data
   }, [])
 
   const audioFiles = useStoreState((state: State<IGlobalStore>) => state.songs.audioFiles)
   const audioFile = audioFiles.find((file: AudioFile) => file.id === audioFileId)
 
-  const clips = useStoreState((state: State<IGlobalStore>) => state.songs.clips).filter(c => audioFile.clip_ids.indexOf(c.id) > -1)
+  const clips = useStoreState((state: State<IGlobalStore>) => state.songs.clips).filter(c => Boolean(audioFile) && audioFile.clip_ids.indexOf(c.id) > -1)
+  const playClip = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.songs.playClip)
+  const spriteInfo = useStoreState((state: State<IGlobalStore>) => state.songs.activeSpriteInfo)
+  const seekActiveSprite = useStoreActions((state: Actions<IGlobalStore>) => state.songs.seekActiveSprite)
 
   if (!audioFile) {
     return (
@@ -75,13 +99,23 @@ export default function ShowSongPage(props: ShowSongPageProps) {
     return createOrUpdateClip(clip)
   }
 
-
+  // <SongPlayer file={audioFile} />
   return (
     <div>
-      <SongPlayer file={audioFile} />
+      <SongPlayer spriteInfo={spriteInfo} onSeek={seekActiveSprite} />
       <ClipForm createClip={handleCreateClip} audio_file_id={audioFileId} />
+      {spriteInfo && (
+        <div>
+          <h1>{displayTime(spriteInfo.spritePosition)}</h1>
+        </div>
+      )}
       {clips.map(c => (
-        <h1>{c.name}</h1>
+        <div key={c.id}>
+          <h1>{c.name} {c.start} {c.end}</h1>
+          <button onClick={() => playClip(c)}>
+            {spriteInfo && spriteInfo.section === c && spriteInfo.playing ? 'Pause' : 'Play'}
+          </button>
+        </div>
       ))}
       <CommentSection audioFile={audioFile} />
     </div>
