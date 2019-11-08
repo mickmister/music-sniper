@@ -26,7 +26,7 @@
     "axios": "0.x",
     "axios-progress-bar": "1.2.0",
     "body-parser": "1.18.3",
-    "bootstrap": "4.1.3",
+    "bootstrap": "4.3.1",
     "classnames": "2.2.6",
     "cors": "2.8.4",
     "easy-peasy": "3.1.0",
