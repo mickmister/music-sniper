@@ -9,8 +9,9 @@ import {IGlobalStore} from '../../store/store-types'
 import styles from './comment-section.module.scss'
 
 type SavedCommentProps = {
-    comment: Comment,
+    comment: Partial<Comment>,
     saveComment: (comment: Comment) => any,
+    deleteComment: (comment: Comment) => any,
 }
 
 type DraftState = {

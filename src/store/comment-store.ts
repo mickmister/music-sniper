@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {thunk, action} from 'easy-peasy'
+import {thunk, action, computed} from 'easy-peasy'
 
 import {Comment} from '../types/music-types'
 
@@ -17,27 +17,11 @@ const upsert = async (name: string, payload: {}) => {
     return res.data
 }
 
-const deleteRecord = (name: string, payload: {}) => {
+const deleteRecord = (name: string, payload: {id: number}) => {
     const id = payload.id
 
     return axios.delete(`/${name}/${id}`)
 }
-
-const defaultState = [
-    {
-        id: 1,
-        user_id: 1,
-        audio_file_id: 1,
-        created_at: '',
-        text: 'Nice fill! Totally dude, sick fill. Totally dude, sick fill.',
-    },
-    {
-        id: 2,
-        user_id: 2,
-        created_at: '',
-        text: 'Totally dude, sick fill. Totally dude, sick fill. Totally dude, sick fill. Totally dude, sick fill.',
-    },
-] as Comment[]
 
 export const CommentStore: ICommentStore = {
     items: [],
@@ -69,7 +53,7 @@ export const CommentStore: ICommentStore = {
         }
     }),
 
-    addComments: action((state: {}, comments: Comment[]) => {
+    addComments: action((state, comments: Comment[]) => {
         comments.forEach((comment) => {
             const index = state.items.findIndex((com: Comment) => com.id === comment.id)
             if (index > -1) {
@@ -81,12 +65,17 @@ export const CommentStore: ICommentStore = {
     }),
 
     fetchComments: thunk(async (dispatch, audioFileId) => {
-        const {data} = await axios.get('/comments', {params: {audio_file_id: audioFileId}})
+        const {data} = await axios.get('/comments', {params: {commentable_type: 'AudioFile', commentable_id: audioFileId}})
 
         if (data) {
             dispatch.addComments(data)
         }
         return data
+    }),
+
+    commentsForAudioFile: computed((state) => (audio_file: AudioFile) => {
+        return state.items.filter(c => c.commentable_type === 'AudioFile' && c.commentable_id === audio_file.id).
+            sort((com1, com2) => (com1.created_at < com2.created_at) - (com1.created_at > com2.created_at))
     }),
 }
 

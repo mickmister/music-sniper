@@ -203,7 +203,7 @@ module.exports = {
     "max-nested-callbacks": [
       2,
       {
-        "max": 2
+        "max": 4
       }
     ],
     "max-statements-per-line": [

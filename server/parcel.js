@@ -25,4 +25,4 @@ app.get('/*.mp3', (req, res) => res.sendFile(req.url, {root: path.join(__dirname
 app.use(bundler.middleware())
 
 const port = Number(process.env.PORT || 1234)
-app.listen(port, () => console.log(`listening ${port}`))
+app.listen(port, () => console.log(`listening http://localhost:${port}`))

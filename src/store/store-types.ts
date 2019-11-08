@@ -86,6 +86,7 @@ export interface ICommentStore {
     storeComment: Action<ICommentStore, Comment>
     addComments: Action<ICommentStore, Comment[]>
     fetchComments: Thunk<ICommentStore, number, void, IGlobalStore, Promise<Comment[]>>
+    commentsForAudioFile: Computed<ICommentStore, Comment[]>
 }
 
 export interface IProjectStore {

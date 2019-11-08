@@ -6,6 +6,8 @@ export type Comment = {
     audio_file_id: number,
     created_at: string,
     text: string,
+    commentable_type: string,
+    commentable_id: number,
 }
 
 export type AudioFile = {
