@@ -1,34 +1,92 @@
 import React from 'react'
+import axios from 'axios'
+import Button from '@material-ui/core/Button'
 
-import {AudioFile} from '../../types/music-types'
-import PlayButton from '../play-button'
-import styles from '../song-chooser/song-chooser.module.scss'
+import '../../styles/styles'
+import '../../music-processing/audio-slicer'
+import {Percentage, Section} from 'types/music-types'
 
-type SongPlayerProps = {
-  file: AudioFile,
+import SongLoader from '../../services/song-loader'
+
+import {StaticSprite} from '../../music-processing/static-sprite'
+import {SpriteContainer} from '../../music-processing/sprite-container'
+import {DynamicSprite} from '../../music-processing/sprite'
+import {SpriteInformation, Percentage} from '../../types/music-types'
+import {displayTime} from '../../util/display-time'
+
+import SeekBarContainter from '../../components/seek-bar-container'
+
+import {useSeekBar} from './seek-bar/seek-bar-hook'
+import {useHighlights} from './highlight-marker/highlights-hook'
+
+import SeekBar from './seek-bar/seek-bar'
+
+type Props = {
+    spriteInfo: SpriteInformation;
+    onSeek: (seekValue: Percentage) => void;
 }
 
-export default function SongPlayer(props: SongPlayerProps) {
-  const {file} = props
+// const onSeek = (seekValue: Percentage) =>  {
+//     const {spriteContainer} = this.props
+//     if (spriteContainer) {
+//       spriteContainer.sprite.seekPercentage(seekValue)
+//     }
+//     this.setState({currentSeek: seekValue})
+//   }
 
-  if (!file) {
+export default function SongPlayer(props: Props) {
+    const {spriteInfo, onSeek} = props
+    const [seekState, seekActions] = useSeekBar()
+    const [highlights, highlightActions] = useHighlights([])
+
+    const seekProps = {
+
+        // onSeekEnd: onSeek,
+        seek: onSeek,
+
+        seekValue: spriteInfo ? spriteInfo.spriteProgress : 0,
+        currentPercent: spriteInfo ? spriteInfo.spriteProgress : 0,
+    }
+
+    /*
+    type SeekBarProps = {
+      totalTime?: any,
+      currentTime?: any,
+      bufferedTime?: any,
+      isSeekable?: any,
+      onSeek?: any,
+      onSeekStart?: any,
+      onSeekEnd?: any,
+      onIntent?: any,
+      style?: any,
+      lastTouched?: string,
+      className?: any,
+      leftCircle?: any,
+    };
+*/
+
+    // {spriteInfo && <SeekBarContainter {...seekProps} />}
+    if (!spriteInfo) {
+        return <div/>
+    }
+
+    const position = spriteInfo.spriteProgress * 100
+
+    // const position = seekState.isSeeking ? seekState.intentPosition : spriteInfo.spriteProgress * 100
+    // seek={onSeek}
+
     return (
-      <div />
+        <div style={{marginBottom: '400px', border: '1px solid', backgroundColor: 'orange'}}>
+            <SeekBar
+                {...seekState}
+                {...seekActions}
+                leftCircle={{
+                    position,
+                }}
+                fullLength={spriteInfo.length}
+                highlights={highlights}
+                {...seekProps}
+            />
+        </div>
     )
-  }
-
-  return (
-    <div key={file.id}>
-      <p className={styles.songTitle}>
-        {file.file_name}
-      </p>
-      <audio
-        src={file.url}
-        controls
-        style={{width: '100%'}}
-        // autoPlay
-      />
-      {/* <PlayButton file={file} /> */}
-    </div>
-  )
 }

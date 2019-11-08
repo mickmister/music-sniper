@@ -1,11 +1,11 @@
-import axios, { AxiosResponse } from "axios";
+import axios, {AxiosResponse} from 'axios'
 
 type Entity = {
     id?: number
 }
 
 export async function createOrUpdateEntity(name: string, entity: Entity): Promise<AxiosResponse<Entity>> {
-    let res;
+    let res
     if (entity.id) {
         res = await axios.put(`/${name}/${entity.id}`, entity)
     } else {
@@ -25,7 +25,7 @@ export async function createOrUpdateEntity(name: string, entity: Entity): Promis
 
 export function storeEntities(existing: Entity[], toAdd: Entity[]) {
     for (const entity of toAdd) {
-        const index = existing.findIndex(e => e.id === entity.id)
+        const index = existing.findIndex((e) => e.id === entity.id)
         if (index > -1) {
             existing.splice(index, 1, entity)
         } else {

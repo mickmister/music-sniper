@@ -1,31 +1,33 @@
-body {
-  background-color: #001f3f;
-  // padding-left: 50px;
-  // padding-right: 50px;
+:global {
+  body {
+    background-color: #001f3f;
+    // padding-left: 50px;
+    // padding-right: 50px;
 
-  h1, h2 {
-    text-align: center;
+    h1, h2 {
+      text-align: center;
+    }
   }
-}
 
-h2 {
-  color: white;
-}
+  h2 {
+    color: white;
+  }
 
-.seek-bar {
-  width: 550px;
-}
+  .seek-bar {
+    width: 550px;
+  }
 
-button:focus {
-  outline: none !important;
-  box-shadow: none !important;
-}
+  button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
 
-span, p, label {
-  // color: #999;
-}
+  span, p, label {
+    // color: #999;
+  }
 
-a {
-  cursor: pointer;
-  font-weight: bold;
+  a {
+    cursor: pointer;
+    font-weight: bold;
+  }
 }

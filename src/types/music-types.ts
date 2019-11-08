@@ -1,65 +1,69 @@
-import { TimeInterval } from "rxjs/internal/operators/timeInterval";
+import {TimeInterval} from 'rxjs/internal/operators/timeInterval'
 
 export type Comment = {
-  id: number,
-  user_id: number,
-  audio_file_id: number,
-  created_at: string,
-  text: string,
+    id: number,
+    user_id: number,
+    audio_file_id: number,
+    created_at: string,
+    text: string,
+    commentable_type: string,
+    commentable_id: number,
 }
 
 export type AudioFile = {
-  id: number,
-  url: string,
-  file_name: string,
-  loading?: boolean,
-  playing?: boolean,
-  howl?: Howl,
-  comments: Comment[],
-  clip_ids: number[]
+    id: number,
+    url: string,
+    file_name: string,
+    loading?: boolean,
+    playing?: boolean,
+    howl?: Howl,
+    comments: Comment[],
+    clip_ids: number[]
 }
 
 export type Clip = {
-  id: number,
-  name: string,
-  audio_file_id: number,
-  user_id: number,
-  start: number,
-  end: number,
+    id: number,
+    name: string,
+    audio_file_id: number,
+    user_id: number,
+    start: number,
+    end: number,
 }
 
 export type Project = {
-  id?: number
-  name: string
-  project_attachments: [{id: number, item_type: string, item_id: number}]
+    id?: number
+    name: string
+    project_attachments: [{id: number, item_type: string, item_id: number}]
 }
 
 export interface SongData {
-  songs: Song[]
+    songs: Song[]
 }
 
 export interface Song {
-  length:   number
-  sections: Section[]
+    length: number
+    sections: Section[]
 }
 
 export interface Segment {
-  start: Seconds
-  end: Seconds
+    start: Seconds
+    end: Seconds
 }
 
 export interface Section {
-  name:  string
-  start: number
-  end:   number
+    name: string
+    start: number
+    end: number
 }
 
 export type SpriteInformation = {
-  songPosition: Seconds,
-  spritePosition: Seconds,
-  spriteProgress: Percentage,
-  length: Seconds,
-  segment: Segment,
+    songPosition: Seconds,
+    spritePosition: Seconds,
+    spriteProgress: Percentage,
+    length: Seconds,
+    segment: Segment,
+    playing: boolean,
+    section: Section,
 }
 
 export type TimeInterval = [number, number]

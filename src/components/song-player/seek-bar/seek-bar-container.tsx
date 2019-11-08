@@ -1,20 +1,17 @@
 import * as React from 'react'
 import produce from 'immer'
 
-import DoubleSeekBar from './double-seek-bar'
+import DoubleSeekBar from './double-seek-bar.slider'
 
 export interface DoubleSeekBarContainerProps {
-    setBounds: (obj: {}) => {}
+    setBounds: (obj: {}) => {};
 }
 
 export interface DoubleSeekBarContainerState {
-    leftPosition: number,
-    rightPosition: number,
-    oldLeftPosition: number,
-    oldRightPosition: number,
-    draggingCircle: string | null,
-    intentCircle: string | null,
-    eventStack: object[],
+    circlePosition: number;
+    draggingCircle: string | null;
+    intentCircle: string | null;
+    eventStack: object[];
 }
 
 const CIRCLES = {
@@ -28,10 +25,7 @@ const CLOSE_PROXIMITY = 2
 
 export default class DoubleSeekBarContainer extends React.PureComponent<DoubleSeekBarContainerProps, DoubleSeekBarContainerState> {
     state = {
-        leftPosition: this.props.leftPosition,
-        rightPosition: this.props.rightPosition,
-        oldLeftPosition: this.props.leftPosition,
-        oldRightPosition: this.props.rightPosition,
+        circlePosition: this.props.leftPosition,
         draggingCircle: null,
         intentCircle: null,
         eventStack: [],
@@ -118,45 +112,20 @@ export default class DoubleSeekBarContainer extends React.PureComponent<DoubleSe
     public render() {
         const {spriteContainer} = this.props
         const {leftPosition, rightPosition, draggingCircle, intentCircle} = this.state
+
         const props = {
             leftCircle: {
                 position: leftPosition,
                 selected: [draggingCircle, intentCircle].includes(CIRCLES.LEFT),
             },
-            rightCircle: {
-                position: rightPosition,
-                selected: [draggingCircle, intentCircle].includes(CIRCLES.RIGHT),
-            },
-
             onSeekStart: this.onSeekStart,
             onSeek: this.onSeek,
             onSeekEnd: this.onSeekEnd,
             onIntent: this.onIntent,
         }
-        let duration
-        if (spriteContainer) {
-            duration = spriteContainer.duration()
-        }
-
-        // const scaleNumber = (num: number) => {
-        //   return parseFloat(leftPosition.toFixed(2))
-        // }
         return (
             <div>
                 <DoubleSeekBar {...props}/>
-                {/* <input
-          type='number'
-          step={0.1}
-          value={parseFloat(leftPosition.toFixed(2))}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setState({leftPosition: parseFloat(e.target.value)})}
-        />
-        <input
-          type='number'
-          step={0.1}
-          value={parseFloat(rightPosition.toFixed(2))}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setState({rightPosition: parseFloat(e.target.value)})}
-        /> */}
-                <button onClick={this.undo}>Undo</button>
             </div>
         )
     }
