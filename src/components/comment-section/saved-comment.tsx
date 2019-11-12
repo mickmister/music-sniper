@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
-import {useStore, State, useStoreState} from 'easy-peasy'
+import {useStore, State, useStoreState, useStoreActions, Actions} from 'easy-peasy'
 
-import {Comment} from '../../types/music-types'
+import {Comment, Clip} from '../../types/music-types'
 import Button from '../button/button'
 
 import {IGlobalStore} from '../../store/store-types'
@@ -43,7 +43,7 @@ const useDraft = (draft: string) => {
 }
 
 const isTimeStamp = (word: string) => {
-    return false
+    return word.match('([0-9]*):([0-9]*)')
 }
 
 const getUser = (id: number) => (state: State<IGlobalStore>) => state.users.users.find((user: any) => user.id === id)
@@ -111,8 +111,14 @@ export default function SavedComment(props: SavedCommentProps) {
                 style={{whiteSpace: 'pre'}}
             >
                 {draft.split(' ').map((word, i) => {
-                    if (isTimeStamp) {
-                        return <span key={i}>{word} </span>
+                    if (isTimeStamp(word)) {
+                        return (
+                            <CommentTimestamp
+                                key={i}
+                                comment={props.comment}
+                                word={word}
+                            />
+                        )
                     }
 
                     return <span key={i}>{word} </span>
@@ -167,5 +173,42 @@ export default function SavedComment(props: SavedCommentProps) {
                 </span>
             </div>
         </div>
+    )
+}
+
+type CommentTimestampProps = {
+    comment: Partial<Comment>
+    word: string
+}
+
+export function CommentTimestamp({comment, word}: CommentTimestampProps): JSX.Element {
+    const playClip = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.songs.playClip)
+    const audioFiles = useStoreState((dispatch: State<IGlobalStore>) => dispatch.songs.audioFiles)
+    const f = audioFiles.find(f => f.id === comment.commentable_id)
+
+    const playAndSeek = () => {
+        const parts = word.match('([0-9]*):([0-9]*)')
+        const minutes = parseInt(parts[1])
+        const seconds = parseInt(parts[2])
+        const total = minutes * 60 + seconds
+
+        const clip: Clip = {
+            id: 0,
+            name: 'Some name',
+            audio_file_id: f.id,
+            user_id: 0,
+            start_time: total,
+            end_time: total + 40,
+        }
+
+        playClip(clip)
+    }
+
+    return (
+        <a onClick={playAndSeek}>
+            <span>
+                {word}
+            </span>
+        </a>
     )
 }
