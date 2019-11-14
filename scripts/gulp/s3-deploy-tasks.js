@@ -28,7 +28,7 @@ const options = {
     },
 }
 
-gulp.task('deploy', ['deploy-index', 'deploy-assets'], () => {})
+gulp.task('deploy', gulp.parallel('deploy-index', 'deploy-assets'))
 
 gulp.task('deploy-index', () => {
     return gulp.src(`${buildDir}/index.html`).
@@ -40,7 +40,7 @@ gulp.task('deploy-assets', () => {
         pipe(s3(creds))
 })
 
-gulp.task('deploy-and-invalidate', ['deploy'], () => gulp.
+gulp.task('deploy-and-invalidate', gulp.series('deploy'), () => gulp.
     src(`${buildDir}/index.html`).
     pipe(cloudfront({...creds, paths: ['/', '/index.html']}))
 )
