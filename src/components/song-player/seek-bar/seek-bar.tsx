@@ -106,7 +106,6 @@ class SeekBar extends React.PureComponent<SeekBarProps, SeekBarState> {
         const isRewindIntent =
     currentIntent !== 0 && currentIntent < currentTime / totalTime
 
-        console.log('seekbar', currentTime)
         const seekPopoverPosition = lastTouched === 'SEEK' ? leftCircle.position : currentIntent * 100
 
         return (

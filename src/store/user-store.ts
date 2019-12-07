@@ -48,7 +48,7 @@ export const UserStore: IUserStore = {
             return
         }
 
-        const user = getState().users.currentUser
+        const user = getState().currentUser
 
         const form = new FormData()
         form.append('user[avatar]', selectedFile)

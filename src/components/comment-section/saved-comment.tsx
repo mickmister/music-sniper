@@ -186,7 +186,7 @@ export function CommentTimestamp({comment, word}: CommentTimestampProps): JSX.El
     const audioFiles = useStoreState((dispatch: State<IGlobalStore>) => dispatch.songs.audioFiles)
     const f = audioFiles.find(f => f.id === comment.commentable_id)
 
-    const playAndSeek = () => {
+    const playAndSeek = async () => {
         const parts = word.match('([0-9]*):([0-9]*)')
         const minutes = parseInt(parts[1])
         const seconds = parseInt(parts[2])
@@ -197,11 +197,16 @@ export function CommentTimestamp({comment, word}: CommentTimestampProps): JSX.El
             name: 'Some name',
             audio_file_id: f.id,
             user_id: 0,
-            start_time: total,
-            end_time: total + 40,
+            start_time: 0,
+            end_time: f.audio_length || 100000,
         }
 
-        playClip(clip)
+        const sprite = await playClip(clip)
+        sprite.howl.load()
+        sprite.afterLoad(() => {
+            sprite.play()
+            sprite.seek(total)
+        })
     }
 
     return (

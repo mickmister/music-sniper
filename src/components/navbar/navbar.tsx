@@ -1,13 +1,12 @@
-import React, {useRef} from 'react'
+import React from 'react'
 import {Link} from 'react-router-dom'
 import useRouter from 'use-react-router'
 import {useStoreState, State} from 'easy-peasy'
-import Button from '@material-ui/core/Button'
+
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
-
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 
@@ -18,7 +17,7 @@ import {IGlobalStore} from '../../store/store-types'
 import styles from './navbar.module.scss'
 
 export default function Navbar() {
-    const {location} = useRouter()
+    const {location, history} = useRouter()
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
@@ -40,6 +39,21 @@ export default function Navbar() {
     }
 
     const [SongUpload, chooseAudioFile] = useSongUpload()
+
+    const handleUploadAudioFileClick = () => {
+        handleClose()
+        chooseAudioFile()
+    }
+
+    const handleHomeClick = () => {
+        handleClose()
+        history.push('/')
+    }
+
+    const handleLogoutClick = () => {
+        handleClose()
+        history.push('/login')
+    }
 
     if (location.pathname === '/login') {
         return <div className={styles.navbar}/>
@@ -75,16 +89,24 @@ export default function Navbar() {
                         open={open}
                         onClose={handleClose}
                     >
-                        <MenuItem onClick={handleClose}>
-                            <Link to={'/'}>
+                        <MenuItem onClick={handleHomeClick}>
+                            <span>
                                 {'Home'}
-                            </Link>
+                            </span>
+                        </MenuItem>
+                        <MenuItem onClick={handleUploadAudioFileClick}>
+                            <div>
+                                <span>{'Upload Song'}</span>
+                                {SongUpload}
+                            </div>
                         </MenuItem>
                         <MenuItem onClick={handleClose}>
                             <div>
-                                <span onClick={chooseAudioFile}>{'Upload Song'}</span>
-                                {SongUpload}
+                                {avatar}
                             </div>
+                        </MenuItem>
+                        <MenuItem onClick={handleLogoutClick}>
+                            {'Logout'}
                         </MenuItem>
                     </Menu>
                 </div>

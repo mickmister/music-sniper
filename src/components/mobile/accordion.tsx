@@ -59,6 +59,7 @@ export default function Accordion(props: Props) {
                         <Link
                             to={props.getUrl(item)}
                             key={item.id}
+                            color='secondary'
                         >
                             <ListItem
                                 button={true}

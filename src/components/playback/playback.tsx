@@ -103,11 +103,11 @@ export default class PlaybackComponent extends React.PureComponent<PlaybackProps
                             step={0.1}
                             style={{fontSize: '20px'}}
                             onChange={this.changeSpriteStart}
-                            value={(sprite && sprite.section.start.toFixed(2)) || ''}
+                            value={(sprite && sprite.clip.start_time.toFixed(2)) || ''}
                         />
                         <input
                             style={{fontSize: '20px'}}
-                            value={(sprite && displayTime(sprite.section.start)) || ''}
+                            value={(sprite && displayTime(sprite.clip.start_time)) || ''}
                         />
                     </div>
                     <div>
@@ -116,11 +116,11 @@ export default class PlaybackComponent extends React.PureComponent<PlaybackProps
                             step={0.1}
                             style={{fontSize: '20px'}}
                             onChange={this.changeSpriteEnd}
-                            value={(sprite && sprite.section.end.toFixed(2)) || ''}
+                            value={(sprite && sprite.clip.end_time.toFixed(2)) || ''}
                         />
                         <input
                             style={{fontSize: '20px'}}
-                            value={(sprite && displayTime(sprite.section.end)) || ''}
+                            value={(sprite && displayTime(sprite.clip.end_time)) || ''}
                         />
                     </div>
                 </div>

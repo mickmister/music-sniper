@@ -8,7 +8,7 @@ loadProgressBar()
 if (process.env.NODE_ENV === 'production') {
     axios.defaults.baseURL = 'https://music-sniper-rails.herokuapp.com'
 } else {
-    axios.defaults.baseURL = 'http://localhost:1234/api'
+    axios.defaults.baseURL = 'http://localhost:3000'
 }
 
 window.axios = axios

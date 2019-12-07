@@ -17,6 +17,7 @@ import Navbar from './components/navbar/navbar'
 import Footer from './components/footer/footer'
 import Mobile from './components/mobile/mobile'
 import AllModals from './components/modals/all-modals'
+import DashboardPage from './pages/dashboard-page'
 
 const root = document.getElementById('main')
 
@@ -39,7 +40,7 @@ ReactDOM.render(
                 <Route
                     path='/dashboard'
                     exact={true}
-                    component={Mobile}
+                    component={DashboardPage}
                 />
                 <Route
                     path='/login'

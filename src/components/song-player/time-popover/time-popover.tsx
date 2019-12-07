@@ -22,10 +22,6 @@ const useFadeIn = () => {
 }
 
 const TimePopover = ({fullLength, position, show}) => {
-    // const className = useFadeIn()
-    // console.log(className)
-    console.log('dude')
-
     return (
         <div
             style={{opacity: show ? 1 : 0, left: `${position}%`, top: '30', position: 'absolute'}}

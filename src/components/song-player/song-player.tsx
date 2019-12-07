@@ -1,29 +1,22 @@
 import React from 'react'
-import axios from 'axios'
-import Button from '@material-ui/core/Button'
+import {useStoreActions, Actions} from 'easy-peasy'
+import {PlayButton, PauseButton} from 'react-player-controls'
 
-import '../../styles/styles'
 import '../../music-processing/audio-slicer'
-import {Percentage, Section} from 'types/music-types'
 
-import SongLoader from '../../services/song-loader'
-
-import {StaticSprite} from '../../music-processing/static-sprite'
-import {SpriteContainer} from '../../music-processing/sprite-container'
-import {DynamicSprite} from '../../music-processing/sprite'
 import {SpriteInformation, Percentage} from '../../types/music-types'
 import {displayTime} from '../../util/display-time'
-
-import SeekBarContainter from '../../components/seek-bar-container'
+import {IGlobalStore} from '../../store/store-types'
+import {SpriteContainer} from '../../music-processing/sprite-container'
 
 import {useSeekBar} from './seek-bar/seek-bar-hook'
 import {useHighlights} from './highlight-marker/highlights-hook'
-
 import SeekBar from './seek-bar/seek-bar'
 
 type Props = {
-    spriteInfo: SpriteInformation;
-    onSeek: (seekValue: Percentage) => void;
+    spriteInfo: SpriteInformation
+    activeSpriteContainer: SpriteContainer
+    onSeek: (seekValue: Percentage) => void
 }
 
 // const onSeek = (seekValue: Percentage) =>  {
@@ -35,9 +28,11 @@ type Props = {
 //   }
 
 export default function SongPlayer(props: Props) {
-    const {spriteInfo, onSeek} = props
+    const {spriteInfo, activeSpriteContainer, onSeek} = props
     const [seekState, seekActions] = useSeekBar()
     const [highlights, highlightActions] = useHighlights([])
+
+    const playClip = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.songs.playClip)
 
     const seekProps = {
 
@@ -75,8 +70,36 @@ export default function SongPlayer(props: Props) {
     // const position = seekState.isSeeking ? seekState.intentPosition : spriteInfo.spriteProgress * 100
     // seek={onSeek}
 
+    const clip = spriteInfo.section
+    const play = async () => {
+        const sprite = await playClip(clip)
+        // sprite.play() // sprite will automatically play because the store will short circuit on the already loaded file
+    }
+
+    let button = (
+        <PlayButton
+            isEnabled={true}
+            onClick={play}
+        />
+    )
+
+    if (spriteInfo && spriteInfo.playing) {
+        button = <PauseButton onClick={play}/>
+    }
+
     return (
-        <div style={{marginBottom: '400px', border: '1px solid', backgroundColor: 'orange'}}>
+        <div style={{marginBottom: '50px', border: '1px solid', backgroundColor: 'orange'}}>
+            {button}
+            <div>
+                {displayTime(spriteInfo.songPosition)}
+                {' / '}
+                {displayTime(activeSpriteContainer.sprite.howl.duration())}
+            </div>
+            <div>
+                {displayTime(spriteInfo.spritePosition)}
+                {' / '}
+                {displayTime(spriteInfo.length)}
+            </div>
             <SeekBar
                 {...seekState}
                 {...seekActions}

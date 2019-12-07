@@ -1,5 +1,5 @@
 import React from 'react'
-import {useStoreState, State} from 'easy-peasy'
+import {useStoreState, State, useStoreActions, Actions} from 'easy-peasy'
 
 import SongPlayer from '../song-player/song-player'
 import {IGlobalStore} from '../../store/store-types'
@@ -7,7 +7,9 @@ import {IGlobalStore} from '../../store/store-types'
 import styles from './footer.module.scss'
 
 export default function Footer() {
-    const song = useStoreState((state: State<IGlobalStore>) => state.songs.currentPlayingSong)
+    const spriteInfo = useStoreState((state: State<IGlobalStore>) => state.songs.activeSpriteInfo)
+    const seekActiveSprite = useStoreActions((state: Actions<IGlobalStore>) => state.songs.seekActiveSprite)
+    const activeSprite = useStoreState((state: State<IGlobalStore>) => state.songs.activeSpriteContainer)
 
     if (location.pathname === '/login') {
         return <div className={styles.footer}/>
@@ -15,7 +17,11 @@ export default function Footer() {
 
     return (
         <div className={styles.footer}>
-            <SongPlayer file={song}/>
+            <SongPlayer
+                spriteInfo={spriteInfo}
+                onSeek={seekActiveSprite}
+                activeSpriteContainer={activeSprite}
+            />
         </div>
     )
 }

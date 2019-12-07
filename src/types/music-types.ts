@@ -19,6 +19,7 @@ export type AudioFile = {
     howl?: Howl,
     comments: Comment[],
     clip_ids: number[]
+    audio_length: number
 }
 
 export type Clip = {
@@ -26,8 +27,8 @@ export type Clip = {
     name: string,
     audio_file_id: number,
     user_id: number,
-    start: number,
-    end: number,
+    start_time: number,
+    end_time: number,
 }
 
 export type Project = {
@@ -52,8 +53,8 @@ export interface Segment {
 
 export interface Section {
     name: string
-    start: number
-    end: number
+    start_time: number
+    end_time: number
 }
 
 export type SpriteInformation = {
@@ -63,7 +64,7 @@ export type SpriteInformation = {
     length: Seconds,
     segment: Segment,
     playing: boolean,
-    section: Section,
+    section: Clip,
 }
 
 export type TimeInterval = [number, number]

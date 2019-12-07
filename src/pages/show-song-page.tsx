@@ -1,83 +1,20 @@
-import React, {useEffect, useState, useCallback} from 'react'
+import React, {useEffect} from 'react'
 import {useStoreActions, useStoreState, Actions, State} from 'easy-peasy'
-import Input from '@material-ui/core/Input'
 
-import Button from '@material-ui/core/Button'
+import {PlayButton, PauseButton} from 'react-player-controls'
 
-import {Comment, AudioFile, Clip, Percentage} from '../types/music-types'
+import {AudioFile, Clip} from '../types/music-types'
+import {IGlobalStore} from '../store/store-types'
+import {displayTime} from '../util/display-time'
+
 import SongPlayer from '../components/song-player/song-player'
 import CommentSection from '../components/comment-section/comment-section'
-import {IGlobalStore} from '../store/store-types'
-
-import {displayTime} from '../util/display-time'
+import ClipForm from '../components/clip-form/clip-form'
 
 type ShowSongPageProps = {
     match: {
         params: {id: string}
     },
-}
-
-type FormProps = {
-    audio_file_id: number
-    createClip: (clip: Clip) => Promise<Clip>
-}
-
-const emptyClip = {
-    name: '',
-    start: 0,
-    end: 0,
-}
-
-const ClipForm = (props: FormProps) => {
-    const [formState, setFormState] = useState(emptyClip)
-
-    const submitForm = (e) => {
-        e.preventDefault()
-
-        if (!formState.name) {
-            return
-        }
-
-        if (formState.start >= formState.end) {
-            return
-        }
-
-        const clip = {...formState, audio_file_id: props.audio_file_id}
-        props.createClip(clip).then(() => {
-            setFormState(emptyClip)
-        })
-    }
-
-    const changedFormValue = (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-        let value: string | number = e.target.value
-        if (name === 'start' || name === 'end') {
-            value = parseInt(value)
-        }
-        setFormState({...formState, [name]: value})
-    }
-
-    return (
-        <form
-            onSubmit={submitForm}
-            style={{backgroundColor: 'yellow'}}
-        >
-            <Input
-                onChange={changedFormValue('name')}
-                value={formState.name}
-            />
-            <Input
-                onChange={changedFormValue('start')}
-                value={formState.start}
-                type='number'
-            />
-            <Input
-                onChange={changedFormValue('end')}
-                value={formState.end}
-                type='number'
-            />
-            <Button type='submit'>{'Submit'}</Button>
-        </form>
-    )
 }
 
 export default function ShowSongPage(props: ShowSongPageProps) {
@@ -104,7 +41,6 @@ export default function ShowSongPage(props: ShowSongPageProps) {
     const clips = useStoreState((state: State<IGlobalStore>) => state.songs.clips).filter((c) => Boolean(audioFile) && audioFile.clip_ids.indexOf(c.id) > -1)
     const playClip = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.songs.playClip)
     const spriteInfo = useStoreState((state: State<IGlobalStore>) => state.songs.activeSpriteInfo)
-    const seekActiveSprite = useStoreActions((state: Actions<IGlobalStore>) => state.songs.seekActiveSprite)
 
     if (!audioFile) {
         return (
@@ -116,30 +52,49 @@ export default function ShowSongPage(props: ShowSongPageProps) {
         return createOrUpdateClip(clip)
     }
 
-    // <SongPlayer file={audioFile} />
+    const makeClipComponent = (c: Clip): JSX.Element => {
+        const play = async () => {
+            const sprite = await playClip(c)
+            sprite.play()
+        }
+
+        let button = null
+        button = (
+            <PlayButton
+                isEnabled={true}
+                onClick={play}
+            />
+        )
+
+        if (spriteInfo && spriteInfo.section === c && spriteInfo.playing) {
+            button = <PauseButton onClick={play}/>
+        }
+
+        return (
+            <div
+                key={c.id}
+                style={{
+                    border: '4px solid',
+                    width: '500px',
+                    borderRadius: '10px',
+                    // borderColor: 'black',
+                    margin: '20px',
+                    padding: '10px',
+                }}
+            >
+                {button}
+                <span>{c.name} {displayTime(c.start_time)} {'-'} {displayTime(c.end_time)}</span>
+            </div>
+        )
+    }
+
     return (
         <div>
-            <SongPlayer
-                spriteInfo={spriteInfo}
-                onSeek={seekActiveSprite}
-            />
             <ClipForm
                 createClip={handleCreateClip}
                 audio_file_id={audioFileId}
             />
-            {spriteInfo && (
-                <div>
-                    <h1>{displayTime(spriteInfo.spritePosition)}</h1>
-                </div>
-            )}
-            {clips.map((c) => (
-                <div key={c.id}>
-                    <h1>{c.name} {c.start} {c.end}</h1>
-                    <button onClick={() => playClip(c)}>
-                        {spriteInfo && spriteInfo.section === c && spriteInfo.playing ? 'Pause' : 'Play'}
-                    </button>
-                </div>
-            ))}
+            {clips.map(makeClipComponent)}
             <CommentSection audioFile={audioFile}/>
         </div>
     )
