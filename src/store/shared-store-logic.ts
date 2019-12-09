@@ -1,6 +1,6 @@
 import axios, {AxiosResponse} from 'axios'
 
-type Entity = {
+export type Entity = {
     id?: number
 }
 

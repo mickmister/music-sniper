@@ -1,6 +1,14 @@
-import {action, computed} from 'easy-peasy'
+import {action, Action} from 'easy-peasy'
 
-import {IModalStore} from './store-types'
+type ModalStates = {
+    createProject: boolean;
+}
+
+export interface IModalStore {
+    openCreateProjectModal: Action<IModalStore>;
+    closeCreateProjectModal: Action<IModalStore>;
+    modalStates: ModalStates;
+}
 
 export const ModalStore: IModalStore = {
     openCreateProjectModal: action((state) => {
@@ -16,5 +24,4 @@ export const ModalStore: IModalStore = {
     },
 }
 
-// export default new AuthStore()
 export default ModalStore
