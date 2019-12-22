@@ -31,6 +31,13 @@ export type Clip = {
     end_time: number,
 }
 
+export type Folder = {
+    id?: number
+    name: string
+    description: string
+    parent_id?: number
+}
+
 export type Project = {
     id?: number
     name: string

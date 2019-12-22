@@ -2,8 +2,9 @@ import React, {FormEvent} from 'react'
 import {useStoreActions, Actions} from 'easy-peasy'
 import useReactRouter from 'use-react-router'
 
-import {SignupPayload, IGlobalStore} from '../../store/store-types'
+import {IGlobalStore} from '../../store/store-types'
 import {FormActions, useForm} from '../../hooks/use-form'
+import {SignupPayload} from '../../store/auth-store'
 
 type SignupState = SignupPayload
 type SignupActions = FormActions & {

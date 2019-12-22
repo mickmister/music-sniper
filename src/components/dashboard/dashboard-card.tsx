@@ -4,17 +4,13 @@ import {Card, Icon, Accordion, Menu} from 'semantic-ui-react'
 import {useStoreState, State} from 'easy-peasy'
 
 import {IGlobalStore} from '../../store/store-types'
+import {Folder} from '../../types/music-types'
 
 import styles from './dashboard.module.scss'
 
 import DashboardCardAttachments from './dashboard-card-attachments'
 
-type Folder = {
-    name: string
-    audio_files: number[]
-}
-
-type Props = {folder: Folder}
+type Props = {folder: Folder[]}
 
 export default function DashboardCard(props: Props) {
     const {folder} = props

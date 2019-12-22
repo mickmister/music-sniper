@@ -148,6 +148,7 @@ class SeekBar extends React.PureComponent<SeekBarProps, SeekBarState> {
                         onChangeStart={this.handleSeekStart}
                         onChangeEnd={this.handleSeekEnd}
                         onIntent={this.handleIntent}
+                        onValue={() => {}}
                     />
                 )}
 

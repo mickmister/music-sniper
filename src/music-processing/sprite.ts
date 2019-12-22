@@ -55,6 +55,7 @@ export class Sprite {
             spriteProgress: 0,
             length: this.getLength(),
             playing: false,
+            section: this.clip,
         } as SpriteInformation
     }
 

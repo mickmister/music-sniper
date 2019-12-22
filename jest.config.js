@@ -195,15 +195,6 @@ module.exports = {
     ],
     clearMocks: true,
     collectCoverageFrom: [
-        'actions/**/*.{js,jsx}',
-        'client/**/*.{js,jsx}',
-        'components/**/*.jsx',
-        'plugins/**/*.{js,jsx}',
-        'reducers/**/*.{js,jsx}',
-        'routes/**/*.{js,jsx}',
-        'selectors/**/*.{js,jsx}',
-        'stores/**/*.{js,jsx}',
-        'utils/**/*.{js,jsx}',
     ],
     coverageReporters: [
         'lcov',

@@ -1,7 +1,7 @@
 import {Actions, State, useStoreActions} from 'easy-peasy'
 import useReactRouter from 'use-react-router'
 
-import {IGlobalStore, LoginPayload, SignupPayload} from '../../store/store-types'
+import {IGlobalStore} from '../../store/store-types'
 import {useForm, FormActions} from '../../hooks/use-form'
 
 type LoginState = LoginPayload
@@ -18,7 +18,7 @@ export function useLogin(): [LoginState, LoginActions] {
     const [state, formActions] = useForm(initialState)
     const {history} = useReactRouter()
 
-    const login = useStoreActions((dispatch: Actions < IGlobalStore > ) => dispatch.auth.login)
+    const login = useStoreActions((dispatch: Actions < IGlobalStore >) => dispatch.auth.login)
 
     return [state,
         {
@@ -30,10 +30,10 @@ export function useLogin(): [LoginState, LoginActions] {
 
                 await login({
                     email: state.email,
-                    password: state.password
+                    password: state.password,
                 })
                 history.push('/')
             },
-        }
+        },
     ]
 }

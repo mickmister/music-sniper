@@ -43,73 +43,85 @@ export default function SongPlayer(props: Props) {
         currentPercent: spriteInfo ? spriteInfo.spriteProgress : 0,
     }
 
-    /*
-    type SeekBarProps = {
-      totalTime?: any,
-      currentTime?: any,
-      bufferedTime?: any,
-      isSeekable?: any,
-      onSeek?: any,
-      onSeekStart?: any,
-      onSeekEnd?: any,
-      onIntent?: any,
-      style?: any,
-      lastTouched?: string,
-      className?: any,
-      leftCircle?: any,
-    };
-*/
-
-    // {spriteInfo && <SeekBarContainter {...seekProps} />}
-    if (!spriteInfo) {
-        return <div/>
+    let position = 0
+    if (spriteInfo) {
+        position = spriteInfo.spriteProgress * 100
     }
-
-    const position = spriteInfo.spriteProgress * 100
 
     // const position = seekState.isSeeking ? seekState.intentPosition : spriteInfo.spriteProgress * 100
     // seek={onSeek}
 
-    const clip = spriteInfo.section
     const play = async () => {
-        const sprite = await playClip(clip)
+        if (!spriteInfo) {
+            return
+        }
+
+        const sprite = await playClip(spriteInfo.section)
+
         // sprite.play() // sprite will automatically play because the store will short circuit on the already loaded file
     }
 
-    let button = (
+    let playButton = (
         <PlayButton
-            isEnabled={true}
+            isEnabled={Boolean(spriteInfo)}
             onClick={play}
         />
     )
 
     if (spriteInfo && spriteInfo.playing) {
-        button = <PauseButton onClick={play}/>
+        playButton = <PauseButton onClick={play}/>
     }
 
+    let songPosition = 0
+    let spritePosition = 0
+    let length = 0
+    let songLength = 0
+    let clipName = ''
+    if (spriteInfo) {
+        songPosition = spriteInfo.songPosition
+        songLength = activeSpriteContainer.sprite.howl.duration()
+        spritePosition = spriteInfo.spritePosition
+        length = spriteInfo.length
+        clipName = activeSpriteContainer.sprite.clip.name
+    }
+    const timeInfo = (
+        <>
+            <div>
+                {clipName}
+            </div>
+            <div>
+                {displayTime(songPosition)}
+                {' / '}
+                {displayTime(songLength)}
+            </div>
+            <div>
+                {displayTime(spritePosition)}
+                {' / '}
+                {displayTime(length)}
+            </div>
+        </>
+    )
+
+    const seekBar = null
+
     return (
-        <div style={{marginBottom: '50px', border: '1px solid', backgroundColor: 'orange'}}>
-            {button}
+        <>
             <div>
-                {displayTime(spriteInfo.songPosition)}
-                {' / '}
-                {displayTime(activeSpriteContainer.sprite.howl.duration())}
+                {playButton}
             </div>
             <div>
-                {displayTime(spriteInfo.spritePosition)}
-                {' / '}
-                {displayTime(spriteInfo.length)}
+                {timeInfo}
+                <SeekBar
+                    {...seekState}
+                    {...seekActions}
+                    leftCircle={{
+                        position,
+                    }}
+                    fullLength={length}
+                    highlights={highlights}
+                    {...seekProps}
+                />
             </div>
-            <SeekBar
-                {...seekState}
-                {...seekActions}
-                leftCircle={{
-                    position,
-                }}
-                fullLength={spriteInfo.length}
-                highlights={highlights}
-                {...seekProps}
-            />
-        </div>
+        </>
     )
 }

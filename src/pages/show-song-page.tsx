@@ -7,7 +7,7 @@ import {AudioFile, Clip} from '../types/music-types'
 import {IGlobalStore} from '../store/store-types'
 import {displayTime} from '../util/display-time'
 
-import SongPlayer from '../components/song-player/song-player'
+import SongPlayerHTML5 from '../components/song-player/song-player-html5'
 import CommentSection from '../components/comment-section/comment-section'
 import ClipForm from '../components/clip-form/clip-form'
 
@@ -55,7 +55,9 @@ export default function ShowSongPage(props: ShowSongPageProps) {
     const makeClipComponent = (c: Clip): JSX.Element => {
         const play = async () => {
             const sprite = await playClip(c)
-            sprite.play()
+            if (sprite) {
+                sprite.play()
+            }
         }
 
         let button = null
@@ -77,6 +79,7 @@ export default function ShowSongPage(props: ShowSongPageProps) {
                     border: '4px solid',
                     width: '500px',
                     borderRadius: '10px',
+
                     // borderColor: 'black',
                     margin: '20px',
                     padding: '10px',
@@ -90,10 +93,16 @@ export default function ShowSongPage(props: ShowSongPageProps) {
 
     return (
         <div>
+            <div style={{height: '200px'}}>
+                <SongPlayerHTML5
+                    file={audioFile}
+                />
+            </div>
             <ClipForm
                 createClip={handleCreateClip}
                 audio_file_id={audioFileId}
             />
+            <h2>{'Display clips in a table. Display clip form as first row of table.'}</h2>
             {clips.map(makeClipComponent)}
             <CommentSection audioFile={audioFile}/>
         </div>

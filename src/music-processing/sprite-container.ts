@@ -12,6 +12,23 @@ let currentCycle = 0
 
 let holdingDownSpace = false
 
+window.addEventListener('load', () => {
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== ' ') {
+            return
+    }
+
+    if (e.target !== document.body) {
+        return
+    }
+
+    e.preventDefault()
+    e.stopPropagation()
+
+        return false
+    })
+})
+
 export class SpriteContainer {
     private cancelSubject: Subject<boolean>
     private subject: Subject<SpriteInformation>
@@ -39,7 +56,7 @@ export class SpriteContainer {
         document.addEventListener('keyup', this.spaceBarListenerUp)
     }
 
-    spaceBarListenerDown = (e: React.KeyboardEvent<HTMLDivElement>): void => {
+    spaceBarListenerDown = (e: React.KeyboardEvent<HTMLDivElement>): void | boolean => {
         if (e.key !== ' ') {
             return
         }
@@ -48,8 +65,11 @@ export class SpriteContainer {
             return
         }
 
+        e.preventDefault()
+        e.stopPropagation()
+
         if (holdingDownSpace) {
-            return
+            return false
         }
 
         holdingDownSpace = true
@@ -59,6 +79,8 @@ export class SpriteContainer {
         } else {
             this.sprite.play()
         }
+
+        return false
     }
 
     spaceBarListenerUp = (e: React.KeyboardEvent<HTMLDivElement>): void => {

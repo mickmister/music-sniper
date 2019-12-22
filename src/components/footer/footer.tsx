@@ -11,17 +11,36 @@ export default function Footer() {
     const seekActiveSprite = useStoreActions((state: Actions<IGlobalStore>) => state.songs.seekActiveSprite)
     const activeSprite = useStoreState((state: State<IGlobalStore>) => state.songs.activeSpriteContainer)
 
+    const [show, setShow] = React.useState(true)
+
     if (location.pathname === '/login') {
         return <div className={styles.footer}/>
     }
 
+    return null
+
+    const buttonText = show ? 'Hide' : 'Show'
+    const showButton = (
+        <button onClick={() => setShow(!show)}>
+            {buttonText}
+        </button>
+    )
+
+    const style = {}
+    if (!show) {
+        style.display = 'none'
+    }
+
     return (
         <div className={styles.footer}>
-            <SongPlayer
-                spriteInfo={spriteInfo}
-                onSeek={seekActiveSprite}
-                activeSpriteContainer={activeSprite}
-            />
+            <div style={style}>
+                <SongPlayer
+                    spriteInfo={spriteInfo}
+                    onSeek={seekActiveSprite}
+                    activeSpriteContainer={activeSprite}
+                />
+            </div>
+            {showButton}
         </div>
     )
 }

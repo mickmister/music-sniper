@@ -4,11 +4,11 @@ import {AudioFile} from '../../types/music-types'
 import PlayButton from '../play-button'
 import styles from '../song-chooser/song-chooser.module.scss'
 
-type SongPlayerProps = {
+type SongPlayerHTML5Props = {
     file: AudioFile;
 }
 
-export default function SongPlayer(props: SongPlayerProps) {
+export default function SongPlayerHTML5(props: SongPlayerHTML5Props) {
     const {file} = props
 
     if (!file) {

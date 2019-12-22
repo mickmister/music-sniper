@@ -1,7 +1,7 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 import useRouter from 'use-react-router'
-import {useStoreState, State} from 'easy-peasy'
+import {useStoreState, State, useStoreActions, Actions} from 'easy-peasy'
 
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -14,7 +14,47 @@ import Avatar from '../avatar/avatar'
 import {useSongUpload} from '../../hooks/hooks'
 import {IGlobalStore} from '../../store/store-types'
 
+import SongPlayer from '../song-player/song-player'
+
 import styles from './navbar.module.scss'
+
+const Player = () => {
+    const spriteInfo = useStoreState((state: State<IGlobalStore>) => state.songs.activeSpriteInfo)
+    const seekActiveSprite = useStoreActions((state: Actions<IGlobalStore>) => state.songs.seekActiveSprite)
+    const activeSprite = useStoreState((state: State<IGlobalStore>) => state.songs.activeSpriteContainer)
+
+    const [show, setShow] = React.useState(true)
+
+    if (location.pathname === '/login') {
+        return <div className={styles.footer}/>
+    }
+
+    const buttonText = show ? 'Hide' : 'Show'
+    const showButton = (
+        <button onClick={() => setShow(!show)}>
+            {buttonText}
+        </button>
+    )
+
+    const style = {}
+    if (!show) {
+        style.display = 'none'
+    }
+
+    return (
+        <>
+            <SongPlayer
+                show={show}
+                spriteInfo={spriteInfo}
+                onSeek={seekActiveSprite}
+                activeSpriteContainer={activeSprite}
+            />
+            <div>
+                {/* {showButton} */}
+            </div>
+        </>
+    )
+}
 
 export default function Navbar() {
     const {location, history} = useRouter()
@@ -56,61 +96,68 @@ export default function Navbar() {
     }
 
     if (location.pathname === '/login') {
-        return <div className={styles.navbar}/>
+        return <div/>
     }
 
     return (
-        <AppBar position='static'>
-            <Toolbar>
-                <div>
-                    <IconButton
-                        edge='start'
-                        className={'classes.menuButton'}
-                        color='inherit'
-                        aria-label='menu'
-                        aria-controls='menu-appbar'
-                        aria-haspopup='true'
-                        onClick={handleMenu}
-                    >
-                        <MenuIcon/>
-                    </IconButton>
-                    <Menu
-                        id='menu-appbar'
-                        anchorEl={anchorEl}
-                        anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        keepMounted={true}
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        open={open}
-                        onClose={handleClose}
-                    >
-                        <MenuItem onClick={handleHomeClick}>
-                            <span>
-                                {'Home'}
-                            </span>
-                        </MenuItem>
-                        <MenuItem onClick={handleUploadAudioFileClick}>
-                            <div>
-                                <span>{'Upload Song'}</span>
-                                {SongUpload}
-                            </div>
-                        </MenuItem>
-                        <MenuItem onClick={handleClose}>
-                            <div>
-                                {avatar}
-                            </div>
-                        </MenuItem>
-                        <MenuItem onClick={handleLogoutClick}>
-                            {'Logout'}
-                        </MenuItem>
-                    </Menu>
-                </div>
-            </Toolbar>
-        </AppBar>
+        <div>
+
+            <AppBar
+                position='fixed'
+            >
+                <Toolbar>
+                    <div>
+                        <IconButton
+                            edge='start'
+                            className={'classes.menuButton'}
+                            color='inherit'
+                            aria-label='menu'
+                            aria-controls='menu-appbar'
+                            aria-haspopup='true'
+                            onClick={handleMenu}
+                        >
+                            <MenuIcon/>
+                        </IconButton>
+                        <Menu
+                            id='menu-appbar'
+                            anchorEl={anchorEl}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted={true}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={open}
+                            onClose={handleClose}
+                        >
+                            <MenuItem onClick={handleHomeClick}>
+                                <span>
+                                    {'Home'}
+                                </span>
+                            </MenuItem>
+                            <MenuItem onClick={handleUploadAudioFileClick}>
+                                <div>
+                                    <span>{'Upload Song'}</span>
+                                    {SongUpload}
+                                </div>
+                            </MenuItem>
+                            <MenuItem onClick={handleClose}>
+                                <div>
+                                    {avatar}
+                                </div>
+                            </MenuItem>
+                            <MenuItem onClick={handleLogoutClick}>
+                                {'Logout'}
+                            </MenuItem>
+                        </Menu>
+                    </div>
+                    <Player/>
+                </Toolbar>
+            </AppBar>
+            <div style={{height: '100px'}}/>
+        </div>
     )
 }
