@@ -14,47 +14,9 @@ import Avatar from '../avatar/avatar'
 import {useSongUpload} from '../../hooks/hooks'
 import {IGlobalStore} from '../../store/store-types'
 
-import SongPlayer from '../song-player/song-player'
+import {CurrentSpriteFullPlayer} from '../song-player/song-player'
 
 import styles from './navbar.module.scss'
-
-const Player = () => {
-    const spriteInfo = useStoreState((state: State<IGlobalStore>) => state.songs.activeSpriteInfo)
-    const seekActiveSprite = useStoreActions((state: Actions<IGlobalStore>) => state.songs.seekActiveSprite)
-    const activeSprite = useStoreState((state: State<IGlobalStore>) => state.songs.activeSpriteContainer)
-
-    const [show, setShow] = React.useState(true)
-
-    if (location.pathname === '/login') {
-        return <div className={styles.footer}/>
-    }
-
-    const buttonText = show ? 'Hide' : 'Show'
-    const showButton = (
-        <button onClick={() => setShow(!show)}>
-            {buttonText}
-        </button>
-    )
-
-    const style = {}
-    if (!show) {
-        style.display = 'none'
-    }
-
-    return (
-        <>
-            <SongPlayer
-                show={show}
-                spriteInfo={spriteInfo}
-                onSeek={seekActiveSprite}
-                activeSpriteContainer={activeSprite}
-            />
-            <div>
-                {/* {showButton} */}
-            </div>
-        </>
-    )
-}
 
 export default function Navbar() {
     const {location, history} = useRouter()
@@ -154,7 +116,7 @@ export default function Navbar() {
                             </MenuItem>
                         </Menu>
                     </div>
-                    <Player/>
+                    <CurrentSpriteFullPlayer/>
                 </Toolbar>
             </AppBar>
             <div style={{height: '100px'}}/>

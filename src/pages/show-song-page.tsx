@@ -10,6 +10,7 @@ import {displayTime} from '../util/display-time'
 import SongPlayerHTML5 from '../components/song-player/song-player-html5'
 import CommentSection from '../components/comment-section/comment-section'
 import ClipForm from '../components/clip-form/clip-form'
+import ClipTable from '../components/tables/clip_table'
 
 type ShowSongPageProps = {
     match: {
@@ -31,16 +32,12 @@ export default function ShowSongPage(props: ShowSongPageProps) {
         console.log('fetching file ' + audioFileId)
         fetchComments(audioFileId)
         fetchClips(audioFileId)
-
-    // like comments. display cached data, but also fetch fresh data
     }, [])
 
     const audioFiles = useStoreState((state: State<IGlobalStore>) => state.songs.audioFiles)
     const audioFile = audioFiles.find((file: AudioFile) => file.id === audioFileId)
 
     const clips = useStoreState((state: State<IGlobalStore>) => state.songs.clips).filter((c) => Boolean(audioFile) && audioFile.clip_ids.indexOf(c.id) > -1)
-    const playClip = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.songs.playClip)
-    const spriteInfo = useStoreState((state: State<IGlobalStore>) => state.songs.activeSpriteInfo)
 
     if (!audioFile) {
         return (
@@ -52,45 +49,6 @@ export default function ShowSongPage(props: ShowSongPageProps) {
         return createOrUpdateClip(clip)
     }
 
-    const makeClipComponent = (c: Clip): JSX.Element => {
-        const play = async () => {
-            const sprite = await playClip(c)
-            if (sprite) {
-                sprite.play()
-            }
-        }
-
-        let button = null
-        button = (
-            <PlayButton
-                isEnabled={true}
-                onClick={play}
-            />
-        )
-
-        if (spriteInfo && spriteInfo.section === c && spriteInfo.playing) {
-            button = <PauseButton onClick={play}/>
-        }
-
-        return (
-            <div
-                key={c.id}
-                style={{
-                    border: '4px solid',
-                    width: '500px',
-                    borderRadius: '10px',
-
-                    // borderColor: 'black',
-                    margin: '20px',
-                    padding: '10px',
-                }}
-            >
-                {button}
-                <span>{c.name} {displayTime(c.start_time)} {'-'} {displayTime(c.end_time)}</span>
-            </div>
-        )
-    }
-
     return (
         <div>
             <div style={{height: '200px'}}>
@@ -98,12 +56,12 @@ export default function ShowSongPage(props: ShowSongPageProps) {
                     file={audioFile}
                 />
             </div>
-            <ClipForm
+            {/* <ClipForm
                 createClip={handleCreateClip}
                 audio_file_id={audioFileId}
-            />
+            /> */}
             <h2>{'Display clips in a table. Display clip form as first row of table.'}</h2>
-            {clips.map(makeClipComponent)}
+            <ClipTable clips={clips}/>
             <CommentSection audioFile={audioFile}/>
         </div>
     )

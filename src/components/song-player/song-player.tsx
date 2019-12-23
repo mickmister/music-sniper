@@ -1,5 +1,5 @@
 import React from 'react'
-import {useStoreActions, Actions} from 'easy-peasy'
+import {useStoreActions, Actions, useStoreState, State} from 'easy-peasy'
 import {PlayButton, PauseButton} from 'react-player-controls'
 
 import '../../music-processing/audio-slicer'
@@ -26,6 +26,45 @@ type Props = {
 //     }
 //     this.setState({currentSeek: seekValue})
 //   }
+
+export const CurrentSpriteFullPlayer = () => {
+    const spriteInfo = useStoreState((state: State<IGlobalStore>) => state.songs.activeSpriteInfo)
+    const seekActiveSprite = useStoreActions((state: Actions<IGlobalStore>) => state.songs.seekActiveSprite)
+    const activeSprite = useStoreState((state: State<IGlobalStore>) => state.songs.activeSpriteContainer)
+
+    const [show, setShow] = React.useState(true)
+
+    if (location.pathname === '/login') {
+        return <div className={styles.footer}/>
+    }
+
+    const buttonText = show ? 'Hide' : 'Show'
+    const showButton = (
+        <button onClick={() => setShow(!show)}>
+            {buttonText}
+        </button>
+    )
+
+    const style = {}
+    if (!show) {
+        style.display = 'none'
+    }
+
+    return (
+        <>
+            {activeSprite && <p>{activeSprite.sprite.clip.name}</p>}
+            <SongPlayer
+                show={show}
+                spriteInfo={spriteInfo}
+                onSeek={seekActiveSprite}
+                activeSpriteContainer={activeSprite}
+            />
+            <div>
+                {/* {showButton} */}
+            </div>
+        </>
+    )
+}
 
 export default function SongPlayer(props: Props) {
     const {spriteInfo, activeSpriteContainer, onSeek} = props
@@ -76,22 +115,23 @@ export default function SongPlayer(props: Props) {
     let spritePosition = 0
     let length = 0
     let songLength = 0
-    let clipName = ''
+    let startTime = 0
+    let endTime = 0
     if (spriteInfo) {
         songPosition = spriteInfo.songPosition
         songLength = activeSpriteContainer.sprite.howl.duration()
         spritePosition = spriteInfo.spritePosition
         length = spriteInfo.length
-        clipName = activeSpriteContainer.sprite.clip.name
+        startTime = spriteInfo.section.start_time
+        endTime = spriteInfo.section.end_time
     }
     const timeInfo = (
         <>
             <div>
-                {clipName}
-            </div>
-            <div>
-                {displayTime(songPosition)}
-                {' / '}
+                {displayTime(startTime)}
+                {' - '}
+                {displayTime(endTime)}
+                {' | '}
                 {displayTime(songLength)}
             </div>
             <div>

@@ -5,41 +5,22 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button';
 import { IGlobalStore } from '../../store/store-types';
 import { State, useStoreActions, Actions } from 'easy-peasy';
-import { Project } from '../../types/music-types';
+import {Project} from '../../types/music-types';
+import {Clip} from '../../../types/music-types';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    container: {
-    //   display: 'flex',
-    //   flexWrap: 'wrap',
-    },
-    textField: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      width: 200,
-    },
-    dense: {
-      marginTop: 19,
-    },
-    menu: {
-      width: 200,
-    },
-  }),
-);
 
-type FormState = Project
+type FormState = Clip
 
 type Props = {
   closeModal: () => {}
-  project?: Project
+  clip: Clip
 }
 
-export function CreateProjectModalInner(props: Props) {
-    const project = props.project
-    const classes = useStyles('')
-    const [formState, setFormState] = useState<FormState>(project || {
+export function CreateClipModalInner(props: Props) {
+    const clip = props.clip
+     const [formState, setFormState] = useState<FormState>(clip || {
         name: '',
-    } as Project)
+    } as Clip)
 
     const {closeModal} = props
 
@@ -67,11 +48,10 @@ export function CreateProjectModalInner(props: Props) {
     }
 
     return (
-        <form className={classes.container} noValidate autoComplete='off'>
+        <form noValidate autoComplete='off'>
             <TextField
                 id='standard-name'
                 label='Name'
-                className={classes.textField}
                 value={formState.name}
                 onChange={handleChange('name')}
                 margin='normal'

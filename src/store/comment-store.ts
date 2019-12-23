@@ -12,7 +12,7 @@ export interface ICommentStore {
     removeComment: Action<ICommentStore, Comment>;
     storeComment: Action<ICommentStore, Comment>;
     addComments: Action<ICommentStore, Comment[]>;
-    fetchComments: Thunk<ICommentStore, number, void, IGlobalStore, Promise<Comment[]>>;
+    fetchComments: Thunk<ICommentStore, number | void, void, IGlobalStore, Promise<Comment[]>>;
     commentsForAudioFile: Computed<ICommentStore, Comment[]>;
 }
 
@@ -76,7 +76,11 @@ export const CommentStore: ICommentStore = {
     }),
 
     fetchComments: thunk(async (dispatch, audioFileId) => {
-        const {data} = await axios.get('/comments', {params: {commentable_type: 'AudioFile', commentable_id: audioFileId}})
+        let params = {}
+        if (audioFileId) {
+            params = {commentable_type: 'AudioFile', commentable_id: audioFileId}
+        }
+        const {data} = await axios.get('/comments', {params})
 
         if (data) {
             dispatch.addComments(data)

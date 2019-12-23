@@ -54,6 +54,23 @@ class SeekBar extends React.PureComponent<SeekBarProps, SeekBarState> {
         currentIntent: 0,
     }
 
+    blockSeek = false
+    componentWillUnmount() {
+        // The RangeControlOverlay component calls onChangeEnd on unmount for some reason. Void the call
+        this.blockSeek = true
+    }
+
+    handleSeekEnd = (relativeTime: number) => {
+        if (this.blockSeek) {
+            return
+        }
+        const {isSeekable, onSeekEnd, totalTime, seek} = this.props
+        if (isSeekable) {
+            seek(relativeTime * totalTime)
+            onSeekEnd(relativeTime * totalTime)
+        }
+    }
+
     storeRef = (rootEl: HTMLElement) => {
         this.progressBarEl = rootEl
     }
@@ -69,15 +86,6 @@ class SeekBar extends React.PureComponent<SeekBarProps, SeekBarState> {
         const {isSeekable, onSeekStart, totalTime} = this.props
         if (isSeekable) {
             onSeekStart(relativeTime * totalTime)
-        }
-    }
-
-    handleSeekEnd = (relativeTime: number) => {
-        const {isSeekable, onSeekEnd, totalTime} = this.props
-        if (isSeekable) {
-            // this.props.seek(relativeTime * fullLength)
-            this.props.seek(relativeTime * totalTime)
-            onSeekEnd(relativeTime * totalTime)
         }
     }
 
@@ -103,8 +111,7 @@ class SeekBar extends React.PureComponent<SeekBarProps, SeekBarState> {
             leftCircle,
         } = this.props
         const {currentIntent} = this.state
-        const isRewindIntent =
-    currentIntent !== 0 && currentIntent < currentTime / totalTime
+        const isRewindIntent = currentIntent !== 0 && currentIntent < currentTime / totalTime
 
         const seekPopoverPosition = lastTouched === 'SEEK' ? leftCircle.position : currentIntent * 100
 
@@ -168,7 +175,7 @@ class SeekBar extends React.PureComponent<SeekBarProps, SeekBarState> {
                         highlight={highlight}
                         left={(highlight / this.props.fullLength) * 100}
                         fullLength={this.props.fullLength}
-                        seek={this.props.seek}
+                        seek={this.handleSeekEnd}
                     />
                 ))}
 

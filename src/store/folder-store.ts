@@ -1,21 +1,23 @@
 import axios, {AxiosResponse} from 'axios'
 import {thunk, action, Action, Thunk, computed, Computed, useStoreState, State} from 'easy-peasy'
 
-import {Folder} from '../types/music-types'
+import {Folder, FolderItem, Entity, FolderItemWithEntity, ModelNames} from '../types/music-types'
 
-import {Entity} from '../services/backend-api'
 import {IGlobalStore} from './store-types'
 import {createOrUpdateEntity, storeEntities} from './shared-store-logic'
 
 export interface IFolderStore {
     folders: Folder[];
+    folderItems: FolderItem[]
     getFolder: Computed<IFolderStore, (id?: number) => Folder>
     getParentFolder: Computed<IFolderStore, (id?: number) => Folder>
     getChildFolders: Computed<IFolderStore, (id?: number) => Folder[]>
-    getFolderItems: Computed<IFolderStore, (id?: number) => Entity[], IGlobalStore>
+    getFolderItems: Computed<IFolderStore, (id?: number) => FolderItemWithEntity[], IGlobalStore>
     storeFolders: Action<IFolderStore, Folder[]>;
     createOrUpdateFolder: Thunk<IFolderStore, Folder, void, IGlobalStore, Promise<AxiosResponse<Folder | string>>>;
     fetchFolders: Thunk<IFolderStore, void, void, IGlobalStore, Promise<Folder[]>>;
+    addFolderItem: Action<IFolderStore, FolderItem>
+    removeFolderItem: Action<IFolderStore, FolderItem>
 }
 
 const FolderStore: IFolderStore = {
@@ -60,8 +62,13 @@ const FolderStore: IFolderStore = {
     storeFolders: action((state, folders) => {
         storeEntities(state.folders, folders)
     }),
-    createOrUpdateFolder: thunk(async (actions, folder) => {
-        const res = (await createOrUpdateEntity('folders', folder)) as AxiosResponse<Folder>
+    createOrUpdateFolder: thunk(async (actions, folder, {getState}) => {
+        const payload = folder
+        if (folder.id) {
+            const folderItems = getState().getChildFolders(folder.id)
+        }
+
+        const res = (await createOrUpdateEntity('folders', payload)) as AxiosResponse<Folder>
 
         actions.storeFolders([res.data])
         return res
@@ -84,16 +91,40 @@ const FolderStore: IFolderStore = {
         return state.folders.find((f) => f.id === folder.parent_id)
     }),
 
-    folderItems: [],
+    folderItems: [
+        {folder_id: 1, item_type: ModelNames.AudioFile, item_id: 15},
+        {folder_id: 1, item_type: ModelNames.Clip, item_id: 16},
+    ],
 
     getFolderItems: computed(
         [
             (state) => state.folders,
             (state) => state.folderItems || [],
             (state, storeState) => storeState.songs.audioFiles,
+            (state, storeState) => storeState.songs.clips,
         ],
-        (folders, folderItems, audioFiles) => (id: number) => {
-            return id === 1 ? audioFiles : []
+        (folders, folderItems, audioFiles, clips) => (id: number) => {
+            return folderItems.filter((item) => {
+                return item.folder_id === id &&
+                ((item.item_type === ModelNames.AudioFile && audioFiles.find((f) => f.id === item.item_id)) ||
+                (item.item_type === ModelNames.Clip && clips.find((f) => f.id === item.item_id)))
+            }).map((item) => {
+                let entity
+                switch (item.item_type) {
+                case ModelNames.AudioFile:
+                    entity = audioFiles.find((e) => e.id === item.item_id)
+                    break
+                case ModelNames.Clip:
+                    entity = clips.find((e) => e.id === item.item_id)
+                }
+
+                return {
+                    ...item,
+                    entity,
+                }
+            })
+
+            // return id === 1 ? audioFiles : []
         }
     ),
 
@@ -105,6 +136,14 @@ const FolderStore: IFolderStore = {
         }
 
         return data as Folder[]
+    }),
+
+    addFolderItem: action((state, item) => {
+        state.folderItems.push(item)
+    }),
+
+    removeFolderItem: action((state, item) => {
+        state.folderItems.push(item)
     }),
 }
 

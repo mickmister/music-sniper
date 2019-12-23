@@ -28,8 +28,9 @@ export interface ISongStore {
     clips: Clip[];
     storeClips: Action<ISongStore, Clip[]>;
     addClipToAudioFile: Action<ISongStore, Clip>;
-    fetchClips: Thunk<ISongStore, number, void, IGlobalStore, Promise<Clip[]>>;
+    fetchClips: Thunk<ISongStore, number | void, void, IGlobalStore, Promise<Clip[]>>;
     playClip: Thunk<ISongStore, Clip, void, IGlobalStore, Promise<Sprite>>;
+    forcePlayClip: Thunk<ISongStore, Clip, void, IGlobalStore, Promise<Sprite>>;
     updateActiveSpriteInfo: Action<ISongStore, SpriteInformation>;
     activeSpriteInfo: SpriteInformation;
     seekActiveSprite: Action<ISongStore, Percentage>;
@@ -210,7 +211,11 @@ const SongStore: ISongStore = {
     }),
 
     fetchClips: thunk(async (dispatch, audioFileId) => {
-        const {data} = await axios.get('/clips', {params: {audio_file_id: audioFileId}})
+        let params = {}
+        if (audioFileId) {
+            params = {audio_file_id: audioFileId}
+        }
+        const {data} = await axios.get('/clips', {params})
 
         if (data) {
             dispatch.storeClips(data)
@@ -227,13 +232,24 @@ const SongStore: ISongStore = {
         state.activeSpriteContainer = sprite
     }),
 
+    forcePlayClip: thunk(async (dispatch, clip) => {
+        const sprite = await dispatch.playClip(clip)
+
+        if (sprite) {
+            sprite.play()
+        }
+
+        return sprite
+    }),
+
     playClip: thunk(async (dispatch, clip, {getState}) => {
         const state = getState()
         const file = state.audioFiles.find((f) => f.id === clip.audio_file_id)
         const activeSpriteContainer = state.activeSpriteContainer
         if (activeSpriteContainer) {
             const activeSprite = activeSpriteContainer.sprite
-            if (activeSprite.clip === clip) {
+            if (activeSprite.clip === clip || (activeSprite.clip.id === clip.id && activeSprite.clip.updated_at === clip.updated_at)) {
+
                 if (activeSprite.getSpriteInfo().playing) {
                     activeSprite.pause()
                 } else {

@@ -5,12 +5,12 @@ import {IGlobalStore} from '../../store/store-types'
 import {FolderStoreState} from '../../store/folder-store'
 import {Folder} from '../../types/music-types'
 
-
-import DashboardCard from './dashboard-card'
 import FolderTable from '../tables/folder-table'
 import AudioFileTable from '../tables/audio_file_table'
 import ClipTable from '../tables/clip_table'
-import styles from './dashboard.module.scss'
+import ProjectTable from '../tables/project_table'
+
+import DashboardCard from './dashboard-card'
 
 const useFolderPicker = (folderId?: number) => {
     const [state, setState] = React.useState(folderId)
@@ -32,22 +32,22 @@ export default function Dashboard() {
 
     const audioFiles = useStoreState((state: State<IGlobalStore>) => state.songs.audioFiles)
     const clips = useStoreState((state: State<IGlobalStore>) => state.songs.clips)
-
-    const header = (
-        <div>
-            {folder && (
-                <div>
-                    <h3>{folder.name}</h3>
-                    <h2>{folder.description}</h2>
-                </div>
-            )}
-        </div>
-    )
+    const projects = useStoreState((state: State<IGlobalStore>) => state.projects.projects)
 
     return (
-        <div className={styles.container}>
-            {header}
+        <>
+            <h1>{'Projects'}</h1>
+            <ProjectTable projects={projects}/>
 
+            <div>
+                <h1>{'Folders'}</h1>
+                {folder && (
+                    <div>
+                        <h3>{folder.name}</h3>
+                        <p>{folder.description}</p>
+                    </div>
+                )}
+            </div>
             <FolderTable
                 folder={folder}
                 childFolders={childFolders}
@@ -81,6 +81,6 @@ export default function Dashboard() {
                     {audioFile.file_name}
                 </Link>
             ))} */}
-        </div>
+        </>
     )
 }

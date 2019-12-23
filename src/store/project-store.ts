@@ -1,7 +1,8 @@
 import axios, {AxiosResponse} from 'axios'
-import {thunk, action, Action, Thunk} from 'easy-peasy'
+import {thunk, action, Action, Thunk, computed, Computed} from 'easy-peasy'
 
-import {Project} from '../types/music-types'
+import {Project, ProjectAttachmentWithEntity, ModelNames} from '../types/music-types'
+import {IBackendAPI} from '../services/backend-api'
 
 import {IGlobalStore} from './store-types'
 export interface IProjectStore {
@@ -9,10 +10,10 @@ export interface IProjectStore {
     storeProjects: Action<IProjectStore, Project[]>;
     createOrUpdateProject: Thunk<IProjectStore, Project, void, IGlobalStore, Promise<AxiosResponse<Project | string>>>;
     fetchProjects: Thunk<IProjectStore, void, void, IGlobalStore, Promise<Project[]>>;
+    getProjectAttachments: Computed<IProjectStore, (id?: number) => ProjectAttachmentWithEntity[], IGlobalStore>
 }
 
 import {createOrUpdateEntity, storeEntities} from './shared-store-logic'
-import {IBackendAPI} from '../services/backend-api'
 
 const ProjectStore: IProjectStore = {
     projects: [],
@@ -37,6 +38,33 @@ const ProjectStore: IProjectStore = {
 
         return data as Project[]
     }),
+
+    getProjectAttachments: computed(
+        [
+            (state) => state.projects,
+            (state, storeState) => storeState.songs.audioFiles,
+            (state, storeState) => storeState.songs.clips,
+        ],
+        (projects, audioFiles, clips) => (id: number) => {
+            const project = projects.find((p) => p.id === id)
+
+            return project.project_attachments.map((item) => {
+                let entity
+                switch (item.item_type) {
+                case ModelNames.AudioFile:
+                    entity = audioFiles.find((e) => e.id === item.item_id)
+                    break
+                case ModelNames.Clip:
+                    entity = clips.find((e) => e.id === item.item_id)
+                }
+
+                return {
+                    ...item,
+                    entity,
+                }
+            })
+        }
+    ),
 }
 
 export default ProjectStore

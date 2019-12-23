@@ -1,5 +1,10 @@
 import {TimeInterval} from 'rxjs/internal/operators/timeInterval'
 
+export enum ModelNames {
+    AudioFile = 'AudioFile',
+    Clip = 'Clip',
+}
+
 export type Comment = {
     id: number,
     user_id: number,
@@ -38,10 +43,36 @@ export type Folder = {
     parent_id?: number
 }
 
+export type FolderItem = {
+    id?: number
+    folder_id: number
+    item_type: ModelNames
+    item_id: number
+}
+
+export type FolderItemWithEntity = FolderItem & {
+    entity: Entity
+}
+
+export type ProjectAttachment = {
+    id?: number
+    project_id: number
+    item_type: ModelNames
+    item_id: number
+}
+
+export type ProjectAttachmentWithEntity = ProjectAttachment & {
+    entity: Entity
+}
+
+export type Entity = {
+    id?: number
+}
+
 export type Project = {
     id?: number
     name: string
-    project_attachments: [{id: number, item_type: string, item_id: number}]
+    project_attachments: ProjectAttachment[]
 }
 
 export interface SongData {

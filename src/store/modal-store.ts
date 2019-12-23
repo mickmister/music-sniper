@@ -1,26 +1,38 @@
 import {action, Action} from 'easy-peasy'
 
+import {Project, Clip} from '../types/music-types'
+
 type ModalStates = {
-    createProject: boolean;
+    createProject: Project | null
+    createClip: Clip | null
 }
 
 export interface IModalStore {
-    openCreateProjectModal: Action<IModalStore>;
-    closeCreateProjectModal: Action<IModalStore>;
-    modalStates: ModalStates;
+    openCreateProjectModal: Action<IModalStore, Project | null>
+    closeCreateProjectModal: Action<IModalStore>
+    openCreateClipModal: Action<IModalStore, Clip | null>
+    closeCreateClipModal: Action<IModalStore>
+    modalStates: ModalStates
 }
 
 export const ModalStore: IModalStore = {
-    openCreateProjectModal: action((state) => {
-        state.modalStates.createProject = true
+    openCreateProjectModal: action((state, project) => {
+        state.modalStates.createProject = project
+    }),
+    closeCreateProjectModal: action((state) => {
+        state.modalStates.createProject = null
     }),
 
-    closeCreateProjectModal: action((state) => {
-        state.modalStates.createProject = false
+    openCreateClipModal: action((state, clip) => {
+        state.modalStates.createClip = clip
+    }),
+    closeCreateClipModal: action((state) => {
+        state.modalStates.createClip = null
     }),
 
     modalStates: {
-        createProject: false,
+        createProject: null,
+        createClip: {},
     },
 }
 

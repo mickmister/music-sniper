@@ -3,7 +3,7 @@ import {Icon, Menu, Table} from 'semantic-ui-react'
 
 type Props = {
     headers: React.ReactNode[]
-    rows: React.ReactNode[][]
+    rows: React.ReactNode[]
     topRow?: React.ReactNode[]
     numPages: number
     activePage: number
@@ -24,24 +24,8 @@ export default function TableComponent({headers, rows, topRow, numPages, activeP
 
     const body = (
         <Table.Body>
-            {topRow && (
-                <Table.Row active={true}>
-                    {topRow.map((cell, j) => (
-                        <Table.Cell key={j}>
-                            {cell}
-                        </Table.Cell>
-                    ))}
-                </Table.Row>
-            )}
-            {rows.map((row, i) => (
-                <Table.Row key={i}>
-                    {row.map((cell, j) => (
-                        <Table.Cell key={j}>
-                            {cell}
-                        </Table.Cell>
-                    ))}
-                </Table.Row>
-            ))}
+            {topRow}
+            {rows}
         </Table.Body>
     )
 
@@ -82,7 +66,10 @@ export default function TableComponent({headers, rows, topRow, numPages, activeP
     )
 
     return (
-        <Table celled={true}>
+        <Table
+            celled={true}
+            unstackable={true}
+        >
             {header}
             {body}
             {footer}

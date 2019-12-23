@@ -49,6 +49,7 @@ const store = createStore<IGlobalStore, EasyPeasyConfig>({
         init: thunk((actions, _, {dispatch}) => {
             dispatch.users.fetchUsers()
             dispatch.songs.fetchAudioFiles()
+            dispatch.songs.fetchClips()
             dispatch.comments.fetchComments()
             dispatch.projects.fetchProjects()
         }),

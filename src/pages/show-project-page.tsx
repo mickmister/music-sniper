@@ -1,12 +1,14 @@
 import React, {useState} from 'react'
-
 import {useStoreState, State, useStoreActions, Actions} from 'easy-peasy'
 
 import Button from '@material-ui/core/Button'
 import {Link} from 'react-router-dom'
 
+import styles from '../styles/page.module.scss'
+
 import {AudioFile} from '../types/music-types'
 import {IGlobalStore} from '../store/store-types'
+import AudioFileTable from '../components/tables/audio_file_table'
 
 // import AudioRecorder from '../../components/';
 
@@ -30,6 +32,7 @@ export default function ShowSongPage(props: Props) {
         attachedAudioFiles = audioFiles.filter((f) => projectAttachments.findIndex((att) => f.id === att.item_id) > -1)
         audioFiles = audioFiles.filter((f) => attachedAudioFiles.findIndex((f2) => f.id === f2.id) === -1)
     }
+
     const updateProject = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.projects.createOrUpdateProject)
 
     const attachAudioFile = () => {
@@ -48,16 +51,11 @@ export default function ShowSongPage(props: Props) {
     }
 
     return (
-        <div>
+        <div className={styles.container}>
             <div>
                 {project && <span style={{color: 'yellow'}}>{'Project '} {project.id}{': '}{project.name}</span>}
             </div>
             <div>
-                {attachedAudioFiles.map((f) => (
-                    <div key={f.id}>
-                        <Link to={`/songs/${f.id}/play`}><span style={{color: 'yellow'}}>{'AudioFile '} {f.id}{': '}{f.file_name}</span></Link>
-                    </div>
-                ))}
                 <select
                     value={selectedFileId}
                     onChange={(e) => setSelectedFileId(e.target.value)}
@@ -74,6 +72,7 @@ export default function ShowSongPage(props: Props) {
                 </select>
                 <Button onClick={attachAudioFile}>{'Attach'}</Button>
             </div>
+            <AudioFileTable audioFiles={attachedAudioFiles}/>
         </div>
     )
 }

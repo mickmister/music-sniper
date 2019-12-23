@@ -1,5 +1,5 @@
 import React from 'react'
-import {Icon} from 'semantic-ui-react'
+import {Icon, Table} from 'semantic-ui-react'
 import {Link} from 'react-router-dom'
 import {PlayButton} from 'react-player-controls'
 
@@ -14,25 +14,27 @@ type Props = {
 export default function AudioFileTable({audioFiles}: Props) {
     const headers = ['', 'Name']
 
-    const rows = audioFiles.map((f) => [
-        (
-            <PlayButton
-                key={'play'}
-                isEnabled={true}
-                onClick={() => {}}
-            />
-        ),
-        (
-            <>
+    const rows = audioFiles.map((f) => (
+        <Table.Row key={f.id}>
+            <Table.Cell>
+                <PlayButton
+                    key={'play'}
+                    isEnabled={true}
+                    onClick={() => {}}
+                />
+            </Table.Cell>
+
+            <Table.Cell>
                 <Icon
                     name={'file'}
                 />
                 <Link to={`/songs/${f.id}/play`}>{f.file_name}</Link>
-            </>
-        ),
-    ])
+            </Table.Cell>
+        </Table.Row>
+    ))
 
-    const numPages = 2
+
+    const numPages = 1
     const activePage = 1
 
     return (
