@@ -1,9 +1,5 @@
 import axios, {AxiosResponse} from 'axios'
 
-type Entity = {
-    id?: number
-}
-
 export async function createOrUpdateEntity(name: string, entity: Entity): Promise<AxiosResponse<Entity>> {
     let res
     if (entity.id) {

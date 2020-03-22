@@ -3,9 +3,9 @@ import React, { useState } from 'react'
 import TextField from '@material-ui/core/TextField'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button';
-import { IGlobalStore } from '../../store/store-types';
+import { IGlobalStore } from '../../../store/store-types';
 import { State, useStoreActions, Actions } from 'easy-peasy';
-import { Project } from '../../types/music-types';
+import { Project } from '../../../types/music-types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,7 +34,7 @@ type Props = {
   project?: Project
 }
 
-export function CreateProjectModalInner(props: Props) {
+export default function CreateProjectModalInner(props: Props) {
     const project = props.project
     const classes = useStyles('')
     const [formState, setFormState] = useState<FormState>(project || {

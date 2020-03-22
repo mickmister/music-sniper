@@ -9,7 +9,7 @@ const HighlightMarker = ({highlight, left, fullLength, seek, className}) => {
             <button
                 className={classnames('highlightMarker', className)}
                 style={{left: `${left}%`}}
-                onClick={() => seek(highlight)}
+                // onClick={() => seek(highlight)}
             >
                 {displayTime(highlight)}
             </button>

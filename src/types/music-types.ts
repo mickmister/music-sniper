@@ -1,5 +1,10 @@
 import {TimeInterval} from 'rxjs/internal/operators/timeInterval'
 
+export enum ModelNames {
+    AudioFile = 'AudioFile',
+    Clip = 'Clip',
+}
+
 export type Comment = {
     id: number,
     user_id: number,
@@ -19,6 +24,9 @@ export type AudioFile = {
     howl?: Howl,
     comments: Comment[],
     clip_ids: number[]
+    audio_length: number
+    created_at: string
+    updated_at: string
 }
 
 export type Clip = {
@@ -26,14 +34,47 @@ export type Clip = {
     name: string,
     audio_file_id: number,
     user_id: number,
-    start: number,
-    end: number,
+    start_time: number,
+    end_time: number,
+}
+
+export type Folder = {
+    id?: number
+    name: string
+    description: string
+    parent_id?: number
+}
+
+export type FolderItem = {
+    id?: number
+    folder_id: number
+    item_type: ModelNames
+    item_id: number
+}
+
+export type FolderItemWithEntity = FolderItem & {
+    entity: Entity
+}
+
+export type ProjectAttachment = {
+    id?: number
+    project_id: number
+    item_type: ModelNames
+    item_id: number
+}
+
+export type ProjectAttachmentWithEntity = ProjectAttachment & {
+    entity: Entity
+}
+
+export type Entity = {
+    id?: number
 }
 
 export type Project = {
     id?: number
     name: string
-    project_attachments: [{id: number, item_type: string, item_id: number}]
+    project_attachments: ProjectAttachment[]
 }
 
 export interface SongData {
@@ -52,8 +93,8 @@ export interface Segment {
 
 export interface Section {
     name: string
-    start: number
-    end: number
+    start_time: number
+    end_time: number
 }
 
 export type SpriteInformation = {
@@ -63,7 +104,7 @@ export type SpriteInformation = {
     length: Seconds,
     segment: Segment,
     playing: boolean,
-    section: Section,
+    section: Clip,
 }
 
 export type TimeInterval = [number, number]

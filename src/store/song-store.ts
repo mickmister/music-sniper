@@ -1,18 +1,42 @@
 import axios, {AxiosResponse} from 'axios'
-import {Howl, Howler} from 'howler'
-import {thunk, computed, action} from 'easy-peasy'
+import {Howl} from 'howler'
+import {thunk, computed, action, Action, Thunk, Computed} from 'easy-peasy'
 
-import {AudioFile, Project, Clip, Percentage} from '../types/music-types'
-
-import {Section} from '../types/music-types'
+import {AudioFile, Clip, SpriteInformation, Percentage} from '../types/music-types'
 
 import {StaticSprite} from '../music-processing/static-sprite'
-
 import {SpriteContainer} from '../music-processing/sprite-container'
+import {Sprite} from '../music-processing/sprite'
 
-import {SongChooserHookState, DispatchSongChooserActions} from './song-store.types'
-import {ISongStore} from './store-types'
 import {createOrUpdateEntity, storeEntities} from './shared-store-logic'
+import {IGlobalStore} from './store-types'
+
+export interface ISongStore {
+    audioFiles: AudioFile[];
+    selectedFile: File | null;
+    currentPlayingSongId: number | null;
+    currentPlayingSong: Computed<ISongStore>;
+    addAudioFileToCollection: Action<ISongStore, AudioFile>;
+    uploadFile: Thunk<ISongStore, File>;
+    setCurrentPlayingSong: Action<ISongStore, AudioFile>;
+    playFile: Thunk<ISongStore, AudioFile>;
+    pauseFile: Thunk<ISongStore, AudioFile>;
+    fetchAudioFiles: Thunk<ISongStore, void, void, Promise<AudioFile[]>>;
+    addSongs: Action<ISongStore, AudioFile[]>;
+    updateFile: Action<ISongStore, AudioFile>;
+    createOrUpdateClip: Thunk<ISongStore, Clip>;
+    clips: Clip[];
+    storeClips: Action<ISongStore, Clip[]>;
+    addClipToAudioFile: Action<ISongStore, Clip>;
+    fetchClips: Thunk<ISongStore, number | void, void, IGlobalStore, Promise<Clip[]>>;
+    playClip: Thunk<ISongStore, Clip, void, IGlobalStore, Promise<Sprite>>;
+    forcePlayClip: Thunk<ISongStore, Clip, void, IGlobalStore, Promise<Sprite>>;
+    updateActiveSpriteInfo: Action<ISongStore, SpriteInformation>;
+    activeSpriteInfo: SpriteInformation;
+    seekActiveSprite: Action<ISongStore, Percentage>;
+    activeSpriteContainer: SpriteContainer | null;
+    setActiveSpriteContainer: Action<ISongStore, SpriteContainer | null>;
+}
 
 const playFile = async (state: SongChooserHookState, dispatch: DispatchSongChooserActions, file: AudioFile) => {
     // pause all other files
@@ -79,6 +103,22 @@ const fetchAudioFiles = async (dispatch) => {
     }
 }
 
+const getAudioFileDuration = async (f: File): Promise<number> => {
+    const fileURL = URL.createObjectURL(f)
+    const howl = new Howl({
+        src: [fileURL],
+        html5: true,
+        format: f.name.split('.').pop().toLowerCase(),
+    })
+
+    return new Promise((r) => {
+        howl.once('load', () => {
+            r(howl.duration())
+            howl.unload()
+        })
+    })
+}
+
 // type ISongStore = SongChooserHookState & SongChooserHookActions
 
 const SongStore: ISongStore = {
@@ -123,17 +163,20 @@ const SongStore: ISongStore = {
         state.audioFiles = state.audioFiles.concat(songs)
     }),
 
-    uploadFile: thunk(async (actions, file) => {
+    uploadFile: thunk(async (actions, file): Promise<AudioFile> => {
         if (!file) {
-            return
+            return null
         }
+
+        const audioLength = await getAudioFileDuration(file)
 
         const form = new FormData()
         form.append('audio_file[attached_file]', file)
+        form.append('audio_file[audio_length]', audioLength.toString())
 
         const {data} = await axios.post('audio_files', form, {headers: {'Content-Type': 'multipart/form-data'}})
         actions.addSongs([data])
-        return data
+        return data as AudioFile
     }),
 
     playFile: thunk((actions, audioFile, {getState}) => {
@@ -168,7 +211,11 @@ const SongStore: ISongStore = {
     }),
 
     fetchClips: thunk(async (dispatch, audioFileId) => {
-        const {data} = await axios.get('/clips', {params: {audio_file_id: audioFileId}})
+        let params = {}
+        if (audioFileId) {
+            params = {audio_file_id: audioFileId}
+        }
+        const {data} = await axios.get('/clips', {params})
 
         if (data) {
             dispatch.storeClips(data)
@@ -185,19 +232,32 @@ const SongStore: ISongStore = {
         state.activeSpriteContainer = sprite
     }),
 
-    playClip: thunk((dispatch, clip, {getState}) => {
+    forcePlayClip: thunk(async (dispatch, clip) => {
+        const sprite = await dispatch.playClip(clip)
+
+        if (sprite) {
+            sprite.play()
+        }
+
+        return sprite
+    }),
+
+    playClip: thunk(async (dispatch, clip, {getState}) => {
         const state = getState()
         const file = state.audioFiles.find((f) => f.id === clip.audio_file_id)
         const activeSpriteContainer = state.activeSpriteContainer
         if (activeSpriteContainer) {
             const activeSprite = activeSpriteContainer.sprite
-            if (activeSprite.section === clip) {
+            if (!clip.force && (activeSprite.clip === clip ||
+                (activeSprite.clip.id && activeSprite.clip.id === clip.id && activeSprite.clip.updated_at === clip.updated_at) ||
+                (activeSprite.clip.start_time === clip.start_time && activeSprite.clip.end_time === clip.end_time))) {
+                console.log('in here')
                 if (activeSprite.getSpriteInfo().playing) {
                     activeSprite.pause()
                 } else {
                     activeSprite.play()
                 }
-                return
+                return null
             }
             activeSpriteContainer.sprite.stop()
             activeSpriteContainer.cleanUp()
@@ -205,8 +265,16 @@ const SongStore: ISongStore = {
         const sprite = new StaticSprite(file.url, clip)
         const container = new SpriteContainer(sprite, [clip])
 
+        if (clip.end_time === 100000) {
+            // clip.end_time = 10000
+            setTimeout(() => {
+                const length = sprite.howl.duration()
+                clip.end_time = length
+            }, 1000)
+        }
+
         // sprite.howl.volume(0)
-        sprite.play()
+        // sprite.play()
 
         // sprite.howl.volume(0)
         // setTimeout(() => sprite.howl.mute(), 100)
@@ -214,6 +282,7 @@ const SongStore: ISongStore = {
             dispatch.updateActiveSpriteInfo(spriteInfo)
         })
         dispatch.setActiveSpriteContainer(container)
+        return sprite
     }),
 
     seekActiveSprite: action((state, seekValue: Percentage) => {

@@ -1,10 +1,13 @@
 import React from 'react'
 import {useStoreActions, Actions, useStoreState, State} from 'easy-peasy'
 
+import {Form} from 'semantic-ui-react'
+
 import {AudioFile, Comment} from '../../types/music-types'
 import {IGlobalStore} from '../../store/store-types'
 
 import SavedComment from './saved-comment'
+import CommentFeed from './comment-feed'
 
 type CommentSectionProps = {
     audioFile: AudioFile,
@@ -26,24 +29,37 @@ export default function CommentSection(props: CommentSectionProps) {
     const newComment = commentFromAudioFile(audioFile)
 
     return (
-        <div>
-            <h1>
-                {'Comments'}
-            </h1>
+        <>
+            <Form
+                reply={true}
+                style={{width: '100%'}}
+            >
+                <Form.TextArea
+
+                    // onChange={(e) => editComment(comment.id, e.target.value)}
+                    style={{backgroundColor: 'black', width: '500px', color: 'white'}}
+                    rows={6}
+
+                    // value={editing[comment.id.toString()]}
+                />
+                {/* <button onClick={() => saveComment(comment.id)}>{'Save'}</button> */}
+                {/* <button onClick={() => cancelEdit(comment.id)}>{'Cancel'}</button> */}
+
+            </Form>
+
+            <CommentFeed
+                comments={comments}
+                saveComment={saveAction}
+                deleteComment={deleteAction}
+            />
+
             <SavedComment
                 key={'new'}
                 comment={newComment}
                 saveComment={saveAction}
                 deleteComment={deleteAction}
             />
-            {comments.map((comment) => (
-                <SavedComment
-                    key={comment.id}
-                    comment={comment}
-                    saveComment={saveAction}
-                    deleteComment={deleteAction}
-                />
-            ))}
-        </div>
+
+        </>
     )
 }

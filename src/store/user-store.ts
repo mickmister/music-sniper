@@ -1,7 +1,18 @@
 import axios from 'axios'
-import {computed, thunk, action} from 'easy-peasy'
+import {computed, thunk, action, Action, Thunk, Computed} from 'easy-peasy'
 
-import {IUserStore} from './store-types'
+import {User} from './user-store'
+import {IGlobalStore} from './store-types'
+
+export interface IUserStore {
+    users: User[];
+    fetchUsers: Thunk<IUserStore, void, void, IGlobalStore>;
+    addUsers: Action<IUserStore, User[]>;
+    currentUserId: number;
+    currentUser: Computed<IUserStore, User>;
+    setCurrentUser: Action<IUserStore, User>;
+    uploadAvatar: Thunk<IUserStore, File, void, IGlobalStore>;
+}
 
 export interface User {
     id: number,
@@ -45,10 +56,10 @@ export const UserStore: IUserStore = {
 
     uploadAvatar: thunk(async (actions, selectedFile: File, {getState, dispatch}) => {
         if (!selectedFile) {
-            return
+            return null
         }
 
-        const user = getState().users.currentUser
+        const user = getState().currentUser
 
         const form = new FormData()
         form.append('user[avatar]', selectedFile)

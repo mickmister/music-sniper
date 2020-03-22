@@ -640,7 +640,7 @@ module.exports = {
   },
   "overrides": [
     {
-      "files": ["**/*.tsx", "**/*.ts"],
+      "files": ["src/**/*.tsx", "src/**/*.ts"],
       "parser": "@typescript-eslint/parser",
       "plugins": ["@typescript-eslint"],
       "extends": "plugin:@typescript-eslint/recommended",
@@ -664,12 +664,8 @@ module.exports = {
             "variables": false
           }
         ],
-        "@typescript-eslint/camelcase": [
-          2,
-          {
-            "properties": "never"
-          }
-        ],
+        "@typescript-eslint/interface-name-prefix": "off",
+        "@typescript-eslint/camelcase": "off",
         "react/jsx-filename-extension": [
           1,
           {

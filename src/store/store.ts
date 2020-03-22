@@ -9,7 +9,9 @@ import SongStore from './song-store'
 import CommentStore from './comment-store'
 import ModalStore from './modal-store'
 import ProjectStore from './project-store'
+import FolderStore from './folder-store'
 import {IGlobalStore} from './store-types'
+import {BackendAPI, MockBackendAPI} from '../services/backend-api'
 
 const loadState = () => {
     const state = localStorage.getItem('redux-state')
@@ -32,25 +34,36 @@ const saveState = (state: State<IGlobalStore>) => {
 
 const persisted = loadState()
 
+const storeContainer: {store?: any} = {}
+
 const store = createStore<IGlobalStore, EasyPeasyConfig>({
     auth: AuthStore,
     users: UserStore,
     songs: SongStore,
     comments: CommentStore,
     projects: ProjectStore,
+    folders: FolderStore,
     settings: {},
     modals: ModalStore,
     store: {
         init: thunk((actions, _, {dispatch}) => {
             dispatch.users.fetchUsers()
             dispatch.songs.fetchAudioFiles()
+            dispatch.songs.fetchClips()
             dispatch.comments.fetchComments()
             dispatch.projects.fetchProjects()
         }),
     },
 }, {
     initialState: persisted,
+    injections: {
+
+        // backendAPI: new MockBackendAPI(storeContainer),
+        backendAPI: new BackendAPI(storeContainer),
+    },
 })
+
+storeContainer.store = store
 
 store.subscribe(() => {
     saveState(store.getState())

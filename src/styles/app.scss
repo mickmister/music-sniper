@@ -1,16 +1,39 @@
+    $text-color: green;
+
 :global {
   body {
     background-color: #001f3f;
+    // background-color: #001f3f;
     // padding-left: 50px;
     // padding-right: 50px;
+    color: $text-color;
 
     h1, h2 {
-      text-align: center;
+        // color: green;
+    //   text-align: center;
     }
+
+    margin: 0px;
+  }
+
+  .ui.feed>.event>.content {
+      .extra, a.like, * {
+          color: $text-color;
+      }
+  }
+
+    .ui.comments>.comment>.content {
+        .text, .actions>a, * {
+            color: $text-color;
+        }
+    }
+
+  .ui.comments .comment .avatar {
+      height: 2.5em;
   }
 
   h2 {
-    color: white;
+    color: $text-color;
   }
 
   .seek-bar {

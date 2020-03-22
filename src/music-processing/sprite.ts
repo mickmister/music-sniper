@@ -1,6 +1,7 @@
 import {SpriteInformation, Seconds, Section, TimeIntervalMilliseconds, Percentage} from 'types/music-types'
 
 import {IHowl} from '../interfaces/IHowl'
+import {Clip} from '../types/music-types'
 
 export class Sprite {
     howl: IHowl
@@ -9,13 +10,23 @@ export class Sprite {
 
     constructor(
         public filePath: string,
-        public section: Section,
+        public clip: Clip,
     ) {
-        if (!section.end) {
+        if (!clip.end_time) {
             setTimeout(() => {
-                this.howl.once('load', () => section.end = this.howl.duration())
+                this.howl.once('load', () => clip.end_time = this.howl.duration())
             })
         }
+    }
+
+    afterLoad = (cb: () => void) => {
+        setTimeout(() => {
+            if (this.howl.state() === 'loaded') {
+                cb()
+            } else {
+                this.howl.once('load', cb)
+            }
+        })
     }
 
     play = () => {
@@ -33,23 +44,24 @@ export class Sprite {
             spriteProgress: this.spriteProgress(),
             length: this.getLength(),
             playing: this.howl.playing(),
-            section: this.section,
+            section: this.clip,
         } as SpriteInformation
     }
 
     getDefaultInfo = () => {
         return {
             songPosition: 0,
-            spritePosition: this.section.start,
+            spritePosition: this.clip.start_time,
             spriteProgress: 0,
             length: this.getLength(),
             playing: false,
+            section: this.clip,
         } as SpriteInformation
     }
 
     getSegment = () => {
-        const {start, end} = this.section
-        return [start * 1000, (end - start) * 1000] as TimeIntervalMilliseconds
+        const {start_time, end_time} = this.clip
+        return [start_time * 1000, (end_time - start_time) * 1000] as TimeIntervalMilliseconds
     }
 
     seek(seekSeconds: Seconds) {
@@ -61,12 +73,12 @@ export class Sprite {
     }
 
     getLength = () => {
-        const {start, end} = this.section
-        return end - start
+        const {start_time, end_time} = this.clip
+        return end_time - start_time
     }
 
     spritePosition = () => {
-        return this.songPosition() - this.section.start
+        return this.songPosition() - this.clip.start_time
     }
 
     spriteProgress = () => {
@@ -75,30 +87,30 @@ export class Sprite {
     }
 
     windowProgress(win: Section) {
-        return (this.spriteProgress() - win.start) / (win.end - win.start)
+        return (this.spriteProgress() - win.start_time) / (win.end_time - win.start_time)
     }
 
     getStartPercentage() {
-        const ratio = this.section.start / this.howl.duration()
+        const ratio = this.clip.start_time / this.howl.duration()
         return ratio
     }
 
     getEndPercentage() {
-        const ratio = this.section.end / this.howl.duration()
+        const ratio = this.clip.end_time / this.howl.duration()
         return ratio
     }
 
     setStartPercentage(start: Percentage) {
-        this.section.start = start * this.howl.duration()
+        this.clip.start_time = start * this.howl.duration()
     }
 
     setEndPercentage(end: Percentage) {
-        this.section.end = end * this.howl.duration()
+        this.clip.end_time = end * this.howl.duration()
     }
 
     seekPercentage(percent: number) {
         const targetPosition = this.getLength() * percent
-        const relativeToSong = this.section.start + targetPosition
+        const relativeToSong = this.clip.start_time + targetPosition
         this.seek(relativeToSong)
     }
 
@@ -125,15 +137,15 @@ export class DynamicSprite extends Sprite {
 
     play = () => {
         if (this.howl.playing()) {
-            this.howl.seek(this.section.start)
+            this.howl.seek(this.clip.start_time)
             return
         }
         if (this.stopped) {
-            this.howl.seek(this.section.start)
+            this.howl.seek(this.clip.start_time)
         }
         this.howl.play()
         if (this.stopped) {
-            this.howl.seek(this.section.start)
+            this.howl.seek(this.clip.start_time)
         }
         this.stopped = false
         this.started = true

@@ -3,14 +3,28 @@ import {useStoreState} from 'easy-peasy'
 
 import {IGlobalStore} from '../../store/store-types'
 
-import CreateProjectModal from './create-project-modal'
+import CreateProjectModal from './create-project-modal/create-project-modal'
+import CreateClipModal from './create-clip-modal/create-clip-modal'
+import AttachModal from './attach-modal/attach-modal'
 
 export default function AllModals() {
     const modalOpenStates = useStoreState((state: IGlobalStore) => state.modals.modalStates)
+    const {createProject, createClip} = modalOpenStates
 
     return (
         <React.Fragment>
-            <CreateProjectModal open={modalOpenStates.createProject}/>
+            <CreateProjectModal
+                opened={Boolean(createProject)}
+                project={createProject}
+            />
+            <CreateClipModal
+                opened={Boolean(modalOpenStates.createClip)}
+                clip={createClip}
+            />
+            <AttachModal
+                opened={Boolean(modalOpenStates.attach)}
+                {...modalOpenStates.attach}
+            />
         </React.Fragment>
     )
 }

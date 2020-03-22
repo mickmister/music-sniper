@@ -1,17 +1,19 @@
 import React, {useState, useEffect} from 'react'
-import {useStore, State, useStoreState} from 'easy-peasy'
+import {useStore, State, useStoreState, useStoreActions, Actions} from 'easy-peasy'
 
-import {Comment} from '../../types/music-types'
+import {Comment, Clip} from '../../types/music-types'
 import Button from '../button/button'
 
 import {IGlobalStore} from '../../store/store-types'
 
 import styles from './comment-section.module.scss'
+import CommentWord from './comment-word'
 
 type SavedCommentProps = {
     comment: Partial<Comment>,
     saveComment: (comment: Comment) => any,
     deleteComment: (comment: Comment) => any,
+    onCancel?: () => void
 }
 
 type DraftState = {
@@ -42,10 +44,6 @@ const useDraft = (draft: string) => {
     }] as [DraftState, DraftActions]
 }
 
-const isTimeStamp = (word: string) => {
-    return false
-}
-
 const getUser = (id: number) => (state: State<IGlobalStore>) => state.users.users.find((user: any) => user.id === id)
 
 export default function SavedComment(props: SavedCommentProps) {
@@ -68,7 +66,6 @@ export default function SavedComment(props: SavedCommentProps) {
                 resetDraft()
             }
         } catch (e) {
-            console.log(e)
             if (e.response && e.response.data && e.response.data.exception) {
                 set({error: e.response.data.exception, editing: true})
             } else {
@@ -110,16 +107,18 @@ export default function SavedComment(props: SavedCommentProps) {
                 className={styles.commentText}
                 style={{whiteSpace: 'pre'}}
             >
-                {draft.split(' ').map((word, i) => {
-                    if (isTimeStamp) {
-                        return <span key={i}>{word} </span>
-                    }
-
-                    return <span key={i}>{word} </span>
-                })}
+                {draft.split(' ').map((word, i) => (
+                    <CommentWord
+                        key={i}
+                        comment={comment}
+                        word={word}
+                    />
+                ))}
             </p>
         )
     }
+
+    const cancel = props.onCancel || resetDraft
 
     let actionButtons
     if (editing) {
@@ -127,8 +126,10 @@ export default function SavedComment(props: SavedCommentProps) {
             <div className={styles.actionButtons}>
                 <Button
                     className={styles.cancelButton}
-                    onClick={resetDraft}
-                >{'Cancel'}</Button>
+                    onClick={cancel}
+                >
+                    {'Cancel'}
+                </Button>
                 <Button
                     disabled={!draft}
                     className={styles.saveButton}

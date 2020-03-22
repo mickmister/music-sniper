@@ -1,0 +1,9 @@
+#!/bin/bash
+
+export $(egrep -v '^#' .env | xargs) # parse env file
+
+rm -rf ./dist/*.js ./dist/*.js.map ./dist/*.map
+NODE_ENV=$NODE_ENV ./node_modules/.bin/parcel build src/index.html
+aws s3 cp ./dist s3://${BUCKET_NAME} --recursive --exclude "*" --include "*.js" --include "*.css"
+# aws s3 cp ./dist s3://${BUCKET_NAME} --recursive --exclude index.html
+aws s3 cp ./dist/index.html  s3://${BUCKET_NAME}/index.html --cache-control max-age=0,no-cache,no-store,must-revalidate

@@ -10,6 +10,25 @@ const INTERVAL_PERIOD = 250
 const NUM_CYCLES = 1000
 let currentCycle = 0
 
+let holdingDownSpace = false
+
+window.addEventListener('load', () => {
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== ' ') {
+            return
+    }
+
+    if (e.target !== document.body) {
+        return
+    }
+
+    e.preventDefault()
+    e.stopPropagation()
+
+        return false
+    })
+})
+
 export class SpriteContainer {
     private cancelSubject: Subject<boolean>
     private subject: Subject<SpriteInformation>
@@ -26,11 +45,59 @@ export class SpriteContainer {
         this.observable = this.subject.
             pipe(takeUntil(this.cancelSubject.pipe(filter((x) => x))))
         this.interval = setInterval(this.sendUpdates, INTERVAL_PERIOD)
+
+        this.createSpaceBarListener()
     }
 
     getObsvervableForInterval = () => this.observable
 
+    createSpaceBarListener = () => {
+        document.addEventListener('keydown', this.spaceBarListenerDown)
+        document.addEventListener('keyup', this.spaceBarListenerUp)
+    }
+
+    spaceBarListenerDown = (e: React.KeyboardEvent<HTMLDivElement>): void | boolean => {
+        if (e.key !== ' ') {
+            return
+        }
+
+        if (e.target !== document.body) {
+            return
+        }
+
+        e.preventDefault()
+        e.stopPropagation()
+
+        if (holdingDownSpace) {
+            return false
+        }
+
+        holdingDownSpace = true
+
+        if (this.sprite.howl.playing()) {
+            this.sprite.pause()
+        } else {
+            this.sprite.play()
+        }
+
+        return false
+    }
+
+    spaceBarListenerUp = (e: React.KeyboardEvent<HTMLDivElement>): void => {
+        if (e.key !== ' ') {
+            return
+        }
+
+        if (e.target !== document.body) {
+            return
+        }
+
+        holdingDownSpace = false
+    }
+
     cleanUp = () => {
+        document.removeEventListener('keydown', this.spaceBarListenerDown)
+        document.removeEventListener('keyup', this.spaceBarListenerUp)
         clearInterval(this.interval)
         const defaultValue = this.sprite.getDefaultInfo()
         this.subject.next(defaultValue)

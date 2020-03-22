@@ -78,7 +78,6 @@ export default function NestedList() {
                     component='div'
                     id='nested-list-subheader'
                 >
-                    {'Nested List Items'}
                 </ListSubheader>
             }
             className={styles.root}

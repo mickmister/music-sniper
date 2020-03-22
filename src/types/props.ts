@@ -1,3 +1,5 @@
+import {AudioFile, Entity} from './music-types'
+
 export interface SongData {
     songs: Song[]
 }
@@ -16,3 +18,9 @@ export type Segment = {
 export type Section = {
     name: string
 } & Segment
+
+export type AttachProps = {
+    title: string
+    onSubmit: (items: Entity[]) => void
+    items: (Entity & {name?: string, file_name?: string})[]
+}

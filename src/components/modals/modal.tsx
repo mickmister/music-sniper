@@ -2,25 +2,15 @@ import React from 'react'
 import Modal from '@material-ui/core/Modal'
 import {makeStyles, Theme, createStyles} from '@material-ui/core/styles'
 
-import Button from '@material-ui/core/Button'
-
-import {useStoreActions, Actions} from 'easy-peasy'
-
-import {IGlobalStore} from '../../store/store-types'
-
-import modalStyles from './modals.module.scss'
-
-import {CreateProjectModalInner} from './create-project-modal-inner'
-
 type Props = {
-    open: boolean;
+    opened: boolean
+    closeModal: () => void
 }
 
 const modalStyle = {
-    top: '50%',
-    left: '0%',
-
-    // transform: `translate(-${top}%, -${left}%)`,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -36,23 +26,21 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-export default function CreateProjectModal(props: Props) {
+export default function Modal(props: Props) {
     const classes = useStyles()
-    const closeModal = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.modals.closeCreateProjectModal)
 
     return (
         <Modal
+            style={modalStyle}
             aria-labelledby='simple-modal-title'
             aria-describedby='simple-modal-description'
-            open={props.open}
-            onClose={closeModal}
+            open={props.opened}
+            onClose={props.closeModal}
         >
             <div
-                style={modalStyle}
                 className={classes.paper}
             >
-                <h1>{'Create Project'}</h1>
-                <CreateProjectModalInner closeModal={closeModal}/>
+                {props.children}
             </div>
         </Modal>
     )
