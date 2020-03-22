@@ -20,44 +20,46 @@ export interface IFolderStore {
     removeFolderItem: Action<IFolderStore, FolderItem>
 }
 
+const testFolders = [
+    {
+        id: 1,
+        name: 'Jams',
+        description: 'Straight Jams',
+    },
+    {
+        id: 2,
+        name: '2018 Jams',
+        description: 'Radical Jams recorded in 2018',
+        parent_id: 1,
+    },
+    {
+        id: 3,
+        name: '2018 October Jams',
+        description: 'Sweet Jams recorded in October of 2018',
+        parent_id: 2,
+    },
+    {
+        id: 4,
+        name: '2019 Jams',
+        description: 'Nice Jams recorded in 2019',
+        parent_id: 1,
+    },
+    {
+        id: 5,
+        name: '2019 April Jams',
+        description: 'Jams recorded in April of 2019',
+        parent_id: 4,
+    },
+    {
+        id: 6,
+        name: '2019 November Jams',
+        description: 'Jams recorded in November of 2019',
+        parent_id: 4,
+    },
+]
+
 const FolderStore: IFolderStore = {
-    folders: [
-        {
-            id: 1,
-            name: 'Jams',
-            description: 'Straight Jams',
-        },
-        {
-            id: 2,
-            name: '2018 Jams',
-            description: 'Radical Jams recorded in 2018',
-            parent_id: 1,
-        },
-        {
-            id: 3,
-            name: '2018 October Jams',
-            description: 'Sweet Jams recorded in October of 2018',
-            parent_id: 2,
-        },
-        {
-            id: 4,
-            name: '2019 Jams',
-            description: 'Nice Jams recorded in 2019',
-            parent_id: 1,
-        },
-        {
-            id: 5,
-            name: '2019 April Jams',
-            description: 'Jams recorded in April of 2019',
-            parent_id: 4,
-        },
-        {
-            id: 6,
-            name: '2019 November Jams',
-            description: 'Jams recorded in November of 2019',
-            parent_id: 4,
-        },
-    ],
+    folders: [],
 
     storeFolders: action((state, folders) => {
         storeEntities(state.folders, folders)

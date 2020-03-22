@@ -7,11 +7,13 @@ import Button from '../button/button'
 import {IGlobalStore} from '../../store/store-types'
 
 import styles from './comment-section.module.scss'
+import CommentWord from './comment-word'
 
 type SavedCommentProps = {
     comment: Partial<Comment>,
     saveComment: (comment: Comment) => any,
     deleteComment: (comment: Comment) => any,
+    onCancel?: () => void
 }
 
 type DraftState = {
@@ -42,10 +44,6 @@ const useDraft = (draft: string) => {
     }] as [DraftState, DraftActions]
 }
 
-const isTimeStamp = (word: string) => {
-    return word.match('([0-9]*):([0-9]*)')
-}
-
 const getUser = (id: number) => (state: State<IGlobalStore>) => state.users.users.find((user: any) => user.id === id)
 
 export default function SavedComment(props: SavedCommentProps) {
@@ -68,7 +66,6 @@ export default function SavedComment(props: SavedCommentProps) {
                 resetDraft()
             }
         } catch (e) {
-            console.log(e)
             if (e.response && e.response.data && e.response.data.exception) {
                 set({error: e.response.data.exception, editing: true})
             } else {
@@ -110,22 +107,18 @@ export default function SavedComment(props: SavedCommentProps) {
                 className={styles.commentText}
                 style={{whiteSpace: 'pre'}}
             >
-                {draft.split(' ').map((word, i) => {
-                    if (isTimeStamp(word)) {
-                        return (
-                            <CommentTimestamp
-                                key={i}
-                                comment={props.comment}
-                                word={word}
-                            />
-                        )
-                    }
-
-                    return <span key={i}>{word} </span>
-                })}
+                {draft.split(' ').map((word, i) => (
+                    <CommentWord
+                        key={i}
+                        comment={comment}
+                        word={word}
+                    />
+                ))}
             </p>
         )
     }
+
+    const cancel = props.onCancel || resetDraft
 
     let actionButtons
     if (editing) {
@@ -133,8 +126,10 @@ export default function SavedComment(props: SavedCommentProps) {
             <div className={styles.actionButtons}>
                 <Button
                     className={styles.cancelButton}
-                    onClick={resetDraft}
-                >{'Cancel'}</Button>
+                    onClick={cancel}
+                >
+                    {'Cancel'}
+                </Button>
                 <Button
                     disabled={!draft}
                     className={styles.saveButton}
@@ -173,47 +168,5 @@ export default function SavedComment(props: SavedCommentProps) {
                 </span>
             </div>
         </div>
-    )
-}
-
-type CommentTimestampProps = {
-    comment: Partial<Comment>
-    word: string
-}
-
-export function CommentTimestamp({comment, word}: CommentTimestampProps): JSX.Element {
-    const playClip = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.songs.playClip)
-    const audioFiles = useStoreState((dispatch: State<IGlobalStore>) => dispatch.songs.audioFiles)
-    const f = audioFiles.find(f => f.id === comment.commentable_id)
-
-    const playAndSeek = async () => {
-        const parts = word.match('([0-9]*):([0-9]*)')
-        const minutes = parseInt(parts[1])
-        const seconds = parseInt(parts[2])
-        const total = minutes * 60 + seconds
-
-        const clip: Clip = {
-            id: 0,
-            name: 'Some name',
-            audio_file_id: f.id,
-            user_id: 0,
-            start_time: 0,
-            end_time: f.audio_length || 100000,
-        }
-
-        const sprite = await playClip(clip)
-        sprite.howl.load()
-        sprite.afterLoad(() => {
-            sprite.play()
-            sprite.seek(total)
-        })
-    }
-
-    return (
-        <a onClick={playAndSeek}>
-            <span>
-                {word}
-            </span>
-        </a>
     )
 }

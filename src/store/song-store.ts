@@ -248,8 +248,10 @@ const SongStore: ISongStore = {
         const activeSpriteContainer = state.activeSpriteContainer
         if (activeSpriteContainer) {
             const activeSprite = activeSpriteContainer.sprite
-            if (activeSprite.clip === clip || (activeSprite.clip.id === clip.id && activeSprite.clip.updated_at === clip.updated_at)) {
-
+            if (!clip.force && (activeSprite.clip === clip ||
+                (activeSprite.clip.id && activeSprite.clip.id === clip.id && activeSprite.clip.updated_at === clip.updated_at) ||
+                (activeSprite.clip.start_time === clip.start_time && activeSprite.clip.end_time === clip.end_time))) {
+                console.log('in here')
                 if (activeSprite.getSpriteInfo().playing) {
                     activeSprite.pause()
                 } else {

@@ -25,6 +25,8 @@ export type AudioFile = {
     comments: Comment[],
     clip_ids: number[]
     audio_length: number
+    created_at: string
+    updated_at: string
 }
 
 export type Clip = {

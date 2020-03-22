@@ -3,6 +3,13 @@ import ReactDOM from 'react-dom'
 import {BrowserRouter, Route, Redirect} from 'react-router-dom'
 import {StoreProvider} from 'easy-peasy'
 
+import JavascriptTimeAgo from 'javascript-time-ago'
+
+// The desired locales.
+import en from 'javascript-time-ago/locale/en'
+import ru from 'javascript-time-ago/locale/ru'
+
+
 import './config'
 import './styles/styles'
 
@@ -18,6 +25,10 @@ import Footer from './components/footer/footer'
 import Mobile from './components/mobile/mobile'
 import AllModals from './components/modals/all-modals'
 import DashboardPage from './pages/dashboard-page'
+
+// Initialize the desired locales.
+JavascriptTimeAgo.locale(en)
+JavascriptTimeAgo.locale(ru)
 
 const root = document.getElementById('main')
 

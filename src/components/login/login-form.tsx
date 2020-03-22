@@ -39,7 +39,7 @@ export default function LoginForm() {
 
     const fields = [
         {name: 'email', value: state.email, label: 'Email'},
-        {name: 'password', value: state.password, label: 'Password'},
+        {name: 'password', value: state.password, label: 'Password', type: 'password'},
     ]
 
     const clickedLogin = (e: FormEvent<HTMLFormElement>) => {
@@ -53,6 +53,7 @@ export default function LoginForm() {
                 <div key={f.name}>
                     <label>{f.label}</label>
                     <input
+                        type={f.type || 'text'}
                         name={f.name}
                         value={f.value}
                         onChange={setInputFieldValue}

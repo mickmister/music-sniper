@@ -16,7 +16,7 @@ type Props = {
   clip: Clip
 }
 
-export function CreateClipModalInner(props: Props) {
+export default function CreateClipModalInner(props: Props) {
     const clip = props.clip
      const [formState, setFormState] = useState<FormState>(clip || {
         name: '',

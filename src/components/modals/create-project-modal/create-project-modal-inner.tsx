@@ -34,7 +34,7 @@ type Props = {
   project?: Project
 }
 
-export function CreateProjectModalInner(props: Props) {
+export default function CreateProjectModalInner(props: Props) {
     const project = props.project
     const classes = useStyles('')
     const [formState, setFormState] = useState<FormState>(project || {

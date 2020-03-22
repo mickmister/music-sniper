@@ -4,6 +4,8 @@ import useReactRouter from 'use-react-router'
 
 import GoogleLogin, {GoogleLoginResponse} from 'react-google-login'
 
+import CONFIG_VARS from '../../config'
+
 import {IGlobalStore} from '../../store/store-types'
 
 export default function GoogleAuthButton() {
@@ -18,7 +20,7 @@ export default function GoogleAuthButton() {
 
     return (
         <GoogleLogin
-            clientId={'918861016270-1nsq4f1vov35ql1rkbrm63rkg89hn51e.apps.googleusercontent.com'}
+            clientId={CONFIG_VARS.GOOGLE_AUTH_CLIENT_ID}
             buttonText={'Login'}
             onSuccess={handleAuthSuccess}
             onFailure={console.log}

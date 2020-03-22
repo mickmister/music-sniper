@@ -47,6 +47,9 @@ const ProjectStore: IProjectStore = {
         ],
         (projects, audioFiles, clips) => (id: number) => {
             const project = projects.find((p) => p.id === id)
+            if (!project) {
+                return []
+            }
 
             return project.project_attachments.map((item) => {
                 let entity
@@ -62,7 +65,7 @@ const ProjectStore: IProjectStore = {
                     ...item,
                     entity,
                 }
-            })
+            }).filter((a) => a.entity)
         }
     ),
 }

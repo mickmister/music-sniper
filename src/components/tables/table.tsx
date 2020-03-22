@@ -4,12 +4,14 @@ import {Icon, Menu, Table} from 'semantic-ui-react'
 type Props = {
     headers: React.ReactNode[]
     rows: React.ReactNode[]
-    topRow?: React.ReactNode[]
+    topRow?: React.ReactNode
     numPages: number
     activePage: number
 }
 
-export default function TableComponent({headers, rows, topRow, numPages, activePage}: Props) {
+export default function TableComponent({headers, rows, topRow, activePage}: Props) {
+    const [currentPage, setCurrentPage] = React.useState(1)
+
     const header = (
         <Table.Header>
             <Table.Row>
@@ -22,17 +24,38 @@ export default function TableComponent({headers, rows, topRow, numPages, activeP
         </Table.Header>
     )
 
+    const PER_PAGE = 10
+    const numPages = Math.ceil(rows.length / PER_PAGE)
+    const pages = []
+    for (let i = 0; i < numPages; i++) {
+        pages.push(i + 1)
+    }
+
+    const pagedRows = rows.slice(PER_PAGE * (currentPage - 1), PER_PAGE * currentPage)
+
     const body = (
         <Table.Body>
             {topRow}
-            {rows}
+            {pagedRows}
         </Table.Body>
     )
 
-    const pages = []
+    const nextPage = () => {
+        if (currentPage === numPages) {
+            return
+        }
+        setCurrentPage(currentPage + 1)
+    }
 
-    for (let i = 0; i < numPages; i++) {
-        pages.push(i + 1)
+    const previousPage = () => {
+        if (currentPage === 1) {
+            return
+        }
+        setCurrentPage(currentPage - 1)
+    }
+
+    const gotoPage = (pageNumber) => {
+        setCurrentPage(pageNumber)
     }
 
     const footer = (
@@ -46,16 +69,18 @@ export default function TableComponent({headers, rows, topRow, numPages, activeP
                         <Menu.Item
                             as='a'
                             icon={true}
+                            onClick={previousPage}
                         >
                             <Icon name='chevron left'/>
                         </Menu.Item>
 
                         {pages.map((i) => (
-                            <Menu.Item key={i}>{i}</Menu.Item>
+                            <Menu.Item onClick={() => gotoPage(i)} active={currentPage === i} key={i}>{i}</Menu.Item>
                         ))}
                         <Menu.Item
                             as='a'
                             icon={true}
+                            onClick={nextPage}
                         >
                             <Icon name='chevron right'/>
                         </Menu.Item>
@@ -72,7 +97,7 @@ export default function TableComponent({headers, rows, topRow, numPages, activeP
         >
             {header}
             {body}
-            {footer}
+            {(numPages > 1) && footer}
         </Table>
     )
 }

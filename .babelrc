@@ -1,5 +1,5 @@
 {
-  "presets": [["@babel/env", {"modules": "commonjs"}], "@babel/react", "@babel/preset-typescript"],
+  "presets": [["@babel/env", {"modules": "commonjs"}], "@babel/preset-react", "@babel/preset-typescript"],
   "plugins": ["@babel/plugin-transform-runtime",
     ["@babel/plugin-proposal-class-properties", { "loose": true }]
   ]

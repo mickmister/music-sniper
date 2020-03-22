@@ -6,7 +6,7 @@ import {Link} from 'react-router-dom'
 
 import styles from '../styles/page.module.scss'
 
-import {AudioFile} from '../types/music-types'
+import {AudioFile, ModelNames} from '../types/music-types'
 import {IGlobalStore} from '../store/store-types'
 import AudioFileTable from '../components/tables/audio_file_table'
 
@@ -24,18 +24,18 @@ export default function ShowSongPage(props: Props) {
 
     const [selectedFileId, setSelectedFileId] = useState('')
 
-    let audioFiles = useStoreState((state: State<IGlobalStore>) => state.songs.audioFiles) as AudioFile[]
-    let attachedAudioFiles: AudioFile[] = []
-
-    if (project) {
-        const projectAttachments = project.project_attachments.filter((att) => att.item_type === 'AudioFile')
-        attachedAudioFiles = audioFiles.filter((f) => projectAttachments.findIndex((att) => f.id === att.item_id) > -1)
-        audioFiles = audioFiles.filter((f) => attachedAudioFiles.findIndex((f2) => f.id === f2.id) === -1)
-    }
+    const att = useStoreState((state: State<IGlobalStore>) => state.projects.getProjectAttachments)(projectId)
+    const audioFiles = att.filter((a) => a.item_type === ModelNames.AudioFile).map((a) => a.entity as AudioFile)
+    const clips = att.filter((a) => a.item_type === ModelNames.Clip).map((a) => a.entity as Clip)
 
     const updateProject = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.projects.createOrUpdateProject)
+    const closeAttachModal = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.modals.closeAttachModal)
 
-    const attachAudioFile = () => {
+    if (!project) {
+        return <p>{'Loading'}</p>
+    }
+
+    const attachAudioFileold = () => {
         const f = audioFiles.find((f2) => f2.id === parseInt(selectedFileId))
         const p = {
             ...project,
@@ -50,13 +50,26 @@ export default function ShowSongPage(props: Props) {
         updateProject(p)
     }
 
+    const attachAudioFile = async (f: AudioFile) => {
+        const p = {
+            ...project,
+            project_attachments_attributes: [{
+                item_type: ModelNames.AudioFile,
+                item_id: f.id,
+                project_id: project.id,
+            }],
+        }
+        await updateProject(p)
+        closeAttachModal()
+    }
+
     return (
         <div className={styles.container}>
             <div>
                 {project && <span style={{color: 'yellow'}}>{'Project '} {project.id}{': '}{project.name}</span>}
             </div>
             <div>
-                <select
+                {/* <select
                     value={selectedFileId}
                     onChange={(e) => setSelectedFileId(e.target.value)}
                 >
@@ -69,10 +82,17 @@ export default function ShowSongPage(props: Props) {
                             {f.file_name}
                         </option>
                     ))}
-                </select>
-                <Button onClick={attachAudioFile}>{'Attach'}</Button>
+                </select> */}
+                {/* <Button onClick={attachAudioFile}>{'Attach'}</Button> */}
             </div>
-            <AudioFileTable audioFiles={attachedAudioFiles}/>
+            <AudioFileTable
+                audioFiles={audioFiles}
+                attachProps={{
+                    title: `Attach to ${project.name}`,
+                    onSubmit: attachAudioFile,
+                    items: [],
+                }}
+            />
         </div>
     )
 }

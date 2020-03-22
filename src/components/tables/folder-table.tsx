@@ -6,6 +6,7 @@ import {Folder, FolderItemWithEntity, ModelNames, AudioFile, Clip} from '../../t
 
 import TableComponent from './table'
 import ClipRow from './clip_row'
+import AudioFileRow from './audio_file_row'
 
 type Props = {
     folder?: Folder
@@ -19,16 +20,10 @@ const renderFolderItemRow = (item: FolderItemWithEntity) => {
     if (item.item_type === ModelNames.AudioFile) {
         const entity = item.entity as AudioFile
         return (
-            <Table.Row key={item.item_type + item.item_id}>
-                <Table.Cell>
-                    <Icon
-                        name={'file'}
-                    />
-                    <Link to={`/songs/${item.entity.id}/play`}>
-                        {entity.file_name}
-                    </Link>
-                </Table.Cell>
-            </Table.Row>
+            <AudioFileRow
+                key={item.item_type + item.item_id}
+                file={entity}
+            />
         )
     } else if (item.item_type === ModelNames.Clip) {
         const entity = item.entity as Clip

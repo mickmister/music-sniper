@@ -1,16 +1,14 @@
 import React, {useEffect} from 'react'
 import {useStoreActions, useStoreState, Actions, State} from 'easy-peasy'
 
-import {PlayButton, PauseButton} from 'react-player-controls'
-
 import {AudioFile, Clip} from '../types/music-types'
 import {IGlobalStore} from '../store/store-types'
-import {displayTime} from '../util/display-time'
 
+import styles from '../styles/page.module.scss'
 import SongPlayerHTML5 from '../components/song-player/song-player-html5'
 import CommentSection from '../components/comment-section/comment-section'
-import ClipForm from '../components/clip-form/clip-form'
 import ClipTable from '../components/tables/clip_table'
+import ClipForm from '../components/clip-form/clip-form'
 
 type ShowSongPageProps = {
     match: {
@@ -25,6 +23,8 @@ export default function ShowSongPage(props: ShowSongPageProps) {
     const createOrUpdateClip = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.songs.createOrUpdateClip)
 
     const fetchClips = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.songs.fetchClips)
+
+    const [showClipForm, setClipFormVisibility] = React.useState(false)
 
     // const clips = useStoreState((state: State<IGlobalStore>) => state.songs.clips).filter(c => c.audio_file_id === audioFileId)
 
@@ -49,19 +49,32 @@ export default function ShowSongPage(props: ShowSongPageProps) {
         return createOrUpdateClip(clip)
     }
 
+    const showHideClipFormButton = (
+        <button onClick={() => setClipFormVisibility(!showClipForm)}>
+            {showClipForm ? 'Hide Clip Form' : 'Show Clip Form'}
+        </button>
+    )
+
     return (
-        <div>
-            <div style={{height: '200px'}}>
+        <div className={styles.container}>
+            <h3>{audioFile.file_name}</h3>
+            <div style={{height: '140px', width: '100%'}}>
                 <SongPlayerHTML5
                     file={audioFile}
                 />
             </div>
-            {/* <ClipForm
-                createClip={handleCreateClip}
-                audio_file_id={audioFileId}
-            /> */}
-            <h2>{'Display clips in a table. Display clip form as first row of table.'}</h2>
+            <div style={{width: '100%'}}>
+                {showHideClipFormButton}
+                {showClipForm && (
+                    <ClipForm
+                        createClip={handleCreateClip}
+                        audio_file_id={audioFileId}
+                    />
+                )}
+            </div>
+            <h2>{'Clips'}</h2>
             <ClipTable clips={clips}/>
+            <h2>{'Comments'}</h2>
             <CommentSection audioFile={audioFile}/>
         </div>
     )

@@ -6,7 +6,7 @@ import {Clip} from '../../../types/music-types'
 
 import Modal from '../modal'
 
-import {CreateClipModalInner} from './create-clip-modal-inner'
+import CreateClipModalInner from './create-clip-modal-inner'
 
 type Props = {
     opened: boolean

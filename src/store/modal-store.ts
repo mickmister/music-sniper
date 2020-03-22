@@ -1,10 +1,12 @@
 import {action, Action} from 'easy-peasy'
 
 import {Project, Clip} from '../types/music-types'
+import {AttachProps} from '../types/props'
 
 type ModalStates = {
     createProject: Project | null
     createClip: Clip | null
+    attach: AttachProps | null
 }
 
 export interface IModalStore {
@@ -12,6 +14,9 @@ export interface IModalStore {
     closeCreateProjectModal: Action<IModalStore>
     openCreateClipModal: Action<IModalStore, Clip | null>
     closeCreateClipModal: Action<IModalStore>
+    openAttachModal: Action<IModalStore, AttachProps | null>
+    closeAttachModal: Action<IModalStore>
+
     modalStates: ModalStates
 }
 
@@ -30,9 +35,17 @@ export const ModalStore: IModalStore = {
         state.modalStates.createClip = null
     }),
 
+    openAttachModal: action((state, attachProps) => {
+        state.modalStates.attach = attachProps
+    }),
+    closeAttachModal: action((state) => {
+        state.modalStates.attach = null
+    }),
+
     modalStates: {
         createProject: null,
-        createClip: {},
+        createClip: null,
+        attach: null,
     },
 }
 

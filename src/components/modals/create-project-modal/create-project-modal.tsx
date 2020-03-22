@@ -6,7 +6,7 @@ import {Project} from '../../../types/music-types'
 
 import Modal from '../modal'
 
-import {CreateProjectModalInner} from './create-project-modal-inner'
+import CreateProjectModalInner from './create-project-modal-inner'
 
 type Props = {
     opened: boolean
