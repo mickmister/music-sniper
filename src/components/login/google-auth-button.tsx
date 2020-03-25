@@ -18,6 +18,10 @@ export default function GoogleAuthButton() {
         history.push('/')
     }
 
+    if (!CONFIG_VARS.GOOGLE_AUTH_CLIENT_ID) {
+        return <p>{'To enable Google authentication, assign a client id to process.env.GOOGLE_AUTH_CLIENT_ID when building'}</p>
+    }
+
     return (
         <GoogleLogin
             clientId={CONFIG_VARS.GOOGLE_AUTH_CLIENT_ID}

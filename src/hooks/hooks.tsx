@@ -29,18 +29,20 @@ const useFileUpload = (uploadFile: (f: File) => void): [React.ReactNode, () => v
 
 export const useSongUpload = (callback?: (audiFile: AudioFile) => void): [React.ReactNode, () => void] => {
   const uploadFile = useStoreActions((dispatch: Actions<IGlobalStore>) => dispatch.songs.uploadFile)
-  const {history} = useRouter()
+  const {history, location} = useRouter()
 
   const didChooseFile = async (file: File) => {
-    const uploaded: AudioFile = await uploadFile(file)
-    if (uploaded && uploaded.id) {
-      history.push(`/songs/${uploaded.id}/play`)
-      if (callback) {
-        callback(uploaded)
-      }
-    } else {
-      console.log('upload failed')
-    }
+        const uploaded: AudioFile = await uploadFile(file)
+        if (uploaded && uploaded.id) {
+            if (!location.pathname.match(/songs\/([0-9]*)/)) {
+                history.push(`/songs/${uploaded.id}/play`)
+            }
+            if (callback) {
+                callback(uploaded)
+            }
+        } else {
+            console.log('upload failed')
+        }
   }
 
   const [UploadComponent, pickFile] = useFileUpload(didChooseFile)

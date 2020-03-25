@@ -1,0 +1,50 @@
+$leftSidebarWidth: 200px;
+$rightSidebarWidth: 400px;
+
+.leftSidebar, .rightSidebar {
+    height: 90%;
+    position: fixed;
+    overflow: overlay;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: #001530;
+}
+
+.leftSidebar {
+    padding: 0;
+    width: $leftSidebarWidth;
+    // border-right: 2px solid;
+
+}
+
+.rightSidebar {
+    right: 0;
+    width: $rightSidebarWidth;
+    // border-left: 2px solid;
+}
+
+.uploadFile {
+    border-bottom: 1px solid;
+}
+
+.entity {
+    padding-left: 20px;
+    padding-right: 20px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    // border: 1px solid;
+}
+
+.selectedEntity {
+    background-color: honeydew;
+}
+
+.mainContent {
+    position: relative;
+    height: 100%;
+    overflow: overlay;
+    width: 100%;
+    margin-left: $leftSidebarWidth;
+    margin-right: $rightSidebarWidth;
+}

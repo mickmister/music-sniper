@@ -498,7 +498,7 @@ module.exports = {
     "react/jsx-max-props-per-line": [
       2,
       {
-        "maximum": 1
+        "maximum": 3
       }
     ],
     "react/jsx-no-bind": 0,

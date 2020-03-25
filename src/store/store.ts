@@ -12,6 +12,7 @@ import ProjectStore from './project-store'
 import FolderStore from './folder-store'
 import {IGlobalStore} from './store-types'
 import {BackendAPI, MockBackendAPI} from '../services/backend-api'
+import SidebarStore from './sidebar-store'
 
 const loadState = () => {
     const state = localStorage.getItem('redux-state')
@@ -45,6 +46,7 @@ const store = createStore<IGlobalStore, EasyPeasyConfig>({
     folders: FolderStore,
     settings: {},
     modals: ModalStore,
+    sidebars: SidebarStore,
     store: {
         init: thunk((actions, _, {dispatch}) => {
             dispatch.users.fetchUsers()

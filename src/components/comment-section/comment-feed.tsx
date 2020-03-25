@@ -62,7 +62,10 @@ function CommentComponent({comment, saveComment, deleteComment}: CommentComponen
 
     let commentComponent = (
         <UIComment
-            style={{padding: '20px'}}
+            style={{
+                paddingBottom: '20px',
+                // border: '1px solid'
+            }}
         >
             <UIComment.Avatar src={avatarURL}/>
             <UIComment.Content>
