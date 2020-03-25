@@ -23,6 +23,7 @@ export default function SongPlayerHTML5(props: SongPlayerHTML5Props) {
                 src={file.url}
                 controls={true}
                 style={{width: '100%', minWidth: '300px'}}
+                preload={'auto'}
                 {...props.audioProps}
 
                 // autoPlay

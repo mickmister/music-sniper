@@ -36,6 +36,8 @@ export interface ISongStore {
     seekActiveSprite: Action<ISongStore, Percentage>;
     activeSpriteContainer: SpriteContainer | null;
     setActiveSpriteContainer: Action<ISongStore, SpriteContainer | null>;
+
+    getSelectedAudioFile: Computed<ISongStore, AudioFile | null, IGlobalStore>
 }
 
 const playFile = async (state: SongChooserHookState, dispatch: DispatchSongChooserActions, file: AudioFile) => {
@@ -160,7 +162,14 @@ const SongStore: ISongStore = {
     }),
 
     addSongs: action((state: SongChooserHookState, songs: AudioFile[]) => {
-        state.audioFiles = state.audioFiles.concat(songs)
+        songs.forEach((file) => {
+            const index = state.audioFiles.findIndex((f: AudioFile) => f.id === file.id)
+            if (index > -1) {
+                state.audioFiles[index] = file
+            } else {
+                state.audioFiles.push(file)
+            }
+        })
     }),
 
     uploadFile: thunk(async (actions, file): Promise<AudioFile> => {
@@ -291,6 +300,21 @@ const SongStore: ISongStore = {
         }
 
         state.activeSpriteContainer.sprite.seekPercentage(seekValue / 100.0)
+    }),
+
+    getSelectedAudioFile: computed([
+        (state) => state.audioFiles,
+        (state, storeState) => storeState.sidebars.selectedEntity,
+    ], (audioFiles, selectedEntity) => {
+        if (selectedEntity) {
+            return selectedEntity as AudioFile
+        }
+        const audioFileID = location.pathname.match(/\/songs\/([0-9]*)\/play/)
+        if (audioFileID) {
+            return audioFiles.find((f) => f.id === parseInt(audioFileID[1], 10))
+        }
+
+        return null
     }),
 }
 

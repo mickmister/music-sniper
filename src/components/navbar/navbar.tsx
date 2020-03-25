@@ -62,8 +62,7 @@ export default function Navbar() {
     }
 
     return (
-        <div>
-
+        <div className={styles.navbar}>
             <AppBar
                 position='fixed'
             >

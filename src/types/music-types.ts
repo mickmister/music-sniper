@@ -5,6 +5,11 @@ export enum ModelNames {
     Clip = 'Clip',
 }
 
+export type Commentable = {
+    commentable_type: string,
+    commentable_id: number,
+}
+
 export type Comment = {
     id: number,
     user_id: number,

@@ -7,6 +7,7 @@ import {IModalStore} from './modal-store'
 import {IProjectStore} from './project-store'
 import {IFolderStore} from './folder-store'
 import {ICommentStore} from './comment-store'
+import {ISidebarStore} from './sidebar-store'
 
 export interface IStoreInit {
     init: Thunk<IStoreInit, void, void, IGlobalStore>,
@@ -24,4 +25,5 @@ export type IGlobalStore = {
     comments: ICommentStore,
     settings: ISettingsStore,
     modals: IModalStore,
+    sidebars: ISidebarStore,
 }

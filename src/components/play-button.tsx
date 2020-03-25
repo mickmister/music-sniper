@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {useAction} from 'easy-peasy'
+import {useStoreActions} from 'easy-peasy'
 
 import {AudioFile} from '../types/music-types'
 
@@ -10,9 +10,7 @@ type PlayButtonProps = {
 }
 
 export default function PlayButton(props: PlayButtonProps) {
-    // const playFile = useAction((dispatch: any) => dispatch.songs.playFile)
-    // const pauseFile = useAction((dispatch: any) => dispatch.songs.pauseFile)
-    const setCurrentPlayingSong = useAction((dispatch: any) => dispatch.songs.setCurrentPlayingSong)
+    const setCurrentPlayingSong = useStoreActions((dispatch: any) => dispatch.songs.setCurrentPlayingSong)
 
     const {file} = props
 

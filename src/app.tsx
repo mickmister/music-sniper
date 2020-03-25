@@ -9,6 +9,8 @@ import JavascriptTimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import ru from 'javascript-time-ago/locale/ru'
 
+import {loadProgressBar} from 'axios-progress-bar'
+loadProgressBar()
 
 import './config'
 import './styles/styles'
@@ -25,6 +27,11 @@ import Footer from './components/footer/footer'
 import Mobile from './components/mobile/mobile'
 import AllModals from './components/modals/all-modals'
 import DashboardPage from './pages/dashboard-page'
+import DesignPage from './pages/design-page'
+
+import LeftSidebar from './components/sidebars/left-sidebar'
+import RightSidebar from './components/sidebars/right-sidebar'
+import sidebarStyles from './components/sidebars/sidebars.module.scss'
 
 // Initialize the desired locales.
 JavascriptTimeAgo.locale(en)
@@ -36,47 +43,63 @@ ReactDOM.render(
     <BrowserRouter>
         <StoreProvider store={store}>
             <StoreInit>
-                <Navbar/>
-                <Route
-                    exact={true}
-                    path='/'
-                    component={(): JSX.Element => (
-                        <Redirect
-                            exact={true}
-                            from='/'
-                            to='/dashboard'
-                        />
-                    )}
-                />
-                <Route
-                    path='/dashboard'
-                    exact={true}
-                    component={DashboardPage}
-                />
-                <Route
-                    path='/login'
-                    exact={true}
-                    component={LoginPage}
-                />
-                <Route
-                    path='/songs'
-                    exact={true}
-                    component={ChooseSongPage}
-                />
-                <Route
-                    path='/songs/:id/splice'
-                    component={SongSplicerPage}
-                />
-                <Route
-                    path='/songs/:id/play'
-                    component={ShowSongPage}
-                />
-                <Route
-                    path='/projects/:id'
-                    component={ShowProjectPage}
-                />
-                <Footer/>
-                <AllModals/>
+                <div className='container-fluid'>
+                    <div>
+                        <Navbar/>
+                        <div className='row' style={{height: 'calc(100% - 67px)'}}>
+                            <LeftSidebar/>
+                            <div className={sidebarStyles.mainContent}>
+
+                                <Route
+                                    exact={true}
+                                    path='/'
+                                    component={(): JSX.Element => (
+                                        <Redirect
+                                            exact={true}
+                                            from='/'
+                                            to='/design'
+                                        />
+                                    )}
+                                />
+                                <Route
+                                    path='/dashboard'
+                                    exact={true}
+                                    component={DashboardPage}
+                                />
+                                <Route
+                                    path='/design'
+                                    exact={true}
+                                    component={DesignPage}
+                                />
+                                <Route
+                                    path='/login'
+                                    exact={true}
+                                    component={LoginPage}
+                                />
+                                <Route
+                                    path='/songs'
+                                    exact={true}
+                                    component={ChooseSongPage}
+                                />
+                                <Route
+                                    path='/songs/:id/splice'
+                                    component={SongSplicerPage}
+                                />
+                                <Route
+                                    path='/songs/:id/play'
+                                    component={ShowSongPage}
+                                />
+                                <Route
+                                    path='/projects/:id'
+                                    component={ShowProjectPage}
+                                />
+                            </div>
+                            <RightSidebar/>
+                        </div>
+                        <Footer/>
+                        <AllModals/>
+                    </div>
+                </div>
             </StoreInit>
         </StoreProvider>
     </BrowserRouter>,

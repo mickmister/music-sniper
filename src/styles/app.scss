@@ -1,4 +1,4 @@
-    $text-color: green;
+$text-color: green;
 
 :global {
   body {
@@ -13,7 +13,14 @@
     //   text-align: center;
     }
 
+    box-sizing: border-box;
+
     margin: 0px;
+
+    ::-webkit-scrollbar-corner  {
+        display: none;
+        // background-color: black;
+    }
   }
 
   .ui.feed>.event>.content {

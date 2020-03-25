@@ -74,8 +74,6 @@ export default function ShowSongPage(props: ShowSongPageProps) {
             </div>
             <h2>{'Clips'}</h2>
             <ClipTable clips={clips}/>
-            <h2>{'Comments'}</h2>
-            <CommentSection audioFile={audioFile}/>
         </div>
     )
 }

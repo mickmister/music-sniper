@@ -7,7 +7,7 @@ import {IGlobalStore} from './store-types'
 
 export interface ICommentStore {
     items: Comment[];
-    saveComment: Thunk<ICommentStore, Comment>;
+    saveComment: Thunk<ICommentStore, Comment, void, IGlobalStore, Promise<Comment>>;
     deleteComment: Thunk<ICommentStore, Comment>;
     removeComment: Action<ICommentStore, Comment>;
     storeComment: Action<ICommentStore, Comment>;
@@ -38,7 +38,7 @@ export const CommentStore: ICommentStore = {
     items: [],
 
     saveComment: thunk(async (dispatch, comment: Comment) => {
-        const newComment = await upsert('comments', comment)
+        const newComment = await upsert('comments', comment) as Comment
         dispatch.storeComment(newComment)
         return newComment
     }),
