@@ -2,13 +2,16 @@ import axios from 'axios'
 
 // axios.defaults.baseURL = process.env.API_HOST
 // eslint-disable-next-line no-process-env
-if (process.env.NODE_ENV === 'production') {
-    axios.defaults.baseURL = 'https://qa-music-sniper-rails.herokuapp.com'
-} else {
+
+// if (process.env.API_HOST) {
+//     axios.defaults.baseURL = 'https://qa-music-sniper-rails.herokuapp.com'
+// } else if (process.env.NODE_ENV === 'production') {
+//     axios.defaults.baseURL = 'https://qa-music-sniper-rails.herokuapp.com'
+// } else {
     // axios.defaults.baseURL = '/api'
     // axios.defaults.baseURL = 'https://music-sniper-rails.herokuapp.com'
     axios.defaults.baseURL = 'http://localhost:3000'
-}
+// }
 
 window.axios = axios
 

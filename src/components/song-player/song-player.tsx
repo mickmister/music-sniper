@@ -95,7 +95,7 @@ export default function SongPlayer(props: Props) {
             return
         }
 
-        const sprite = await playClip(spriteInfo.section)
+        const sprite = await playClip({...spriteInfo.section, masterPlayer: true})
 
         // sprite.play() // sprite will automatically play because the store will short circuit on the already loaded file
     }
