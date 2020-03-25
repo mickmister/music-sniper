@@ -29,7 +29,7 @@ export interface ISongStore {
     storeClips: Action<ISongStore, Clip[]>;
     addClipToAudioFile: Action<ISongStore, Clip>;
     fetchClips: Thunk<ISongStore, number | void, void, IGlobalStore, Promise<Clip[]>>;
-    playClip: Thunk<ISongStore, Clip, void, IGlobalStore, Promise<Sprite>>;
+    playClip: Thunk<ISongStore, Clip & {masterPlayer: boolean}, void, IGlobalStore, Promise<Sprite>>;
     forcePlayClip: Thunk<ISongStore, Clip, void, IGlobalStore, Promise<Sprite>>;
     updateActiveSpriteInfo: Action<ISongStore, SpriteInformation>;
     activeSpriteInfo: SpriteInformation;
@@ -37,7 +37,7 @@ export interface ISongStore {
     activeSpriteContainer: SpriteContainer | null;
     setActiveSpriteContainer: Action<ISongStore, SpriteContainer | null>;
 
-    getSelectedAudioFile: Computed<ISongStore, AudioFile | null, IGlobalStore>
+    getSelectedAudioFile: Computed<ISongStore, (loc?: {pathname: string}) => (AudioFile | null), IGlobalStore>
 }
 
 const playFile = async (state: SongChooserHookState, dispatch: DispatchSongChooserActions, file: AudioFile) => {
@@ -257,10 +257,9 @@ const SongStore: ISongStore = {
         const activeSpriteContainer = state.activeSpriteContainer
         if (activeSpriteContainer) {
             const activeSprite = activeSpriteContainer.sprite
-            if (!clip.force && (activeSprite.clip === clip ||
+            if (clip.masterPlayer || (!clip.force && (activeSprite.clip === clip ||
                 (activeSprite.clip.id && activeSprite.clip.id === clip.id && activeSprite.clip.updated_at === clip.updated_at) ||
-                (activeSprite.clip.start_time === clip.start_time && activeSprite.clip.end_time === clip.end_time))) {
-                console.log('in here')
+                (activeSprite.clip.start_time === clip.start_time && activeSprite.clip.end_time === clip.end_time)))) {
                 if (activeSprite.getSpriteInfo().playing) {
                     activeSprite.pause()
                 } else {
@@ -305,7 +304,8 @@ const SongStore: ISongStore = {
     getSelectedAudioFile: computed([
         (state) => state.audioFiles,
         (state, storeState) => storeState.sidebars.selectedEntity,
-    ], (audioFiles, selectedEntity) => {
+    ], (audioFiles, selectedEntity) => (loc) => {
+        loc = loc || location
         if (selectedEntity) {
             return selectedEntity as AudioFile
         }
